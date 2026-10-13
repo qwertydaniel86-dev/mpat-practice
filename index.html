@@ -1,0 +1,447 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PAF MPAT Practice</title><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#0b1d33;color:#111}
+.wrap{max-width:720px;margin:0 auto;padding:12px}.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:12px}
+h1{color:#fff;font-size:1.3em;margin:8px 0}h2{margin-top:0}button{font-size:1em;padding:12px;border-radius:8px;border:1px solid #888;background:#f3f6fa;cursor:pointer}
+.big{display:block;width:100%;margin:8px 0;background:#1e5aa8;color:#fff;border:0;font-weight:bold}.tp{margin:4px;width:calc(50% - 8px)}
+.bar{display:flex;justify-content:space-between;align-items:center;color:#fff;margin-bottom:8px}#timer{font-size:1.6em;font-weight:bold;font-variant-numeric:tabular-nums}#timer.low{color:#ff6b6b}
+.ch{display:block;width:100%;text-align:left;margin:6px 0}.ch.sel{background:#1e5aa8;color:#fff}.row{display:flex;gap:8px}.row button{flex:1}
+.fig{max-width:100%;height:auto;max-height:220px;display:block;margin:8px auto}.optfigs{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}.optfigs div{text-align:center;width:23%;min-width:70px}.optfigs .fig{max-height:110px}
+.passage{background:#f4f1e8;padding:10px;border-radius:6px;margin-bottom:8px;font-size:.95em}.small{font-size:.8em;color:#555}.good{color:#087a2f;font-weight:bold}.bad{color:#b00;font-weight:bold}
+.rev{border-top:1px solid #ddd;padding:8px 0}table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid #ddd;padding:4px;text-align:left}
+</style></head><body><div class="wrap">
+<h1>✈ PAF MPAT Practice</h1>
+<div id="home"><div class="card"><p>Rapid-fire timed sets like the real Military Pilot Aptitude Test. Every set is randomly generated.</p>
+<button class="big" onclick="start('5')">5-minute mixed set</button><button class="big" onclick="start('10')">10-minute mixed set</button><p class="small" id="best"></p></div>
+<div class="card"><h3>Per-topic practice (5 min)</h3><div id="topics"></div></div></div>
+<div id="quiz" style="display:none"><div class="bar"><span id="qnum"></span><span id="timer"></span></div><div class="card"><div id="qtext"></div><div id="qfig"></div><div id="choices"></div>
+<div class="row"><button id="skip">Skip</button><button id="next" class="big" style="margin:0">Next</button></div><p><button id="stop" class="small">End set now</button></p></div></div>
+<div id="res" style="display:none"><div class="card" id="result"></div><button class="big" onclick="show('home')">Back to menu</button></div>
+</div><script>// Static banks. src: R = from Daniel's reviewer, O = original
+var VOCAB = [
+// [word, meaning, src]
+["obstinate","stubbornly refusing to change one's opinion","R"],["cupidity","greed for money or possessions","R"],["Cupid","Roman god of love (desire)","R"],
+["ennui","boredom from lack of excitement","R"],["vilify","to speak or write about in an abusively insulting way","R"],["tyro","a beginner or novice","R"],
+["isometric","having equal dimensions or measurements","R"],["indigent","poor; needy","R"],["peripatetic","traveling from place to place","R"],
+["caprice","a sudden, unaccountable change of mood or behavior","R"],["loquacious","talkative","R"],["oscillate","to swing back and forth","R"],
+["ephemeral","lasting a very short time; fleeting","R"],["recalcitrant","uncooperative; resisting authority","R"],["tranquil","calm; peaceful","R"],
+["audacious","bold; daring","O"],["fastidious","very attentive to detail; hard to please","O"],["gregarious","fond of company; sociable","O"],["ingenious","clever and inventive","O"],
+["meticulous","showing great attention to detail","O"],["ostentatious","showy; designed to impress","O"],["pernicious","harmful in a subtle way","O"],["sagacious","wise; shrewd","O"],
+["tenacious","holding firmly; persistent","O"],["vivacious","lively and animated","O"],["voracious","having a huge appetite","O"],["zealous","full of eager enthusiasm","O"],
+["erroneous","wrong; incorrect","O"],["extraneous","irrelevant; not essential","O"],["spontaneous","happening without planning","O"],["courteous","polite and respectful","O"],
+["miscellaneous","of various kinds; mixed","O"],["homogeneous","of the same kind; uniform","O"],["dubious","doubtful; hesitating","O"],["ambiguous","open to more than one interpretation","O"],
+["pious","devoutly religious","O"],["impetuous","acting quickly without thought","O"],["fortuitous","happening by chance","O"],["frivolous","not serious; trivial","O"],["copious","abundant; plentiful","O"],
+["animosity","strong hostility","O"],["brevity","shortness; conciseness","O"],["candor","frankness; honesty","O"],["integrity","the quality of being honest and having strong moral principles","O"],["veracity","truthfulness","O"],
+["tenacity","persistence","O"],["austerity","sternness; strict economy","O"],["levity","lack of seriousness; humor","O"],["alacrity","brisk and cheerful readiness","O"],
+["benevolent","kind; well-meaning","O"],["candid","truthful and straightforward","O"],["diligent","hardworking; careful","O"],["eloquent","fluent and persuasive in speaking","O"],["frugal","economical; thrifty","O"],
+["haughty","arrogantly superior","O"],["lethargic","sluggish; lacking energy","O"],["mundane","ordinary; dull","O"],["nonchalant","casually calm","O"],["prudent","acting with care for the future","O"],
+["resilient","able to recover quickly","O"],["scrutinize","to examine closely","O"],["superfluous","more than needed","O"],["taciturn","reserved; saying little","O"],["ubiquitous","present everywhere","O"],
+["vindicate","to clear of blame","O"],["wary","cautious","O"],["abate","to lessen; reduce","O"],["benign","gentle; not harmful","O"],["cajole","to persuade by flattery","O"],
+["deter","to discourage from acting","O"],["enervate","to weaken","O"],["feasible","possible to do","O"],["garrulous","excessively talkative","O"],["hapless","unlucky","O"],["impede","to obstruct","O"],
+["jovial","cheerful and friendly","O"],["laconic","using very few words","O"],["mitigate","to make less severe","O"],["novice","a beginner","O"],["obsolete","no longer in use","O"],["placid","calm; not easily upset","O"],
+["quell","to put an end to; suppress","O"],["rescind","to cancel or revoke","O"],["sporadic","occurring at irregular intervals","O"],["timid","lacking courage","O"],["vigilant","watchful; alert","O"],["wane","to decrease gradually","O"]
+];
+var SYNANT = [
+// [word, synonym, antonym]
+["obstinate","stubborn","yielding"],["ephemeral","fleeting","permanent"],["loquacious","talkative","taciturn"],["indigent","poor","wealthy"],["tranquil","calm","agitated"],
+["recalcitrant","defiant","compliant"],["tyro","novice","expert"],["vilify","defame","praise"],["caprice","whim","constancy"],["cupidity","greed","generosity"],
+["abundant","plentiful","scarce"],["benevolent","kind","malevolent"],["candid","frank","evasive"],["diligent","industrious","lazy"],["frugal","thrifty","wasteful"],
+["haughty","arrogant","humble"],["lethargic","sluggish","energetic"],["prudent","cautious","reckless"],["timid","shy","bold"],["vigilant","alert","careless"],
+["ancient","old","modern"],["brave","courageous","cowardly"],["expand","enlarge","contract"],["victory","triumph","defeat"],["hostile","unfriendly","amicable"],
+["genuine","authentic","fake"],["abate","diminish","intensify"],["concur","agree","dissent"],["conceal","hide","reveal"],["mitigate","alleviate","aggravate"],
+["obsolete","outdated","current"],["sporadic","intermittent","constant"],["verbose","wordy","concise"],["wane","decline","wax"],["zealous","eager","apathetic"],
+["placid","serene","turbulent"],["feasible","possible","impractical"],["jovial","cheerful","morose"],["impede","hinder","facilitate"],["scarce","rare","plentiful"]
+];
+var ANALOGY = [
+["Pilot : Aircraft :: Captain : ?","Ship",["Sea","Anchor","Sailor"],"A pilot commands an aircraft; a captain commands a ship."],
+["Bird : Nest :: Bee : ?","Hive",["Honey","Flower","Wax"],"Home of the animal."],
+["Thermometer : Temperature :: Altimeter : ?","Altitude",["Speed","Pressure","Heading"],"Instrument : what it measures."],
+["Hand : Glove :: Foot : ?","Sock",["Toe","Leg","Heel"],"Covering worn on the body part."],
+["Hot : Cold :: Up : ?","Down",["High","Over","Top"],"Opposites."],
+["Author : Book :: Composer : ?","Symphony",["Piano","Orchestra","Singer"],"Creator : creation."],
+["Fish : School :: Wolf : ?","Pack",["Herd","Flock","Den"],"Animal : group name."],
+["Engine : Fuel :: Body : ?","Food",["Blood","Heart","Exercise"],"Thing : what powers it."],
+["Hour : Minute :: Minute : ?","Second",["Day","Clock","Time"],"Unit : next smaller unit."],
+["Wheel : Car :: Wing : ?","Airplane",["Feather","Sky","Wind"],"Part : whole."],
+["Obstinate : Stubborn :: Loquacious : ?","Talkative",["Quiet","Angry","Lazy"],"Synonyms."],
+["Ephemeral : Permanent :: Tyro : ?","Expert",["Beginner","Student","Soldier"],"Antonyms."],
+["Knife : Cut :: Pen : ?","Write",["Ink","Paper","Draw a line"],"Tool : function."],
+["Doctor : Hospital :: Teacher : ?","School",["Student","Book","Lesson"],"Worker : workplace."],
+["Kitten : Cat :: Puppy : ?","Dog",["Bark","Pet","Bone"],"Young : adult."],
+["Water : Thirst :: Food : ?","Hunger",["Eat","Kitchen","Taste"],"What satisfies : the need."],
+["Sun : Day :: Moon : ?","Night",["Star","Sky","Light"],"Associated time."],
+["Brake : Stop :: Throttle : ?","Accelerate",["Steer","Turn","Climb only"],"Control : effect."],
+["Rudder : Yaw :: Aileron : ?","Roll",["Pitch","Lift","Thrust"],"Control surface : motion axis."],
+["Elevator : Pitch :: Rudder : ?","Yaw",["Roll","Bank","Drag"],"Control surface : motion axis."],
+["2 : 8 :: 3 : ?","27",["9","12","18"],"Cube of the number."],
+["4 : 16 :: 7 : ?","49",["28","14","56"],"Square of the number."],
+["ACE : BDF :: GIK : ?","HJL",["HIJ","GHI","IKM"],"Each letter +1."],
+["Ear : Hear :: Eye : ?","See",["Blink","Look at","Tear"],"Organ : function."],
+["Painter : Brush :: Surgeon : ?","Scalpel",["Hospital","Patient","Nurse"],"Worker : tool."],
+["Drought : Rain :: Famine : ?","Food",["Hunger","Crops","Water"],"Shortage of."],
+["Island : Water :: Oasis : ?","Desert",["Palm","Sand dune","Camel"],"Surrounded by."],
+["Gear : Teeth :: Wheel : ?","Spokes",["Road","Axle grease","Tire pressure"],"Thing : its radiating parts."],
+["Piston : Cylinder :: Bullet : ?","Barrel",["Trigger","Gun powder","Target"],"Moves inside."],
+["Clockwise : Counterclockwise :: North : ?","South",["East","West","Up"],"Opposites."]
+];
+var RELATION = [
+["A is B's father. C is A's father. What is C to B?","Grandfather",["Father","Uncle","Brother"],"Father's father = grandfather."],
+["Pointing to a man, Ana says, \"He is the son of my mother's only son.\" How is the man related to Ana?","Nephew",["Son","Brother","Cousin"],"Mother's only son = Ana's brother; his son = Ana's nephew."],
+["X is the sister of Y. Y is the son of Z. Z is the wife of W. How is X related to W?","Daughter",["Sister","Niece","Mother"],"X is a child of Z (and W) and female."],
+["If P is Q's brother and Q is R's mother, what is P to R?","Uncle",["Father","Brother","Grandfather"],"Mother's brother = uncle."],
+["Ben's mother is the only daughter of Carlo's mother. How is Carlo related to Ben?","Uncle",["Father","Brother","Cousin"],"Carlo's mother's only daughter is Carlo's sister = Ben's mother, so Carlo is Ben's maternal uncle."],
+["A woman says, \"His mother is the only daughter of my mother.\" How is she related to him?","Mother",["Aunt","Sister","Grandmother"],"The only daughter of her mother is herself."],
+["M is the son of N. N is the daughter of O. What is O to M?","Grandparent",["Parent","Uncle","Sibling"],"Parent of parent."],
+["Leo is older than Mia. Mia is older than Nico. Who is youngest?","Nico",["Leo","Mia","Cannot be determined"],"Leo > Mia > Nico."],
+["Rita is taller than Sam but shorter than Tom. Who is tallest?","Tom",["Rita","Sam","Cannot be determined"],"Tom > Rita > Sam."],
+["All pilots are officers. Some officers are engineers. Which MUST be true?","All pilots are officers",["Some pilots are engineers","All engineers are officers","No pilot is an engineer"],"Only the given premise is certain."],
+["If all A are B and all B are C, then:","All A are C",["All C are A","Some C are not B","No A is C"],"Transitive syllogism."],
+["Ana is to the north of Ben. Carl is to the east of Ana. In which direction is Carl from Ben?","North-east",["South-east","North-west","East"],"Carl is north and east of Ben."],
+["Walking 3 km north then 4 km east, how far are you from the start?","5 km",["7 km","1 km","6 km"],"3-4-5 right triangle."],
+["Pedro faces north, turns 90° right, then 180°. Which way does he face?","West",["East","South","North"],"North → East → West."],
+["Paolo's father's sister's son is Paolo's:","Cousin",["Brother","Nephew","Uncle"],"Aunt's son = cousin."],
+["My father's only brother's wife is my:","Aunt",["Mother","Sister-in-law","Cousin"],"Uncle's wife."],
+["If D is the brother of E and E is the brother of F, how is F related to D?","Cannot be determined (sibling, gender unknown)",["Brother","Sister","Cousin"],"F's gender is not given."],
+["In a row, Joy is 7th from the left and 10th from the right. How many people are in the row?","16",["17","15","18"],"7 + 10 − 1 = 16."],
+["Kim ranks 5th from the top and 26th from the bottom in a class. How many students?","30",["31","29","32"],"5 + 26 − 1 = 30."],
+["Car is to Road as Airplane is to:","Air / sky",["Pilot","Airport","Wing"],"Medium of travel."]
+];
+var READING = [
+{p:"Meteorologists, the scientists who study weather, rely on a dense network of ground stations, weather balloons and satellites. Yet even with supercomputers, forecasts lose accuracy after about a week, because the atmosphere is a chaotic system: tiny errors in initial measurements grow rapidly over time. For this reason, forecasters increasingly issue probabilities rather than certainties, such as a 70 percent chance of rain.", src:"R",
+ qs:[["Why do forecasts lose accuracy after about a week?","Small measurement errors grow because the atmosphere is chaotic",["Supercomputers are too slow","There are too few satellites","Meteorologists ignore balloon data"]],
+     ["A meteorologist is best described as a scientist who:","Studies weather",["Studies earthquakes","Builds satellites","Designs computers"]],
+     ["Why do forecasters issue probabilities?","To reflect uncertainty in predictions",["To confuse the public","Because rain is random every day","Because ground stations are broken"]],
+     ["The word 'chaotic' in the passage most nearly means:","Highly sensitive and unpredictable",["Completely random noise","Peaceful","Well ordered"]]]},
+{p:"The vice president, though a member of the ruling coalition, publicly criticized several administration policies. Supporters praised her independence, arguing that constructive criticism strengthens democratic institutions. Opponents claimed her statements weakened the government's unity at a time when cooperation was needed. She replied that loyalty to the nation must come before loyalty to any political ally.", src:"R",
+ qs:[["What is the main idea of the passage?","A vice president criticized her own administration and defended doing so",["The vice president resigned","The coalition collapsed","Opponents praised her loyalty"]],
+     ["According to supporters, criticism:","Strengthens democratic institutions",["Weakens unity","Is disloyal","Should be private"]],
+     ["How did the vice president justify her criticism?","Loyalty to the nation comes before loyalty to allies",["She wanted to run for president","She was ordered to","She disliked the president personally"]],
+     ["The opponents' main concern was:","Loss of government unity",["Economic decline","Foreign affairs","Election fraud"]]]},
+{p:"In a democracy, the majority decides through elections, but the rights of minority groups must still be protected. Without such protections, a majority could use its numbers to silence those who disagree. Constitutions therefore guarantee freedoms such as speech and assembly to every citizen, regardless of whether their political group is large or small.", src:"R",
+ qs:[["According to the passage, why must minority rights be protected?","So the majority cannot silence those who disagree",["Because minorities win most elections","To stop elections","Because majorities are always wrong"]],
+     ["Which freedoms are mentioned?","Speech and assembly",["Religion and travel","Property and trade","Voting and taxation"]],
+     ["The author's attitude toward minority protections is:","Supportive",["Hostile","Indifferent","Sarcastic"]],
+     ["Best title for the passage:","Majority Rule and Minority Rights",["How to Win an Election","The History of Constitutions","Why Majorities Fail"]]]},
+{p:"Fatigue is one of the most underestimated hazards in aviation. A pilot who has been awake for 17 hours may perform as poorly as someone with a blood-alcohol level of 0.05 percent. Unlike alcohol, however, fatigue is difficult to measure, and tired pilots often fail to recognize their own impairment. Airlines now use fatigue-risk management systems that schedule rest based on sleep science.", src:"O",
+ qs:[["What makes fatigue especially dangerous according to the passage?","It is hard to measure and pilots may not notice it",["It is illegal","It only affects new pilots","It causes engine failure"]],
+     ["Being awake 17 hours is compared to:","A 0.05% blood-alcohol level",["A full night's sleep","Jet lag","Mild hunger"]],
+     ["Fatigue-risk management systems are based on:","Sleep science",["Fuel prices","Weather data","Passenger demand"]]]}
+];
+var MECH = [
+// [q, answer, distractors, explanation, src]
+["A device that converts heat directly into electricity using two dissimilar metals is a:","Thermocouple",["Transformer","Rheostat","Capacitor"],"Seebeck effect: a junction of two metals produces voltage with temperature difference.","R"],
+["A rattling/vibrating sound from a refrigerator's refrigerant lines is most commonly caused by:","Loose tubing or compressor mounts vibrating",["Too much ice cubes","A burnt light bulb","Closed door seal"],"Loose lines/mounts transmit compressor vibration.","R"],
+["Which gear type transmits power between intersecting shafts at 90°?","Bevel gear",["Spur gear","Rack and pinion","Planetary sun gear only"],"Bevel gears are cone-shaped for intersecting shafts.","R"],
+["Which gear arrangement gives a large speed reduction and is usually non-reversible?","Worm and worm wheel",["Spur gears","Helical gears","Idler gear"],"Worm drives give high ratios and often self-lock.","R"],
+["Which gear converts rotary motion to straight-line motion?","Rack and pinion",["Bevel gear","Worm gear","Herringbone gear"],"The pinion rotates; the rack translates.","R"],
+["Gears with teeth cut at an angle that run quieter than spur gears are:","Helical gears",["Bevel gears","Rack gears","Spur gears"],"Angled teeth engage gradually.","R"],
+["Brakes that squeeze pads against a rotor are:","Disc brakes",["Drum brakes","Band brakes","Engine brakes"],"Caliper squeezes pads on a disc.","R"],
+["Brakes in which shoes push outward against a rotating cylinder are:","Drum brakes",["Disc brakes","Regenerative brakes","Air brakes only"],"Shoes expand against the drum.","R"],
+["Large trucks commonly use which brake system?","Air brakes",["Hand brakes only","Bicycle caliper","Hydraulic jack"],"Compressed air actuates the brakes.","R"],
+["A bench vise is an example of:","Work-holding equipment",["Cutting tool","Measuring tool","Power transmission"],"Vises, chucks, and clamps hold the workpiece.","R"],
+["A lathe chuck is used to:","Hold and rotate the workpiece",["Measure diameter","Cut threads by itself","Cool the tool"],"Chucks are work-holding devices.","R"],
+["Hydraulic systems work on which principle?","Pascal's principle",["Bernoulli's principle only","Archimedes' principle","Newton's law of cooling"],"Pressure applied to a confined fluid is transmitted equally.","R"],
+["Hydraulic oil temperature should generally be kept below about:","82 °C (180 °F)",["150 °C (300 °F)","0 °C (32 °F)","250 °C (480 °F)"],"Above ~180 °F oil degrades and seals harden; typical ceiling 180 °F.","R"],
+["Viscosity is a fluid's:","Resistance to flow",["Density","Boiling point","Color"],"Thick fluids have high viscosity.","R"],
+["As engine oil gets hotter, its viscosity generally:","Decreases",["Increases","Stays the same","Becomes zero"],"Oil thins when heated.","R"],
+["You pedal a bicycle harder but it does not go faster. The most likely problem is:","The chain or freewheel is slipping",["The tires are too new","The seat is too high","The bell is broken"],"Power is not transmitted to the wheel.","R"],
+["The purpose of a carburetor is to:","Mix air and fuel in the correct ratio",["Ignite the fuel","Cool the engine","Charge the battery"],"Carburetor meters fuel into intake air.","R"],
+["A first-class lever has the fulcrum:","Between the effort and the load",["At one end, load in the middle","At one end, effort in the middle","Nowhere"],"Example: seesaw.","O"],
+["A wheelbarrow is a lever of which class?","Second class",["First class","Third class","Fourth class"],"Load is between fulcrum (wheel) and effort.","O"],
+["Two meshed gears always turn:","In opposite directions",["In the same direction","At the same speed always","Only clockwise"],"External meshing reverses direction.","O"],
+["An idler gear placed between two gears:","Makes both outer gears turn the same direction",["Changes the gear ratio","Stops rotation","Doubles speed"],"Idler reverses direction again without changing ratio.","O"],
+["A single fixed pulley gives a mechanical advantage of:","1 (changes direction only)",["2","4","0.5"],"Fixed pulley only redirects force.","O"],
+["A single movable pulley gives a mechanical advantage of:","2",["1","3","4"],"Two rope segments support the load.","O"],
+["Which is easier to push up: a long gentle ramp or a short steep ramp of the same height?","Long gentle ramp (less force, more distance)",["Short steep ramp","Both need same force","Neither"],"Inclined plane trades distance for force.","O"],
+["Water flows through a pipe that narrows. In the narrow section the speed:","Increases",["Decreases","Stays the same","Stops"],"Continuity: A1v1 = A2v2.","O"],
+["A gas is compressed quickly. Its temperature:","Rises",["Falls","Stays the same","Becomes absolute zero"],"Work done on gas raises its temperature (diesel principle).","O"],
+["Which material conducts heat best?","Copper",["Wood","Rubber","Glass"],"Metals, especially copper, conduct heat well.","O"],
+["A flywheel's main purpose is to:","Store rotational energy and smooth engine speed",["Cool the engine","Ignite fuel","Filter oil"],"Its inertia evens out power pulses.","O"]
+];
+var ENGINE_PARTS = [ // from reviewer, verbatim meanings
+["Piston","Moves up and down to catch the power of the explosion"],["Cylinder","The 'room' where the piston moves and fuel burns"],["Connecting rod","Links the piston to the crankshaft"],
+["Crankshaft","Converts up-and-down motion into rotation"],["Crankshaft sprocket","The small gear that drives the timing belt"],["Camshaft sprocket","The large gear that receives power to turn the cams"],
+["Toothed drive belt","Keeps the top and bottom of the engine in sync"],["Idler wheel","Keeps the belt tight and in the right place"],["Camshaft","The 'controller' that opens and closes the valves"],
+["Cam","The 'bump' that pushes the valves open"],["Bucket tappet","Protects the valve and transfers the cam's push"],["Valve spring","Pushes the valve back to the closed position"],["Valve","The 'door' for air to enter or exhaust to leave"]
+];
+var ENGINE = [
+["In a four-stroke engine, the crankshaft turns twice for every ___ turn(s) of the camshaft.","1",["2","4","1/2"],"Camshaft runs at half crankshaft speed (2:1).","R"],
+["The correct order of the four-stroke cycle is:","Intake, compression, power, exhaust",["Compression, intake, exhaust, power","Intake, power, compression, exhaust","Power, intake, exhaust, compression"],"Suck, squeeze, bang, blow.","R"],
+["A two-stroke engine completes a power cycle in how many crankshaft revolutions?","1",["2","4","1/2"],"Two strokes = one revolution.","R"],
+["A four-stroke engine completes a power cycle in how many crankshaft revolutions?","2",["1","4","3"],"Four strokes = two revolutions.","R"],
+["Two-stroke engines usually lubricate by:","Mixing oil with the fuel",["A separate oil sump only","Water cooling","Grease cups"],"Premix oil lubricates the crankcase.","R"],
+["Many four-cycle engines with overhead valves use two camshafts (DOHC) to:","Operate intake and exhaust valves separately",["Double the fuel","Replace the crankshaft","Drive the wheels"],"One cam for intake, one for exhaust.","R"],
+["In a gasoline engine, the fuel-air mixture is ignited by:","A spark plug",["Heat of compression only","The glow of the exhaust","The alternator"],"Diesels use compression ignition.","O"],
+["A diesel engine ignites fuel by:","Heat of compression",["A spark plug","A carburetor","A magneto spark"],"Air is compressed until hot enough to ignite fuel.","O"],
+["The radiator's job is to:","Remove heat from engine coolant",["Mix fuel and air","Store electricity","Filter exhaust"],"Heat exchanger to the air.","O"],
+["The device that produces electricity while the engine runs (car) is the:","Alternator",["Starter","Distributor cap","Muffler"],"Alternator charges the battery.","O"],
+["Piston engines in light aircraft commonly use which ignition source (independent of the battery)?","Magnetos",["Glow plugs","Alternator","Fuel pump"],"Dual magnetos give redundant spark.","O"],
+["The stroke where the burning gases push the piston down is the:","Power stroke",["Intake stroke","Compression stroke","Exhaust stroke"],"Combustion pressure drives the piston.","O"],
+["The muffler's purpose is to:","Reduce exhaust noise",["Increase compression","Cool oil","Mix fuel"],"Silences exhaust.","O"],
+["Engine knock (detonation) is usually caused by:","Fuel igniting too early/uncontrolled",["Too much oil","A flat tire","Low coolant color"],"Uncontrolled combustion; use correct octane.","O"]
+];
+</script><script>// Question generators. Item: {t,q,fig,ch,a,e,s,fixed}
+var TOPICS = {
+ cube:"Dice & cubes", top:"3D shape from above", clock:"Clock position", defect:"Defect in products",
+ vocab:"English vocabulary", synant:"Synonym / antonym", analogy:"Analogy", relation:"Relationship",
+ reading:"Reading comprehension", vector:"Vector math", drt:"DRT (dial reading)", arith:"Fast arithmetic",
+ word:"Math word problems", mech:"Mechanical comprehension", engine:"Basic engine info"
+};
+function R(a,b){return a+Math.floor(Math.random()*(b-a+1));}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function uniq(a){var o=[];a.forEach(function(x){if(o.indexOf(x)<0)o.push(x);});return o;}
+function mk(t,q,a,wrong,e,s,fig,fixed){var ch=uniq([String(a)].concat(wrong.map(String)));ch=ch.slice(0,4);if(fixed)ch.sort();return {t:t,q:q,a:String(a),ch:ch,e:e||"",s:s||"G",fig:fig||"",fixed:!!fixed};}
+function numWrong(ans,offs,cond){var out=[],tries=0;while(out.length<3&&tries<200){tries++;var d=ans+pick(offs)*(Math.random()<.5?-1:1);if(d!==ans&&out.indexOf(d)<0&&(!cond||cond(d)))out.push(d);}var k=1;while(out.length<3){var d=ans+k*(k%2?1:-1)*Math.ceil(k/2)*(offs[0]||1);k++;if(d!==ans&&out.indexOf(d)<0&&(!cond||cond(d)))out.push(d);if(k>60)break;}return out;}
+function svg(w,h,inner){return '<svg viewBox="0 0 '+w+' '+h+'" xmlns="http://www.w3.org/2000/svg" class="fig">'+inner+'</svg>';}
+function txt(x,y,s,sz,ex){return '<text x="'+x+'" y="'+y+'" font-size="'+(sz||14)+'" text-anchor="middle" dominant-baseline="central" font-family="Arial" '+(ex||'')+'>'+s+'</text>';}
+var LET="ABCDEFGHJKMNPRSTUVWXYZ";
+
+/* ---------- CUBES ---------- */
+// faces: 0U 1D 2F 3B 4L 5R
+var ROTS=(function(){var id=[0,1,2,3,4,5],seen={},q=[id],out=[];
+ function ap(s,m){return m.map(function(i){return s[i];});}
+ var rY=[0,1,5,4,2,3], rX=[2,3,1,0,4,5];
+ while(q.length){var s=q.shift(),k=s.join();if(seen[k])continue;seen[k]=1;out.push(s);q.push(ap(s,rY));q.push(ap(s,rX));}
+ return out;})();
+function perms(a){if(a.length<2)return [a];var r=[];a.forEach(function(x,i){perms(a.slice(0,i).concat(a.slice(i+1))).forEach(function(p){r.push([x].concat(p));});});return r;}
+var PERM6=perms([0,1,2,3,4,5]);
+function cubeSVG(top,front,right,x,y,s){
+ var h=s/2, p=function(a){return a.map(function(v){return v.join(',');}).join(' ');};
+ var T=[[x,y],[x+s,y-h],[x+2*s,y],[x+s,y+h]], F=[[x,y],[x+s,y+h],[x+s,y+h+s],[x,y+s]], Rt=[[x+s,y+h],[x+2*s,y],[x+2*s,y+s],[x+s,y+h+s]];
+ return '<polygon points="'+p(T)+'" fill="#fff" stroke="#000" stroke-width="2"/><polygon points="'+p(F)+'" fill="#eee" stroke="#000" stroke-width="2"/><polygon points="'+p(Rt)+'" fill="#ddd" stroke="#000" stroke-width="2"/>'+
+  txt(x+s,y,top,s*.45,'font-weight="bold"')+txt(x+s/2,y+h/2+s/2,front,s*.45,'font-weight="bold"')+txt(x+1.5*s,y+h/2+s/2,right,s*.45,'font-weight="bold"');
+}
+function genCubeViews(){
+ for(var att=0;att<50;att++){
+  var L=shuf(LET.split("")).slice(0,6);
+  var views=[];var rs=shuf(ROTS);
+  for(var i=0;i<rs.length&&views.length<3;i++){var o=rs[i].map(function(f){return L[f];});var v=[o[0],o[2],o[5]];
+    if(!views.some(function(w){return w.join()==v.join();}))views.push(v);}
+  // consistent labelings
+  var cons=PERM6.filter(function(pm){var lab=pm.map(function(i){return L[i];});
+    return views.every(function(v){return ROTS.some(function(r){return lab[r[0]]==v[0]&&lab[r[2]]==v[1]&&lab[r[5]]==v[2];});});});
+  var OPP=[1,0,3,2,5,4];
+  var cands=shuf(L).filter(function(x){var ans=null,ok=true;cons.forEach(function(pm){var lab=pm.map(function(i){return L[i];});var o=lab[OPP[lab.indexOf(x)]];if(ans===null)ans=o;else if(ans!==o)ok=false;});return ok;});
+  if(!cands.length)continue;
+  var x=cands[0];var lab0=cons[0].map(function(i){return L[i];});var ans=lab0[OPP[lab0.indexOf(x)]];
+  var f='';views.forEach(function(v,i){f+=cubeSVG(v[0],v[1],v[2],10+i*110,40,48)+txt(58+i*110,165,'('+(i+1)+')',13);});
+  var wrong=shuf(L.filter(function(y){return y!==x&&y!==ans;}));
+  return mk('cube','Three views of the SAME cube are shown. Which letter is opposite <b>'+x+'</b>?',ans,wrong,
+   'Faces adjacent to '+x+' in any view cannot be opposite it. Working through the views, only '+ans+' is never adjacent to '+x+' and fits all three views. (Reviewer tip: if two views share a letter, compare the faces around it.)','G',svg(340,180,f));
+ }
+ return genCubeNet();
+}
+var NETS=[ // cells [col,row]; opp pairs by index
+ {c:[[1,0],[0,1],[1,1],[2,1],[3,1],[1,2]],o:[[0,5],[1,3],[2,4]]},
+ {c:[[0,0],[0,1],[1,1],[2,1],[3,1],[3,2]],o:[[0,5],[1,3],[2,4]]},
+ {c:[[2,0],[0,1],[1,1],[2,1],[3,1],[0,2]],o:[[0,5],[1,3],[2,4]]},
+ {c:[[0,0],[1,0],[2,0],[2,1],[3,1],[4,1]],o:[[0,2],[3,5],[1,4]]},
+ {c:[[1,0],[0,1],[1,1],[2,1],[3,1],[2,2]],o:[[0,5],[1,3],[2,4]]}
+];
+function genCubeNet(){
+ var n=pick(NETS),L=shuf(LET.split("")).slice(0,6),s=40,f='';
+ n.c.forEach(function(c,i){f+='<rect x="'+(10+c[0]*s)+'" y="'+(10+c[1]*s)+'" width="'+s+'" height="'+s+'" fill="#fff" stroke="#000" stroke-width="2"/>'+txt(10+c[0]*s+s/2,10+c[1]*s+s/2,L[i],18,'font-weight="bold"');});
+ var pr=pick(n.o),k=R(0,1),x=L[pr[k]],ans=L[pr[1-k]];
+ var wrong=shuf(L.filter(function(y){return y!==x&&y!==ans;}));
+ return mk('cube','The net is folded into a cube. Which letter is opposite <b>'+x+'</b>?',ans,wrong,'In a straight row of squares, alternate squares are opposite each other (skip one). '+x+' and '+ans+' end up on opposite faces.','G',svg(230,140,f));
+}
+function genCube(){return Math.random()<.6?genCubeViews():genCubeNet();}
+
+/* ---------- TOP VIEW ---------- */
+function stackSVG(H){var s=34,d=16,ox=20,oy=150,f='';
+ for(var y=2;y>=0;y--)for(var x=0;x<3;x++)for(var z=0;z<H[y][x];z++){
+  var X=ox+x*s+y*d, Y=oy-z*s-y*d;
+  f+='<polygon points="'+X+','+Y+' '+(X+s)+','+Y+' '+(X+s)+','+(Y-s)+' '+X+','+(Y-s)+'" fill="#f4f4f4" stroke="#000" stroke-width="1.5"/>';
+  f+='<polygon points="'+X+','+(Y-s)+' '+(X+s)+','+(Y-s)+' '+(X+s+d)+','+(Y-s-d)+' '+(X+d)+','+(Y-s-d)+'" fill="#fff" stroke="#000" stroke-width="1.5"/>';
+  f+='<polygon points="'+(X+s)+','+Y+' '+(X+s+d)+','+(Y-d)+' '+(X+s+d)+','+(Y-s-d)+' '+(X+s)+','+(Y-s)+'" fill="#bbb" stroke="#000" stroke-width="1.5"/>';}
+ return svg(200,160,f+txt(70,157,'FRONT',10));}
+function gridSVG(G){var s=26,f='';for(var r=0;r<3;r++)for(var c=0;c<3;c++)f+='<rect x="'+(4+c*s)+'" y="'+(4+r*s)+'" width="'+s+'" height="'+s+'" fill="'+(G[r][c]?'#222':'#fff')+'" stroke="#999"/>';return svg(86,86,f);}
+function genTop(){
+ var H;do{H=[[0,0,0],[0,0,0],[0,0,0]];for(var x=0;x<3;x++){var h=0;for(var y=2;y>=0;y--){if(y==2)h=R(0,3);else h=Math.random()<.35?h:R(0,h);H[y][x]=h;}}
+ var tot=H[0].concat(H[1],H[2]).filter(Boolean).length;}while(tot<4||tot>8);
+ // top grid rows: back(y=2) on top
+ var G=[H[2].map(Boolean),H[1].map(Boolean),H[0].map(Boolean)];
+ var key=function(g){return g.map(function(r){return r.map(function(v){return v?1:0;}).join('');}).join('/');};
+ if(Math.random()<.35){var n=H[0].concat(H[1],H[2]).reduce(function(a,b){return a+b;},0);
+  return mk('top','How many cubes make up this figure? (Every stack rests on the floor; no cube is floating.)',n,numWrong(n,[1,2,3],function(d){return d>0;}),'Count column by column: back row '+H[2].join('+')+', middle '+H[1].join('+')+', front '+H[0].join('+')+' = '+n+'.','G',stackSVG(H));}
+ var cands=[], tr=[function(g){return g.map(function(r){return r.slice().reverse();});},function(g){return g.slice().reverse();},
+  function(g){return [0,1,2].map(function(r){return [0,1,2].map(function(c){return g[2-c][r];});});},
+  function(g){var h=g.map(function(r){return r.slice();});var r=R(0,2),c=R(0,2);h[r][c]=!h[r][c];return h;}];
+ var seen={};seen[key(G)]=1;var tries=0;
+ while(cands.length<3&&tries<100){tries++;var g=pick(tr)(G);if(!seen[key(g)]){seen[key(g)]=1;cands.push(g);}}
+ var opts=shuf([G].concat(cands)),labels=['A','B','C','D'],f='',ans;
+ opts.forEach(function(g,i){if(g===G)ans=labels[i];});
+ var row='<div class="optfigs">'+opts.map(function(g,i){return '<div><b>'+labels[i]+'</b>'+gridSVG(g)+'</div>';}).join('')+'</div>';
+ return mk('top','Which is the TOP VIEW of the figure? (Top of each option = back of the figure; dark = covered by a cube.)',ans,labels.filter(function(l){return l!==ans;}),
+   'Looking straight down, every column with at least one cube appears as one dark square; heights do not matter. Option '+ans+' matches the footprint.','G',stackSVG(H)+row,true);
+}
+
+/* ---------- CLOCK ---------- */
+function clockSVG(h,label){var f='<circle cx="80" cy="80" r="70" fill="#fff" stroke="#000" stroke-width="3"/>';
+ for(var i=1;i<=12;i++){var a=i*Math.PI/6;f+=txt(80+57*Math.sin(a),80-57*Math.cos(a),i,14);}
+ var a=h*Math.PI/6;f+='<line x1="80" y1="80" x2="'+(80+45*Math.sin(a))+'" y2="'+(80-45*Math.cos(a))+'" stroke="#c00" stroke-width="5" stroke-linecap="round"/><circle cx="80" cy="80" r="5"/>';
+ return svg(160,160,f);}
+function hr(n){n=((n%12)+12)%12;return n===0?12:n;}
+function genClock(){
+ if(Math.random()<.65){var h=R(1,12),k=R(1,2),tot=0,ins=[];
+  for(var i=0;i<k;i++){var deg=pick([30,60,90,120,150,180,270]),cw=Math.random()<.5;tot+=(cw?1:-1)*deg/30;ins.push(deg+'° '+(cw?'clockwise':'counterclockwise'));}
+  var ans=hr(h+tot);
+  return mk('clock','The pointer points at '+h+'. Rotate it '+ins.join(', then ')+'. Where does it point now?',ans,shuf([1,2,3,4,5,6,7,8,9,10,11,12].filter(function(x){return x!==ans;})).slice(0,3),
+   'Each hour mark is 30°. Net movement = '+(tot>=0?'+':'')+tot+' hours from '+h+' → '+ans+'.','G',clockSVG(h));}
+ var p=R(1,12),deg=pick([30,60,90,120,180,270]),right=Math.random()<.5,ans=hr(p+(right?-1:1)*deg/30);
+ return mk('clock','An aircraft is at your '+p+' o\'clock. You turn '+(right?'RIGHT':'LEFT')+' '+deg+'° (it stays put). At what o\'clock position is it now?',ans+" o'clock",shuf([1,2,3,4,5,6,7,8,9,10,11,12].filter(function(x){return x!==ans;})).slice(0,3).map(function(x){return x+" o'clock";}),
+  'Turning '+(right?'right':'left')+' '+deg+'° shifts every object '+(deg/30)+' hour(s) '+(right?'counterclockwise':'clockwise')+' relative to you: '+p+' → '+ans+'.','G',clockSVG(p));
+}
+
+/* ---------- DEFECTS ---------- */
+var OBJ={
+ car:[['body','<path d="M10 60 L25 40 L45 30 L85 30 L100 45 L115 50 L115 65 L10 65 Z" fill="#fff" stroke="#000" stroke-width="2"/>',0],['wheel1','<circle cx="32" cy="66" r="10" fill="#000"/>',1],['wheel2','<circle cx="92" cy="66" r="10" fill="#000"/>',1],['win1','<rect x="48" y="35" width="16" height="12" fill="#000"/>',1],['win2','<rect x="68" y="35" width="16" height="12" fill="#000"/>',1],['lamp','<rect x="108" y="52" width="6" height="5" fill="#000"/>',1],['door','<line x1="66" y1="35" x2="66" y2="64" stroke="#000" stroke-width="2"/>',1]],
+ shoe:[['sole','<rect x="10" y="62" width="105" height="8" fill="#000"/>',0],['upper','<path d="M15 62 L15 30 L45 30 L60 45 L110 52 L115 62 Z" fill="#fff" stroke="#000" stroke-width="2"/>',0],['lace1','<line x1="45" y1="36" x2="55" y2="32" stroke="#000" stroke-width="2"/>',1],['lace2','<line x1="51" y1="42" x2="61" y2="38" stroke="#000" stroke-width="2"/>',1],['lace3','<line x1="57" y1="48" x2="67" y2="44" stroke="#000" stroke-width="2"/>',1],['heel','<rect x="12" y="66" width="20" height="10" fill="#000"/>',1],['stripe','<line x1="20" y1="40" x2="40" y2="58" stroke="#000" stroke-width="3"/>',1]],
+ vase:[['body','<path d="M45 10 L75 10 L72 25 Q100 45 80 75 L40 75 Q20 45 48 25 Z" fill="#fff" stroke="#000" stroke-width="2"/>',0],['h1','<path d="M47 22 Q30 22 36 40" fill="none" stroke="#000" stroke-width="3"/>',1],['h2','<path d="M73 22 Q90 22 84 40" fill="none" stroke="#000" stroke-width="3"/>',1],['band','<rect x="32" y="45" width="56" height="6" fill="#000"/>',1],['dot1','<circle cx="50" cy="62" r="3" fill="#000"/>',1],['dot2','<circle cx="70" cy="62" r="3" fill="#000"/>',1]],
+ lamp:[['base','<rect x="40" y="70" width="40" height="6" fill="#000"/>',1],['pole','<rect x="58" y="35" width="4" height="35" fill="#000"/>',0],['shade','<path d="M40 10 L80 10 L92 35 L28 35 Z" fill="#fff" stroke="#000" stroke-width="2"/>',0],['trim','<line x1="30" y1="31" x2="90" y2="31" stroke="#000" stroke-width="2"/>',1],['cord','<path d="M80 73 Q100 73 105 60" fill="none" stroke="#000" stroke-width="2"/>',1],['switch','<rect x="62" y="50" width="6" height="4" fill="#000"/>',1]],
+ mug:[['cup','<rect x="30" y="20" width="50" height="55" fill="#fff" stroke="#000" stroke-width="2"/>',0],['handle','<path d="M80 32 Q100 32 100 47 Q100 62 80 62" fill="none" stroke="#000" stroke-width="4"/>',1],['rim','<line x1="30" y1="26" x2="80" y2="26" stroke="#000" stroke-width="2"/>',1],['logo','<polygon points="55,40 63,55 47,55" fill="#000"/>',1],['steam','<path d="M50 15 Q45 8 52 2" fill="none" stroke="#000" stroke-width="2"/>',1]]
+};
+function genDefect(){var name=pick(Object.keys(OBJ)),parts=OBJ[name],rem=parts.filter(function(p){return p[2];}),bad=pick(rem),di=R(0,3),L=['A','B','C','D'],f='<div class="optfigs">';
+ for(var i=0;i<4;i++){var inner='';parts.forEach(function(p){if(i===di&&p===bad)return;inner+=p[1];});f+='<div><b>'+L[i]+'</b>'+svg(125,80,inner)+'</div>';}
+ return mk('defect','Which '+name+' is DEFECTIVE (different from the others)?',L[di],L.filter(function(x){return x!==L[di];}),'Figure '+L[di]+' is missing a part ('+bad[0].replace(/\d/,'')+'). Scan the same feature across all figures in turn.','G',f+'</div>',true);}
+
+/* ---------- VOCAB / SYN-ANT ---------- */
+function genVocab(){var w=pick(VOCAB),others=shuf(VOCAB.filter(function(x){return x!==w;})).slice(0,3);
+ if(Math.random()<.75)return mk('vocab','<b>'+w[0].toUpperCase()+'</b> most nearly means:',w[1],others.map(function(o){return o[1];}),w[0]+' = '+w[1]+'.',w[2]=='R'?'R':'O');
+ return mk('vocab','Which word means "<i>'+w[1]+'</i>"?',w[0],others.map(function(o){return o[0];}),w[0]+' = '+w[1]+'.',w[2]=='R'?'R':'O');}
+var SAGROUP={loquacious:1,verbose:1,tranquil:2,placid:2,obstinate:3,recalcitrant:3,timid:4,brave:4,haughty:4,lethargic:5,diligent:5,zealous:5,abundant:6,scarce:6,prudent:7,vigilant:7,abate:8,wane:8,mitigate:8,expand:8,jovial:9,benevolent:9,hostile:9,ancient:10,obsolete:10,candid:11,conceal:11,cupidity:12,frugal:12,indigent:12,sporadic:13,caprice:13,ephemeral:13,vilify:14,concur:14};
+function grp(w){return SAGROUP[w[0]]||w[0];}
+var REVSA=['obstinate','ephemeral','loquacious','indigent','tranquil','recalcitrant','tyro','vilify','caprice','cupidity'];
+function genSynAnt(){var w=pick(SYNANT),syn=Math.random()<.5,pool=shuf(SYNANT.filter(function(x){return grp(x)!==grp(w);})).slice(0,3);
+ var ans=syn?w[1]:w[2],wrong=pool.map(function(o){return syn?o[2]:o[1];});
+ return mk('synant',(syn?'SYNONYM':'ANTONYM')+' of <b>'+w[0].toUpperCase()+'</b>:',ans,wrong,w[0]+': synonym '+w[1]+', antonym '+w[2]+'.',REVSA.indexOf(w[0])>=0?'R':'O');}
+
+/* ---------- VECTORS ---------- */
+function arrow(x1,y1,x2,y2,c,l){var a=Math.atan2(y2-y1,x2-x1),h=10;return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+c+'" stroke-width="3"/><polygon points="'+x2+','+y2+' '+(x2-h*Math.cos(a-.4))+','+(y2-h*Math.sin(a-.4))+' '+(x2-h*Math.cos(a+.4))+','+(y2-h*Math.sin(a+.4))+'" fill="'+c+'"/>'+(l?txt((x1+x2)/2+(y1==y2?0:14),(y1+y2)/2+(y1==y2?-10:0),l,12,'fill="'+c+'"'):'');}
+var TRIP=[[3,4,5],[5,12,13],[6,8,10],[8,15,17],[9,12,15],[7,24,25],[12,16,20],[20,21,29]];
+function genVector(){var k=R(1,5);
+ switch(R(0,4)){
+ case 0:var t=pick(TRIP),m=pick([1,2,5,10]),a=t[0]*m,b=t[1]*m,c=t[2]*m;
+  return mk('vector','A force of '+a+' N acts east and '+b+' N acts north on the same point. Magnitude of the resultant?',c+' N',[(a+b)+' N',Math.abs(b-a)+' N',(c+m)+' N'],'Perpendicular: √('+a+'² + '+b+'²) = '+c+' N.','G',svg(160,130,arrow(20,110,140,110,'#000',a+' N')+arrow(20,110,20,15,'#000',b+' N')+arrow(20,110,140,15,'#c00','R')));
+ case 1:var x1=R(-9,9),y1=R(-9,9),x2=R(-9,9),y2=R(-9,9),sx=x1+x2,sy=y1+y2,ans='('+sx+', '+sy+')';
+  return mk('vector','A = ('+x1+', '+y1+'), B = ('+x2+', '+y2+'). A + B = ?',ans,['('+(x1-x2)+', '+(y1-y2)+')','('+(sx+1)+', '+sy+')','('+sx+', '+(sy-2)+')','('+sy+', '+sx+')'].filter(function(s){return s!==ans;}),'Add component by component.');
+ case 2:var e=R(20,90),w=R(10,80);if(e===w)e++;var res=Math.abs(e-w),dir=e>w?'east':'west';
+  return mk('vector',e+' N pulls east and '+w+' N pulls west on a crate. Net force?',res+' N '+dir,[(e+w)+' N '+dir,res+' N '+(dir=='east'?'west':'east'),(e+w)+' N '+(dir=='east'?'west':'east')],'Opposite forces subtract; the larger wins.','G',svg(200,60,arrow(100,30,190,30,'#000',e+' N')+arrow(100,30,10,30,'#000',w+' N')+'<rect x="90" y="20" width="20" height="20" fill="#888"/>'));
+ case 3:var t=pick(TRIP),m=pick([10,20]),v=t[1]*m,w=t[0]*m,g=t[2]*m;
+  return mk('vector','An aircraft flies due north at '+v+' km/h airspeed with a '+w+' km/h wind blowing toward the east. Ground speed?',g+' km/h',[(v+w)+' km/h',(v-w)+' km/h',v+' km/h'],'Perpendicular velocities: √('+v+'² + '+w+'²) = '+g+' km/h.');
+ default:var t=pick(TRIP),m=pick([1,2,3]),x=t[0]*m*(Math.random()<.5?-1:1),y=t[1]*m*(Math.random()<.5?-1:1);
+  return mk('vector','What is the magnitude of vector ('+x+', '+y+')?',t[2]*m,[Math.abs(x)+Math.abs(y),t[2]*m+1,Math.abs(Math.abs(x)-Math.abs(y))||t[2]*m+2],'|v| = √(x² + y²) = '+t[2]*m+'.');
+ }}
+
+/* ---------- DRT dial reading ---------- */
+function gauge(val,max,step,lab,needle){var f='<circle cx="90" cy="90" r="80" fill="#111"/>',sw=270,st=-135;
+ for(var v=0;v<=max;v+=step/2){var a=(st+sw*v/max)*Math.PI/180,maj=(v%step===0),r1=maj?62:68;f+='<line x1="'+(90+r1*Math.sin(a))+'" y1="'+(90-r1*Math.cos(a))+'" x2="'+(90+74*Math.sin(a))+'" y2="'+(90-74*Math.cos(a))+'" stroke="#fff" stroke-width="'+(maj?2.5:1)+'"/>';if(maj)f+=txt(90+50*Math.sin(a),90-50*Math.cos(a),v,11,'fill="#fff"');}
+ var a=(st+sw*val/max)*Math.PI/180;f+='<line x1="90" y1="90" x2="'+(90+64*Math.sin(a))+'" y2="'+(90-64*Math.cos(a))+'" stroke="#ff0" stroke-width="3"/><circle cx="90" cy="90" r="5" fill="#ff0"/>'+txt(90,128,lab,10,'fill="#fff"');return svg(180,180,f);}
+function alti(ft){var f='<circle cx="90" cy="90" r="80" fill="#111"/>';for(var i=0;i<10;i++){var a=i*Math.PI/5;f+=txt(90+62*Math.sin(a),90-62*Math.cos(a),i,15,'fill="#fff"');for(var j=0;j<5;j++){var b=a+j*Math.PI/25;f+='<line x1="'+(90+72*Math.sin(b))+'" y1="'+(90-72*Math.cos(b))+'" x2="'+(90+78*Math.sin(b))+'" y2="'+(90-78*Math.cos(b))+'" stroke="#fff"/>';}}
+ var ah=(ft%1000)/1000*2*Math.PI,at=(ft/10000)*2*Math.PI;
+ f+='<line x1="90" y1="90" x2="'+(90+36*Math.sin(at))+'" y2="'+(90-36*Math.cos(at))+'" stroke="#fff" stroke-width="7" stroke-linecap="round"/><line x1="90" y1="90" x2="'+(90+70*Math.sin(ah))+'" y2="'+(90-70*Math.cos(ah))+'" stroke="#fff" stroke-width="3"/><circle cx="90" cy="90" r="5" fill="#fff"/>'+txt(90,120,'ALT ft',10,'fill="#aaa"');return svg(180,180,f);}
+function genDRT(){switch(R(0,3)){
+ case 0:var max=pick([100,160,200,240]),step=max/(max==160?8:max==240?6:5)*1,mi=step/2,v=R(0,max/mi)*mi;
+  return mk('drt','Read the instrument (knots):',v,numWrong(v,[mi,step,mi*3],function(d){return d>=0&&d<=max;}),'Major marks every '+step+', minor every '+mi+'. Needle is at '+v+'.','G',gauge(v,max,step,'KNOTS'));
+ case 1:var ft=R(1,95)*100;
+  return mk('drt','Read the altimeter. Long needle = hundreds, short thick needle = thousands.',ft+' ft',numWrong(ft,[1000,100,200,900],function(d){return d>0&&d<10000;}).map(function(d){return d+' ft';}),'Short needle between '+Math.floor(ft/1000)+' and '+(Math.floor(ft/1000)+1)+' → '+Math.floor(ft/1000)+',000; long needle on '+((ft%1000)/100)+' → '+(ft%1000)+'. Total '+ft+' ft.','G',alti(ft));
+ case 2:var v=R(0,8),names=['E','1/8','1/4','3/8','1/2','5/8','3/4','7/8','F'],f='<path d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="#000" stroke-width="3"/>';
+  for(var i=0;i<=8;i++){var a=(-90+i*22.5)*Math.PI/180;f+='<line x1="'+(100+70*Math.sin(a))+'" y1="'+(100-70*Math.cos(a))+'" x2="'+(100+80*Math.sin(a))+'" y2="'+(100-80*Math.cos(a))+'" stroke="#000" stroke-width="'+(i%2?1:3)+'"/>';if(i%4==0)f+=txt(100+92*Math.sin(a),100-92*Math.cos(a)+4,['E','1/2','F'][i/4],12);}
+  var a=(-90+v*22.5)*Math.PI/180;f+='<line x1="100" y1="100" x2="'+(100+68*Math.sin(a))+'" y2="'+(100-68*Math.cos(a))+'" stroke="#c00" stroke-width="4"/>';
+  return mk('drt','The fuel tank holds 80 L. How much fuel remains?',(v*10)+' L',numWrong(v*10,[10,20,30],function(d){return d>=0&&d<=80;}).map(function(d){return d+' L';}),'Needle at '+names[v]+' of 80 L = '+(v*10)+' L. Each small mark = 1/8 tank = 10 L.','G',svg(200,115,f));
+ default:var h=R(0,35)*10,f='<circle cx="90" cy="90" r="80" fill="#fff" stroke="#000" stroke-width="3"/>';
+  for(var d=0;d<360;d+=10){var a=d*Math.PI/180;f+='<line x1="'+(90+(d%30?70:64)*Math.sin(a))+'" y1="'+(90-(d%30?70:64)*Math.cos(a))+'" x2="'+(90+78*Math.sin(a))+'" y2="'+(90-78*Math.cos(a))+'" stroke="#000"/>';if(d%90==0)f+=txt(90+52*Math.sin(a),90-52*Math.cos(a),'NESW'[d/90],15,'font-weight="bold"');else if(d%30==0)f+=txt(90+52*Math.sin(a),90-52*Math.cos(a),d/10,11);}
+  var a=h*Math.PI/180;f+=arrow(90,90,90+66*Math.sin(a),90-66*Math.cos(a),'#c00');
+  var fmt=function(x){x=((x%360)+360)%360;return ('00'+x).slice(-3)+'°';};
+  return mk('drt','What heading does the arrow show? (Numbers = tens of degrees; N=0, E=90, S=180, W=270.)',fmt(h),shuf(uniq([h+10,h-10,h+20,h-30,h+180,h+90,h-90].map(fmt))).slice(0,3),'Count marks (10° each) from the nearest labelled one: '+fmt(h)+'.','G',svg(180,180,f));
+}}
+
+/* ---------- ARITHMETIC ---------- */
+function genArith(){var a,b,c,q,ans;switch(R(0,5)){
+ case 0:a=R(12,99);b=R(12,99);c=R(11,79);q=a+' + '+b+' − '+c;ans=a+b-c;break;
+ case 1:a=R(100,999);b=R(100,999);q=a+' + '+b;ans=a+b;break;
+ case 2:a=R(200,999);b=R(100,a);q=a+' − '+b;ans=a-b;break;
+ case 3:a=R(6,25);b=R(3,19);q=a+' × '+b;ans=a*b;break;
+ case 4:b=R(3,15);ans=R(4,25);a=b*ans;q=a+' ÷ '+b;break;
+ default:a=R(20,90);b=R(10,60);c=R(10,60);var d=R(5,40);q=a+' − '+b+' + '+c+' − '+d;ans=a-b+c-d;}
+ return mk('arith',q+' = ?',ans,numWrong(ans,[1,2,10,11,9]),q+' = '+ans+'.');}
+
+/* ---------- WORD PROBLEMS ---------- */
+var PAIRS=[[3,6,2],[4,12,3],[6,12,4],[10,15,6],[12,24,8],[20,30,12],[15,30,10],[24,40,15],[6,30,5],[12,36,9],[20,60,15],[30,60,20],[18,36,12],[8,24,6],[9,18,6],[12,60,10]];
+function genWord(){var u=pick(['hours','minutes','days']);switch(R(0,7)){
+ case 0:var p=pick(PAIRS);return mk('word','Ana can finish a job in '+p[0]+' '+u+'; Ben can finish it in '+p[1]+' '+u+'. Working together, how long will it take?',p[2]+' '+u,numWrong(p[2],[1,2,3],function(d){return d>0;}).map(function(d){return d+' '+u;}),'Product over sum: ('+p[0]+'×'+p[1]+')/('+p[0]+'+'+p[1]+') = '+p[2]+'.');
+ case 1:var p=pick(PAIRS);return mk('word','Two workers together finish a job in '+p[2]+' '+u+'. One of them alone takes '+p[1]+' '+u+'. How long would the other take alone?',p[0]+' '+u,numWrong(p[0],[1,2,4,p[2]],function(d){return d>0&&d!==p[1];}).map(function(d){return d+' '+u;}),'1/'+p[2]+' − 1/'+p[1]+' = 1/'+p[0]+'.');
+ case 2:var IO=[[3,6,6],[4,12,6],[6,12,12],[2,3,6],[10,15,30],[12,20,30],[8,24,12],[4,6,12],[5,20,20/3*0+0]];var p=pick(IO.slice(0,8));
+  return mk('word','A pipe fills a tank in '+p[0]+' hours, but a leak empties the full tank in '+p[1]+' hours. With both open, how long to fill the empty tank?',p[2]+' hours',numWrong(p[2],[1,2,3,4],function(d){return d>0;}).map(function(d){return d+' hours';}),'1/'+p[0]+' − 1/'+p[1]+' = 1/'+p[2]+'. Drain is a negative rate.');
+ case 3:for(;;){var a=R(4,20),b=R(3,20),h=R(1,a-1),t=(a-h)*b/(a+b);if(t===Math.floor(t)&&t>0)break;}
+  return mk('word','A can do a job in '+a+' hours and B in '+b+' hours. A works alone for '+h+' hours, then B joins. How many MORE hours to finish?',t+' hours',numWrong(t,[1,2,3],function(d){return d>0;}).map(function(d){return d+' hours';}),'Remaining work = 1 − '+h+'/'+a+' = '+(a-h)+'/'+a+'. Together rate = 1/'+a+' + 1/'+b+'. Time = '+(a-h)+'·'+b+'/('+a+'+'+b+') = '+t+'.');
+ case 4:var T3=pick([[2,3,6,1],[4,6,12,2],[6,10,15,3],[10,15,30,5],[12,20,30,6],[3,6,6,1.5]]),k=pick([1,2,4]);var x=T3.map(function(v){return v*k;});
+  return mk('word','A, B and C can each finish a task in '+x[0]+', '+x[1]+' and '+x[2]+' hours. Working together, how long?',x[3]+' hours',numWrong(x[3],[1,2,k],function(d){return d>0;}).map(function(d){return d+' hours';}),'Add rates: 1/'+x[0]+' + 1/'+x[1]+' + 1/'+x[2]+' = 1/'+x[3]+'. Product-over-sum does NOT work for three.');
+ case 5:for(;;){var k=R(3,5),m=R(2,k-1),n=R(2,20),num=(m-1)*n,den=k-m;if(num%den===0&&num/den>=2)break;}var s=num/den;
+  return mk('word','A father is '+k+' times as old as his son. In '+n+' years he will be '+m+' times as old as his son. How old is the son now?',s,numWrong(s,[1,2,3,n],function(d){return d>0;}),k+'s + '+n+' = '+m+'(s + '+n+') → s = '+s+'.');
+ case 6:var T=R(2,10)*16,go=T/4,back=go*1.25,tot=go+back;
+  return mk('word','A plane\'s tank holds '+T+' L. The outbound leg uses 1/4 of the tank; the return uses 25% more fuel than the outbound leg. How much fuel is used in total?',tot+' L',[go*2+' L',(T*5/8)+' L',back+' L',(T*3/4)+' L'].filter(function(x){return x!==tot+' L';}),'Out = '+go+' L; back = 1.25×'+go+' = '+back+' L; total '+tot+' L.');
+ default:var pts='ABCDEF',segs=[];for(var i=0;i<5;i++)segs.push(R(2,15));var i=R(0,3),j=R(i+2,5),d=0;for(var k2=i;k2<j;k2++)d+=segs[k2];
+  var f='<line x1="10" y1="40" x2="370" y2="40" stroke="#000" stroke-width="2"/>',x=10,tot=segs.reduce(function(a,b){return a+b;},0);
+  for(var p=0;p<6;p++){f+='<circle cx="'+x+'" cy="40" r="4"/>'+txt(x,20,pts[p],14,'font-weight="bold"');if(p<5){f+=txt(x+segs[p]/tot*180,58,segs[p],12);x+=segs[p]/tot*360;}}
+  return mk('word','Points A–F lie on a straight road; distances between neighbours are shown (km). How far is '+pts[i]+' from '+pts[j]+'?',d+' km',numWrong(d,[1,2,segs[i],segs[j-1]],function(x){return x>0;}).map(function(x){return x+' km';}),'Add the segments from '+pts[i]+' to '+pts[j]+': '+segs.slice(i,j).join(' + ')+' = '+d+'.','G',svg(380,70,f));
+}}
+
+/* ---------- MECHANICAL generated ---------- */
+function genMechCalc(){switch(R(0,3)){
+ case 0:for(;;){var t1=R(2,12)*5,t2=R(2,12)*5,r=R(2,30)*10,o=r*t1/t2;if(o===Math.floor(o)&&t1!==t2)break;}
+  return mk('mech','A '+t1+'-tooth gear turning at '+r+' rpm drives a '+t2+'-tooth gear. Speed of the driven gear?',o+' rpm',uniq([r*t2/t1,r,o*2,o+10,o*3]).filter(function(x){return x!==o;}).map(function(x){return (Math.round(x*10)/10)+' rpm';}),'rpm × teeth is constant: '+r+'×'+t1+'/'+t2+' = '+o+'.');
+ case 1:var n=R(2,7),cw=Math.random()<.5,last=(n%2===1)==cw?'Clockwise':'Counterclockwise';
+  return mk('mech','In a chain of '+n+' meshed gears in a line, gear 1 turns '+(cw?'clockwise':'counterclockwise')+'. Gear '+n+' turns:',last,[last=='Clockwise'?'Counterclockwise':'Clockwise','It does not turn','Alternates back and forth'],'Each mesh reverses direction: odd-numbered gears match gear 1.');
+ case 2:var L=R(2,20)*10,la=R(1,4),ea=la*R(2,5),e=L*la/ea;
+  return mk('mech','A lever lifts a '+L+' N load placed '+la+' m from the fulcrum. Effort is applied '+ea+' m from the fulcrum. Effort needed?',e+' N',numWrong(e,[e,5,10,L/2],function(d){return d>0;}).map(function(d){return d+' N';}),'Load × load arm = effort × effort arm → '+L+'×'+la+'/'+ea+' = '+e+' N.');
+ default:var n=R(2,6),W=n*R(5,40);
+  return mk('mech','A load of '+W+' N hangs from a pulley system with '+n+' rope segments supporting the movable block. Ideal effort needed?',(W/n)+' N',numWrong(W/n,[W/n,5,10],function(d){return d>0;}).map(function(d){return d+' N';}),'Ideal MA = number of supporting strands = '+n+'. '+W+'/'+n+' = '+(W/n)+' N.');
+}}
+
+/* ---------- STATIC → items ---------- */
+function staticItems(){var out=[];
+ ANALOGY.forEach(function(a){out.push(mk('analogy',a[0],a[1],a[2],a[3],'O'));});
+ RELATION.forEach(function(a){out.push(mk('relation',a[0],a[1],a[2],a[3],'O'));});
+ MECH.forEach(function(a){out.push(mk('mech',a[0],a[1],a[2],a[3],a[4]));});
+ ENGINE.forEach(function(a){out.push(mk('engine',a[0],a[1],a[2],a[3],a[4]));});
+ ENGINE_PARTS.forEach(function(p){var o=shuf(ENGINE_PARTS.filter(function(x){return x!==p;})).slice(0,3);
+  out.push(mk('engine','Engine part: <b>'+p[0]+'</b>. What does it do?',p[1],o.map(function(x){return x[1];}),p[0]+': '+p[1]+'.','R'));
+  out.push(mk('engine','Which engine part: "'+p[1]+'"?',p[0],o.map(function(x){return x[0];}),p[0]+': '+p[1]+'.','R'));});
+ READING.forEach(function(r){r.qs.forEach(function(q){out.push(mk('reading','<div class="passage">'+r.p+'</div>'+q[0],q[1],q[2],'See passage.',r.src));});});
+ out.push(mk('word','Two men working together finish a job in 24 minutes. One of them alone can do it in 40 minutes. How long would the other take alone?','60 minutes',['16 minutes','64 minutes','48 minutes'],'1/24 − 1/40 = (5−3)/120 = 1/60 → 60 min. (Reviewer item.)','R'));
+ out.push(mk('vocab','<b>OBSTINATE</b> most nearly means:','Stubborn',['Obvious','Generous','Fragile'],'Obstinate = stubbornly refusing to change.','R'));
+ return out;}
+var GENS={cube:genCube,top:genTop,clock:genClock,defect:genDefect,vocab:genVocab,synant:genSynAnt,vector:genVector,drt:genDRT,arith:genArith,word:genWord,mech:genMechCalc};
+</script><script>var MEM={};var LS={get:function(k){try{return LS.get(k);}catch(e){return MEM[k]||null;}},set:function(k,v){try{LS.set(k,v);}catch(e){MEM[k]=v;}}};
+var STATIC=staticItems(),S=null,TICK=null;
+var $=function(id){return document.getElementById(id);};
+function deckFor(topic){return shuf(STATIC.filter(function(x){return !topic||x.t===topic;}));}
+function nextItem(){var t=S.topic;
+ if(!t){var keys=Object.keys(TOPICS);t=pick(keys);}
+ var hasGen=!!GENS[t],st=S.decks[t]||(S.decks[t]=deckFor(t));
+ var it;if(hasGen&&(!st.length||Math.random()<.7))it=GENS[t]();else{if(!st.length)st=S.decks[t]=deckFor(t);it=st.pop();}
+ it=JSON.parse(JSON.stringify(it));if(!it.fixed)it.ch=shuf(it.ch);return it;}
+function start(mode,topic){var secs=mode==='10'?600:300;S={mode:mode,topic:topic||null,decks:{},log:[],end:Date.now()+secs*1000,secs:secs};
+ show('quiz');ask();clearInterval(TICK);TICK=setInterval(tick,250);tick();}
+function tick(){var r=Math.max(0,Math.round((S.end-Date.now())/1000));$('timer').textContent=Math.floor(r/60)+':'+('0'+r%60).slice(-2);$('timer').className=r<=30?'low':'';if(r<=0)finish();}
+function ask(){var it=S.cur=nextItem();S.sel=null;$('qnum').textContent='Q'+(S.log.length+1)+' · '+TOPICS[it.t];
+ $('qtext').innerHTML=it.q;$('qfig').innerHTML=it.fig;
+ $('choices').innerHTML=it.ch.map(function(c,i){return '<button class="ch" data-i="'+i+'">'+(it.fixed?'':'ABCD'[i]+'. ')+c+'</button>';}).join('');
+ Array.prototype.forEach.call(document.querySelectorAll('.ch'),function(b){b.onclick=function(){S.sel=it.ch[+b.dataset.i];document.querySelectorAll('.ch').forEach(function(x){x.classList.remove('sel');});b.classList.add('sel');$('next').disabled=false;};});
+ $('next').disabled=true;window.scrollTo(0,0);}
+function record(skip){var it=S.cur;S.log.push({it:it,sel:skip?null:S.sel,ok:!skip&&S.sel===it.a});}
+function finish(){clearInterval(TICK);if(!S)return;var log=S.log,ok=log.filter(function(l){return l.ok;}).length,ans=log.filter(function(l){return l.sel!==null;}).length;
+ var key=S.topic?'topic:'+S.topic:'mixed'+S.mode,H=JSON.parse(LS.get('mpatHist')||'{}');var prev=H[key];
+ var rec={ok:ok,n:log.length,date:new Date().toLocaleString()};if(!prev||ok>prev.ok)H[key]=rec;
+ var runs=JSON.parse(LS.get('mpatRuns')||'[]');runs.unshift({k:key,ok:ok,n:log.length,d:rec.date});LS.set('mpatRuns',JSON.stringify(runs.slice(0,20)));LS.set('mpatHist',JSON.stringify(H));
+ var by={};log.forEach(function(l){var b=by[l.it.t]||(by[l.it.t]={ok:0,n:0});b.n++;if(l.ok)b.ok++;});
+ var h='<h2>Score: '+ok+' / '+log.length+'</h2><p>Answered '+ans+', skipped '+(log.length-ans)+'. Accuracy on answered: '+(ans?Math.round(ok/ans*100):0)+'%'+(!prev||ok>prev.ok?' · <b>New best!</b>':' · Best: '+prev.ok)+'</p><table><tr><th>Topic</th><th>Correct</th></tr>';
+ Object.keys(by).forEach(function(t){h+='<tr><td>'+TOPICS[t]+'</td><td>'+by[t].ok+' / '+by[t].n+'</td></tr>';});h+='</table><h3>Review of missed items</h3>';
+ log.forEach(function(l,i){if(l.ok)return;h+='<div class="rev"><div class="small">Q'+(i+1)+' · '+TOPICS[l.it.t]+'</div><div>'+l.it.q+'</div>'+l.it.fig+'<p>Your answer: <span class="bad">'+(l.sel===null?'(skipped)':l.sel)+'</span><br>Correct: <span class="good">'+l.it.a+'</span></p><p class="small">'+l.it.e+'</p></div>';});
+ $('result').innerHTML=h;S=null;show('res');}
+function show(id){['home','quiz','res'].forEach(function(x){$(x).style.display=x===id?'block':'none';});if(id==='home')renderHome();}
+function renderHome(){var H=JSON.parse(LS.get('mpatHist')||'{}');
+ $('topics').innerHTML=Object.keys(TOPICS).map(function(t){var b=H['topic:'+t];return '<button class="tp" onclick="start(\'5\',\''+t+'\')">'+TOPICS[t]+(b?'<span class="small"> best '+b.ok+'/'+b.n+'</span>':'')+'</button>';}).join('');
+ $('best').innerHTML=['5','10'].map(function(m){var b=H['mixed'+m];return m+'-min best: '+(b?b.ok+'/'+b.n+' ('+b.date+')':'—');}).join('<br>');}
+(function(){$('next').onclick=function(){record(false);ask();};$('skip').onclick=function(){record(true);ask();};$('stop').onclick=function(){finish();};show('home');})();
+</script></body></html>
