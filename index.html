@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PAF MPAT Practice</title><meta name="mpat-version" content="v2-2026-10-13"><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#0b1d33;color:#111}
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PAF MPAT Practice</title><meta name="mpat-version" content="v3-2026-10-13"><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#0b1d33;color:#111}
 .wrap{max-width:720px;margin:0 auto;padding:12px}.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:12px}
 h1{color:#fff;font-size:1.3em;margin:8px 0}h2{margin-top:0}button{font-size:1em;padding:12px;border-radius:8px;border:1px solid #888;background:#f3f6fa;cursor:pointer}
 .big{display:block;width:100%;margin:8px 0;background:#1e5aa8;color:#fff;border:0;font-weight:bold}.tp{margin:4px;width:calc(50% - 8px)}
@@ -17,15 +17,21 @@ h1{color:#fff;font-size:1.3em;margin:8px 0}h2{margin-top:0}button{font-size:1em;
 .mtarget{text-align:center}.mfig{width:100%;max-width:150px;height:auto}.mfig.tgt{max-width:170px;border:3px solid #1e5aa8;border-radius:8px}
 @media(min-width:600px){.qmatch{display:flex}}
 .card.ismatch{display:grid;grid-template-columns:36% 1fr;gap:8px;align-items:center}.card.ismatch>#qtext,.card.ismatch>.row,.card.ismatch>p{grid-column:1/-1}
+
+#login input{display:block;width:100%;font-size:1.05em;padding:12px;margin:6px 0;border:1px solid #999;border-radius:8px}.ubar{color:#fff;display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-bottom:8px}.ubar button{padding:6px 10px}
+.swbase{background:#fff;border:2px solid #1e5aa8;border-radius:8px}.swbase .clk{max-width:170px}.card.isshape .imgch{grid-template-columns:1fr}.card.isshape .ich svg{max-height:90px}
+.swbase{width:150px;flex:none}
 </style></head><body><div class="wrap">
 <h1>✈ PAF MPAT Practice</h1>
-<div id="home"><div class="card"><p>Rapid-fire timed sets like the real Military Pilot Aptitude Test. Every set is randomly generated. <span class="small">v2 · 2026-10-13</span></p>
+<div id="login" class="card" style="display:none"><h2>Sign in</h2><form onsubmit="return doLogin(event)"><input id="lu" placeholder="Username" autocomplete="username" autocapitalize="none"><input id="lp" type="password" placeholder="Password" autocomplete="current-password"><button class="big" type="submit">Log in</button></form><p id="lmsg" class="bad"></p></div>
+<div id="app" style="display:none"><div class="ubar">Logged in as <b id="who"></b> <button class="small" onclick="logout()">Logout</button></div>
+<div id="home"><div class="card"><p>Rapid-fire timed sets like the real Military Pilot Aptitude Test. Every set is randomly generated. <span class="small">v3 · 2026-10-13</span></p>
 <p><b>Time limit (applies to mixed set and every category):</b></p><div class="row"><button class="mbtn" data-m="5" onclick="setMins('5')">5 min</button><button class="mbtn" data-m="7" onclick="setMins('7')">7 min</button><button class="mbtn" data-m="10" onclick="setMins('10')">10 min</button></div><button class="big" onclick="start()">Start mixed set</button><p class="small" id="best"></p></div>
 <div class="card"><h3>Per-topic practice (uses the time limit above)</h3><div id="topics"></div></div></div>
 <div id="quiz" style="display:none"><div class="bar"><span id="qnum"></span><span id="timer"></span></div><div class="card"><div id="qtext"></div><div id="qfig"></div><div id="choices"></div>
 <div class="row"><button id="skip">Skip</button><button id="next" class="big" style="margin:0">Next</button></div><p><button id="stop" class="small">End set now</button></p></div></div>
 <div id="res" style="display:none"><div class="card" id="result"></div><button class="big" onclick="show('home')">Back to menu</button></div>
-</div><script>// Static banks. src: R = from Daniel's reviewer, O = original
+</div></div><script>// Static banks. src: R = from Daniel's reviewer, O = original
 var VOCAB = [
 // [word, meaning, src]
 ["obstinate","stubbornly refusing to change one's opinion","R"],["cupidity","greed for money or possessions","R"],["Cupid","Roman god of love (desire)","R"],
@@ -544,7 +550,252 @@ function genMatch(){for(var att=0;att<100;att++){var T=mRandom(),k0=mKey(T),seen
   var it=mk('match','Which choice is IDENTICAL to the target (not mirrored, not rotated, no detail changed)?',Lb[ai],Lb.filter(function(x,i){return i!==ai;}),'Option '+Lb[ai]+' matches. The others are mirrored, rotated, or have one shape/shade/position changed — check corner elements and arrow directions first.','G','<div class="mtarget"><b>Target</b>'+mSVG(T,'mfig tgt')+'</div>',true);
   it.chimg=opts.map(function(o){return mSVG(o);});it.keys=opts.map(mKey);it.tkey=k0;return it;}}
 GENS.match=genMatch;GENS.clock=genClock;GENS.defect=genDefect;GENS.arith=genArith;
-</script><script>var MEM={};var LS={get:function(k){try{return localStorage.getItem(k);}catch(e){return MEM[k]||null;}},set:function(k,v){try{localStorage.setItem(k,v);}catch(e){MEM[k]=v;}}};var MINS='5';
+</script><script>/* ===== v3 generators (Oct 13 2026): hand-drawn objects, Image Switch, Shape Completion ===== */
+TOPICS = {
+ cube:"Dice & cubes", top:"3D shape from above", sw:"Image Switch Position", defect:"Defect in products", match:"Matching images",
+ shape:"Shape Completion / Odd Fit", vocab:"English vocabulary", synant:"Synonym / antonym", analogy:"Analogy", relation:"Relationship",
+ reading:"Critical reading", vector:"Vector math", drt:"DRT (dial reading)", arith:"Fast arithmetic",
+ word:"Math word problems", mech:"Mechanical & engine"
+};
+/* ---------- geometry helpers ---------- */
+function ell(cx,cy,rx,ry){ry=ry||rx;var n=Math.max(14,Math.min(36,Math.round(Math.max(rx,ry)*1.1))),p=[];for(var i=0;i<n;i++){var a=i/n*2*Math.PI;p.push([cx+rx*Math.cos(a),cy+ry*Math.sin(a)]);}return p;}
+function arc(cx,cy,rx,ry,a0,a1,n){n=n||Math.max(6,Math.round(Math.abs(a1-a0)/15));var p=[];for(var i=0;i<=n;i++){var a=(a0+(a1-a0)*i/n)*Math.PI/180;p.push([cx+rx*Math.cos(a),cy+ry*Math.sin(a)]);}return p;}
+function starPts(cx,cy,R1,r2,n,rot){var p=[];for(var i=0;i<2*n;i++){var a=(rot||-90)*Math.PI/180+i*Math.PI/n,r=i%2?r2:R1;p.push([cx+r*Math.cos(a),cy+r*Math.sin(a)]);}return p;}
+function B(id,pts,cl,fill){return {id:id,pts:pts,cl:cl!==false,rm:false,fill:fill||null};}
+function C(id,pts,fill){return {id:id,pts:pts,cl:true,rm:true,fill:fill||null};}
+function L(id,pts){return {id:id,pts:pts,cl:false,rm:true,fill:null};}
+function O(id,cx,cy,rx,ry,fill){return {id:id,pts:ell(cx,cy,rx,ry),cl:true,rm:true,fill:fill||null};}
+var LF='#efe9da';
+var OBJS={
+ 'alarm clock':[B('face',ell(50,58,28,28),true,'#fbf8ef'),C('big bell',arc(27,32,15,12,180,360)),C('small bell',arc(73,32,9,8,180,360)),L('hammer',[[50,30],[50,20]]),O('top knob',50,17,4,3),L('left leg',[[32,80],[24,94]]),L('right leg',[[68,80],[76,94]]),C('winder',[[78,48],[92,46],[93,56],[78,58]]),L('winder grip',[[92,46],[96,42],[97,52],[93,56]]),O('center pin',50,58,2.2),L('top tick',[[50,34],[50,39]])],
+ ball:[B('ball',ell(50,50,36,36),true,'#fbf8ef'),L('seam',arc(20,24,46,46,8,78)),C('patch',[[58,56],[72,52],[74,64],[64,72],[56,66]]),O('dot',36,66,4.5),L('stripe',[[30,40],[40,34],[52,36]])],
+ mug:[B('cup',[[24,30],[66,30],[63,84],[27,84]]),L('handle',arc(66,56,15,14,-80,80)),L('band',[[25,42],[65,42]]),L('steam',[[38,24],[34,17],[39,10],[35,3]]),L('small steam',[[52,24],[49,18],[53,12]]),O('logo',38,62,5)],
+ key:[B('bow',ell(22,50,15,15)),O('hole',18,46,4),C('shaft',[[37,46],[92,46],[92,54],[37,54]]),C('big tooth',[[72,54],[72,66],[79,66],[79,54]]),C('small tooth',[[83,54],[83,62],[89,62],[89,54]])],
+ shoe:[B('upper',[[12,38],[30,38],[38,52],[62,58],[84,62],[93,70],[91,78],[12,78]]),L('sole line',[[12,71],[92,73]]),L('lace 1',[[37,52],[43,45]]),L('lace 2',[[45,55],[51,48]]),L('lace 3',[[53,57],[59,50]]),L('heel tab',[[12,44],[6,36]])],
+ flag:[B('pole',[[20,94],[20,9]],false),O('pole top',20,6,3),C('cloth',[[20,10],[40,3],[60,14],[80,7],[80,42],[60,49],[40,38],[20,45]]),C('emblem',starPts(48,26,9,4,5)),C('base',[[9,96],[31,96],[31,90],[9,90]])],
+ teapot:[B('pot',ell(50,62,28,21)),C('lid',arc(50,42,16,8,180,360)),O('knob',50,31,4,3),C('spout',[[25,58],[12,48],[5,35],[10,34],[17,45],[26,52]]),L('handle',arc(77,60,12,14,-90,90)),L('base',[[32,83],[68,83]])],
+ bird:[B('body',ell(45,58,26,15)),O('head',72,41,11,11),C('beak',[[82,38],[95,42],[82,46]]),O('eye',75,38,1.8),L('wing',[[30,54],[44,47],[58,55],[44,62],[30,55]]),C('tail',[[20,54],[4,43],[8,63]]),L('front leg',[[50,72],[53,88],[58,88]]),L('back leg',[[41,72],[39,88],[44,88]])],
+ scissors:[O('upper loop',20,34,12,9),O('lower loop',22,68,9,12),C('upper blade',[[31,62],[90,32],[50,50]]),C('lower blade',[[31,39],[86,64],[50,52]]),O('pivot',47,51,2.5)],
+ chair:[B('seat',[[24,56],[78,56],[78,63],[24,63]]),C('backrest',[[22,8],[31,8],[31,56],[22,56]]),L('slat',[[22,22],[31,22]]),L('back leg',[[27,63],[25,95]]),L('front leg',[[74,63],[77,95]]),L('rung',[[26,82],[75,82]])],
+ umbrella:[B('canopy',arc(50,42,42,32,180,360).concat([[82,38],[72,42],[62,38],[50,42],[38,38],[28,42],[18,38]])),L('left rib',[[50,10],[28,41]]),L('right rib',[[50,10],[72,41]]),L('tip',[[50,10],[50,3]]),L('shaft',[[50,42],[50,82]]),L('hook',arc(42,82,8,8,0,180))],
+ bicycle:[O('rear wheel',24,66,18,18),O('front wheel',78,66,18,18),L('frame',[[24,66],[44,66],[38,42],[24,66]]),L('top tube',[[38,42],[66,42],[44,66]]),L('fork',[[78,66],[66,34]]),L('handlebar',[[66,34],[62,28],[72,26]]),L('seat post',[[38,42],[36,34]]),C('saddle',[[27,31],[44,31],[42,35],[29,35]]),L('pedal',[[44,66],[49,75],[54,75]])],
+ glasses:[O('left lens',30,50,16,12),O('right lens',70,50,16,12),L('bridge',arc(50,48,6,4,180,360)),L('left arm',[[14,46],[4,40]]),L('right arm',[[86,46],[96,40]])],
+ bottle:[B('bottle',[[42,9],[58,9],[58,26],[66,38],[66,92],[34,92],[34,38],[42,26]]),C('cap',[[41,1],[59,1],[59,9],[41,9]]),C('label',[[34,52],[66,52],[66,74],[34,74]]),L('label text',[[40,60],[58,60]]),O('bubble',44,83,2.5)],
+ lamp:[B('base',[[14,90],[46,90],[41,81],[19,81]]),L('lower arm',[[30,81],[22,50]]),O('joint',22,48,3),L('upper arm',[[24,46],[54,26]]),C('shade',[[52,20],[62,13],[85,37],[67,48]]),L('ray 1',[[80,50],[86,59]]),L('ray 2',[[71,55],[73,65]])],
+ phone:[B('case',[[30,8],[70,8],[74,12],[74,88],[70,92],[30,92],[26,88],[26,12]]),C('screen',[[31,19],[69,19],[69,78],[31,78]]),O('home button',50,85,4,3),O('camera',36,13.5,2),L('speaker',[[46,13.5],[58,13.5]]),L('side button',[[75.5,28],[75.5,40]])],
+ fork:[B('handle',[[46,95],[54,95],[53,50],[47,50]]),C('head',[[47,50],[53,50],[62,36],[62,26],[38,26],[38,36]]),L('tine 1',[[38,26],[38,6]]),L('tine 2',[[46,26],[46,6]]),L('tine 3',[[54,26],[54,6]]),L('tine 4',[[62,26],[62,6]]),O('hole',50,88,2)],
+ hammer:[B('handle',[[46,32],[54,32],[56,95],[44,95]]),C('head',[[20,18],[66,18],[66,32],[20,32]]),C('face',[[12,15],[20,15],[20,35],[12,35]]),L('upper claw',[[66,20],[80,12],[86,4]]),L('lower claw',[[66,30],[82,24],[90,18]]),L('grip 1',[[45,78],[55,78]]),L('grip 2',[[45,86],[55,86]])],
+ airplane:[B('fuselage',[[10,50],[20,44],[80,44],[95,52],[80,58],[20,58]]),C('tail fin',[[12,47],[7,24],[19,24],[30,44]]),C('wing',[[40,53],[57,53],[45,80],[34,80]]),O('window 1',52,49,2),O('window 2',60,49,2),O('window 3',68,49,2),L('cockpit',[[82,46],[89,50]]),C('stabilizer',[[9,52],[26,52],[16,61]])],
+ tree:[B('trunk',[[44,95],[56,95],[54,62],[46,62]]),C('crown',arc(50,40,30,24,0,350,35).map(function(p,i){var k=0.9+0.13*Math.abs(Math.sin(i*Math.PI/5));return [50+(p[0]-50)*k,40+(p[1]-40)*k];})),L('branch',[[54,74],[68,64]]),O('leaf',72,62,5,3),O('apple',38,38,4),L('root',[[44,95],[36,98]])],
+ boot:[B('boot',[[30,8],[54,8],[54,62],[86,70],[91,82],[91,88],[26,88],[28,62]]),L('sole',[[27,82],[91,82]]),C('heel',[[26,88],[42,88],[42,96],[26,96]]),L('lace 1',[[32,22],[52,22]]),L('lace 2',[[32,34],[52,34]]),L('lace 3',[[32,46],[52,46]]),L('pull tab',[[31,8],[27,1]])],
+ pencil:[B('body',[[12,42],[72,42],[72,58],[12,58]]),C('tip',[[72,42],[93,50],[72,58]]),C('lead',[[86,47.3],[93,50],[86,52.7]]),C('eraser',[[3,42],[12,42],[12,58],[3,58]]),L('band',[[16,42],[16,58]]),L('stripe',[[16,50],[72,50]])],
+ kettle:[B('body',[[26,42],[74,42],[84,88],[16,88]]),C('lid',arc(50,42,17,7,180,360)),O('knob',50,32,4,3),L('handle',[[30,42],[34,18],[66,18],[70,42]]),C('spout',[[22,62],[6,44],[11,41],[24,54]]),L('base',[[18,82],[82,82]])],
+ guitar:[B('body',arc(36,66,20,20,5,265,18).concat(arc(54,48,13,13,190,440,14))),C('neck',[[58,40],[86,12],[90,16],[62,44]]),C('head',[[86,12],[90,3],[98,9],[90,16]]),O('sound hole',42,58,6),L('bridge',[[24,74],[32,82]]),L('strings',[[28,78],[88,14]])],
+ 'star badge':[B('star',starPts(50,38,24,10,5)),O('ring',50,38,30,30),C('left ribbon',[[36,64],[28,95],[38,88],[46,97],[48,68]]),C('right ribbon',[[58,68],[63,92],[69,84],[78,90],[66,62]]),O('center',50,40,3.5)],
+ helmet:[B('shell',arc(50,62,38,38,180,360).concat([[88,62]])),C('visor',[[62,40],[93,48],[91,62],[64,60]]),L('chin strap',[[24,62],[34,80],[52,62]]),L('stripe',arc(50,62,30,30,200,290)),L('vent',[[30,36],[37,31]]),L('ear pad',[[16,66],[34,66]])],
+ wrench:[B('handle',[[18,80],[66,32],[73,39],[25,87]]),C('jaw',[[66,32],[62,20],[70,9],[80,7],[76,16],[83,23],[93,19],[93,29],[82,37],[73,39]]),O('end hole',20,84,5),L('grip',[[34,72],[42,64]])],
+ house:[B('wall',[[20,45],[80,45],[80,88],[20,88]]),C('roof',[[14,46],[50,14],[86,46]]),C('door',[[44,88],[44,66],[56,66],[56,88]]),C('left window',[[26,54],[38,54],[38,64],[26,64]]),C('right window',[[62,54],[74,54],[74,64],[62,64]]),C('chimney',[[64,30],[64,16],[72,16],[72,37]])],
+ car:[B('body',[[8,62],[18,46],[34,44],[44,32],[70,32],[80,44],[94,48],[94,62]]),O('rear wheel',26,64,8,8,'#ddd'),O('front wheel',76,64,8,8,'#ddd'),C('window',[[47,36],[67,36],[74,44],[47,44]]),O('headlamp',90,53,2.5),L('door line',[[52,46],[52,60]])],
+ 'light bulb':[B('glass',ell(50,36,24,24)),C('neck',[[40,58],[60,58],[58,72],[42,72]]),L('thread 1',[[41,76],[59,76]]),L('thread 2',[[42,81],[58,81]]),L('filament',[[42,40],[46,30],[50,40],[54,30],[58,40]]),L('tip',[[47,86],[53,86]])],
+ fish:[B('body',ell(46,50,30,16)),C('tail',[[76,50],[94,36],[94,64]]),O('eye',28,46,3),C('fin',[[44,35],[54,22],[60,36]]),L('gill',[[36,40],[39,50],[36,60]]),L('mouth',[[16,52],[22,52]])]
+};
+var SWITCH_POOL=['alarm clock','ball','mug','key','shoe','flag','teapot','bird','scissors','chair','umbrella','lamp','hammer','airplane','boot','kettle','guitar','helmet','wrench','bicycle','car','fish','pencil','tree','phone','star badge'];
+function cloneParts(ps){return ps.map(function(p){return {id:p.id,pts:p.pts.map(function(q){return [q[0],q[1]];}),cl:p.cl,rm:p.rm,fill:p.fill};});}
+function objBB(ps){var x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;ps.forEach(function(p){p.pts.forEach(function(q){x0=Math.min(x0,q[0]);y0=Math.min(y0,q[1]);x1=Math.max(x1,q[0]);y1=Math.max(y1,q[1]);});});return [x0,y0,x1,y1];}
+function objCtr(ps){var b=objBB(ps);return [(b[0]+b[2])/2,(b[1]+b[3])/2,Math.max(b[2]-b[0],b[3]-b[1])];}
+function mapParts(ps,f){return ps.map(function(p){return {id:p.id,pts:p.pts.map(f),cl:p.cl,rm:p.rm,fill:p.fill};});}
+function matParts(ps,M,c){return mapParts(ps,function(q){var x=q[0]-c[0],y=q[1]-c[1];return [c[0]+M[0]*x+M[1]*y,c[1]+M[2]*x+M[3]*y];});}
+function rotParts(ps,deg,c){var a=deg*Math.PI/180,co=Math.cos(a),si=Math.sin(a);return matParts(ps,[co,-si,si,co],c);}
+function partLen(p){var s=0,P=p.cl?p.pts.concat([p.pts[0]]):p.pts;for(var i=1;i<P.length;i++)s+=Math.hypot(P[i][0]-P[i-1][0],P[i][1]-P[i-1][1]);return s;}
+function dens(P,step){var o=[P[0]];for(var i=1;i<P.length;i++){var a=P[i-1],b=P[i],n=Math.max(1,Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])/step));for(var k=1;k<=n;k++)o.push([a[0]+(b[0]-a[0])*k/n,a[1]+(b[1]-a[1])*k/n]);}return o;}
+function cloud(ps){var o=[];ps.forEach(function(p){o=o.concat(dens(p.cl?p.pts.concat([p.pts[0]]):p.pts,1.5));});return o;}
+function hd1(A,Bc){var m=0;for(var i=0;i<A.length;i++){var b=1e9;for(var j=0;j<Bc.length;j++){var dx=A[i][0]-Bc[j][0],dy=A[i][1]-Bc[j][1],d=dx*dx+dy*dy;if(d<b){b=d;if(b<=m)break;}}if(b>m)m=b;}return Math.sqrt(m);}
+function hausdorff(A,Bc){return Math.max(hd1(A,Bc),hd1(Bc,A));}
+/* ---------- sketch renderer ---------- */
+function skPath(pts,cl,J){var p=pts.map(function(q){return [q[0]+jt(J),q[1]+jt(J)];});if(cl)p.push(p[0]);
+ var d='M'+f1(p[0][0])+' '+f1(p[0][1]);for(var i=1;i<p.length;i++){var a=p[i-1],b=p[i],l=Math.hypot(b[0]-a[0],b[1]-a[1]);
+  if(l>12){var bow=jt(J*1.4);d+=' Q'+f1((a[0]+b[0])/2-(b[1]-a[1])/l*bow)+' '+f1((a[1]+b[1])/2+(b[0]-a[0])/l*bow)+' '+f1(b[0])+' '+f1(b[1]);}else d+=' L'+f1(b[0])+' '+f1(b[1]);}
+ if(cl)d+='Z';return d;}
+function sketch(ps,c,opt){opt=opt||{};var S=c[2]*(opt.k||1)+16,J0=opt.J==null?1:opt.J,o='';
+ ps.forEach(function(p){var b=objBB([p]),sz=Math.hypot(b[2]-b[0],b[3]-b[1]),J=Math.min(J0,0.035*sz+0.1);
+  o+='<path d="'+skPath(p.pts,p.cl,J)+'" fill="'+(p.fill||'none')+'" stroke="#2b2b2b" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>';
+  o+='<path d="'+skPath(p.pts,p.cl,J*1.3)+'" fill="none" stroke="#555" stroke-width="1" stroke-linecap="round" opacity=".5"/>';});
+ return '<svg viewBox="'+f1(c[0]-S/2)+' '+f1(c[1]-S/2)+' '+f1(S)+' '+f1(S)+'" xmlns="http://www.w3.org/2000/svg" class="'+(opt.cls||'cellfig')+'">'+o+'</svg>';}
+/* ---------- part defects / detail changes ---------- */
+function pCent(p){var x=0,y=0;p.pts.forEach(function(q){x+=q[0];y+=q[1];});return [x/p.pts.length,y/p.pts.length];}
+function xfPart(p,f){return {id:p.id,pts:p.pts.map(f),cl:p.cl,rm:p.rm,fill:p.fill};}
+function brokenPieces(p){var P=dens(p.cl?p.pts.concat([p.pts[0]]):p.pts,1),n=P.length,g=Math.max(8,Math.round(n*.14)),i0=Math.round(n*(.3+Math.random()*.25)),i1=i0+g;if(i1>=n-3)return null;
+ var thin=function(a){var o=[];for(var i=0;i<a.length;i+=5)o.push(a[i]);if(o[o.length-1]!==a[a.length-1])o.push(a[a.length-1]);return o;};
+ var A=P.slice(0,i0+1),Bp=P.slice(i1);if(p.cl)return [{id:p.id,pts:thin(Bp.concat(A.slice(1))),cl:false,rm:p.rm}];return [{id:p.id,pts:thin(A),cl:false,rm:p.rm},{id:p.id+'#',pts:thin(Bp),cl:false,rm:p.rm}];}
+var DEF_NAMES={miss:'missing',extra:'extra/duplicated',size:'wrong-size',shift:'shifted',orient:'wrongly turned',broken:'broken line in'};
+function applyDef(ps,d){var out=[];ps.forEach(function(p){if(p.id!==d.id){out.push(p);return;}var c=pCent(p);
+  if(d.type==='miss')return;
+  if(d.type==='extra'){out.push(p);out.push(xfPart(p,function(q){return [q[0]+d.dx,q[1]+d.dy];}));return;}
+  if(d.type==='size'){out.push(xfPart(p,function(q){return [c[0]+(q[0]-c[0])*d.s,c[1]+(q[1]-c[1])*d.s];}));return;}
+  if(d.type==='shift'){out.push(xfPart(p,function(q){return [q[0]+d.dx,q[1]+d.dy];}));return;}
+  if(d.type==='orient'){var M=d.M;out.push(xfPart(p,function(q){var x=q[0]-c[0],y=q[1]-c[1];return [c[0]+M[0]*x+M[1]*y,c[1]+M[2]*x+M[3]*y];}));return;}
+  if(d.type==='broken'){var bp=d.pieces;out=out.concat(bp);return;}});return out;}
+function randDef(ps,types,minDiff){var base=cloud(ps);for(var t=0;t<60;t++){var ty=pick(types),cand=ps.filter(function(p){return ty==='broken'?partLen(p)>=40:p.rm;});if(!cand.length)continue;var p=pick(cand),b=objBB([p]),sz=Math.max(b[2]-b[0],b[3]-b[1]),d={id:p.id,type:ty};
+  if(ty==='extra'){d.dx=pick([-1,1])*R(8,12);d.dy=pick([-1,1])*R(6,10);}
+  else if(ty==='size'){if(sz<7)continue;d.s=pick([.55,.6,1.55,1.7]);}
+  else if(ty==='shift'){var v=pick([[1,0],[-1,0],[0,1],[0,-1]]),m=R(9,13);d.dx=v[0]*m;d.dy=v[1]*m;}
+  else if(ty==='orient'){d.M=pick([[0,-1,1,0],[0,1,-1,0],[-1,0,0,-1],[-1,0,0,1],[1,0,0,-1]]);}
+  else if(ty==='broken'){d.pieces=brokenPieces(p);if(!d.pieces)continue;}
+  var res=applyDef(ps,d),h=hausdorff(base,cloud(res));if(h<(minDiff||4.5))continue;d.h=h;d.ps=res;return d;}return null;}
+function defDesc(d){return (DEF_NAMES[d.type]||d.type)+' '+d.id.replace('#','');}
+/* ---------- DEFECTS ---------- */
+function genDefect(){var name=pick(Object.keys(OBJS)),ps=OBJS[name],c=objCtr(ps),N=20,nb=pick([1,2,2,3,3,4]),bad=shuf(Array.apply(null,{length:N}).map(function(_,i){return i;})).slice(0,nb).sort(function(a,b){return a-b;});
+ var cells=[],notes=[],specs=[],types=['miss','extra','size','shift','orient','broken'];
+ for(var i=0;i<N;i++){var d=null;if(bad.indexOf(i)>=0){d=randDef(ps,types);notes.push('#'+(i+1)+': '+defDesc(d));}
+  specs.push(d?{type:d.type,id:d.id,h:f1(d.h)}:null);cells.push(sketch(d?d.ps:ps,c,{k:1.12}));}
+ return {t:'defect',multi:true,obj:name,specs:specs,q:'Tap EVERY defective <b>'+name+'</b> (part missing, extra, wrong size, shifted, turned the wrong way, or a broken line), then press Submit. Sketchy wobble is normal — look for real differences.',cells:cells,ans:bad,a:bad.map(function(i){return '#'+(i+1);}).join(', '),ch:[],fig:'',e:'Defective: '+notes.join('; ')+'. Scan one feature at a time across the whole grid.',s:'G',fixed:true};}
+/* ---------- IMAGE SWITCH POSITION ---------- */
+var SWM={cw:[0,-1,1,0],ccw:[0,1,-1,0],V:[1,0,0,-1],H:[-1,0,0,1],D1:[0,1,1,0],D2:[0,-1,-1,0]},SWI=[1,0,0,1];
+function mmul(A,Bm){return [A[0]*Bm[0]+A[1]*Bm[2],A[0]*Bm[1]+A[1]*Bm[3],A[2]*Bm[0]+A[3]*Bm[2],A[2]*Bm[1]+A[3]*Bm[3]];}
+function runOps(ops){return ops.reduce(function(M,o){return mmul(SWM[o],M);},SWI);}
+var SW_DESC={cw:'short ↻ = turn 90° clockwise',ccw:'short ↺ = turn 90° counter-clockwise',V:'long ↕ = flip top↔bottom',H:'long ↔ = flip left↔right',D1:'long ↗ = mirror along the ↗ diagonal direction (top-right↔bottom-left)',D2:'long ↖ = mirror along the ↖ diagonal direction (top-left↔bottom-right)'};
+var D4=[[1,0,0,1],[0,-1,1,0],[-1,0,0,-1],[0,1,-1,0],[-1,0,0,1],[1,0,0,-1],[0,1,1,0],[0,-1,-1,0]];
+var ASYM={};function isAsym(name){if(ASYM[name]==null){var ps=OBJS[name],c=objCtr(ps),b=cloud(ps),ok=true;for(var i=1;i<8&&ok;i++)if(hausdorff(b,cloud(matParts(ps,D4[i],c)))<7)ok=false;ASYM[name]=ok;}return ASYM[name];}
+function mkey(M){return M.join(',');}
+function genSwitch(){var pool=SWITCH_POOL.filter(isAsym),name=pick(pool),ps=OBJS[name],c=objCtr(ps);
+ var n=pick([1,2,2,3,3]),ops=[];for(var i=0;i<n;i++)ops.push(pick(['cw','ccw','cw','ccw','V','H','D1','D2']));
+ var ans=runOps(ops),seen={},cands=[];seen[mkey(ans)]=1;
+ var sw={cw:'ccw',ccw:'cw',V:'H',H:'V',D1:'D2',D2:'D1'},alts=[];ops.forEach(function(o,i){var a=ops.slice();a[i]=sw[o];alts.push(runOps(a));});
+ alts.push(runOps(ops.slice(0,-1)));alts.push(runOps(ops.slice().reverse()));alts.push(mmul(SWM.H,ans));alts.push(mmul(SWM.cw,ans));alts.push(mmul(SWM.ccw,ans));
+ shuf(alts).forEach(function(a){if(cands.length<3&&!seen[mkey(a)]){seen[mkey(a)]=1;cands.push(a);}});
+ shuf(D4).forEach(function(a){if(cands.length<3&&!seen[mkey(a)]){seen[mkey(a)]=1;cands.push(a);}});
+ var opts=shuf([ans].concat(cands)),Lb=['A','B','C','D'],ai=opts.indexOf(ans);
+ var fig='<div class="clkrow"><div class="swbase">'+sketch(ps,c,{cls:'fig clk',k:1.05})+'</div><div class="ops">'+ops.map(opArrow).join('<span>→</span>')+'</div></div><div class="legend">Short curved arrow: turn the picture 90° that way. Long straight arrow: flip the picture 180° over in the arrow\'s direction (↕ top↔bottom, ↔ left↔right, diagonal = mirror along that diagonal). Apply the arrows left to right.</div>';
+ var it=mk('sw','Apply the arrows to the <b>'+name+'</b>. Which picture shows the result?',Lb[ai],Lb.filter(function(x,i){return i!==ai;}),'Steps: '+ops.map(function(o){return SW_DESC[o];}).join(' → ')+'. Track one distinctive feature (e.g. the '+ps[ps.length-1].id+') through each step.','G',fig,true);
+ it.chimg=opts.map(function(M){return sketch(matParts(ps,M,c),c,{cls:'fig',k:1.05});});it.obj=name;it.ops=ops;it.mats=opts;it.ansM=ans;return it;}
+/* ---------- MATCHING IMAGES ---------- */
+function genMatch(){for(var att=0;att<50;att++){var name=pick(Object.keys(OBJS).filter(isAsym)),base=OBJS[name],c=objCtr(base),T=matParts(base,pick(D4.slice(0,4)),c),tc=cloud(T);
+  var makers=shuf([function(){return {ps:matParts(T,SWM.H,c),why:'mirror image'};},function(){var a=pick([-1,1])*R(16,25);return {ps:rotParts(T,a,c),why:'rotated '+Math.abs(a)+'°'};},
+   function(){var d=randDef(T,['miss','size','shift','orient','extra'],5);return d&&{ps:d.ps,why:defDesc(d)};},function(){var d=randDef(T,['miss','size','shift','orient'],5);return d&&{ps:d.ps,why:defDesc(d)};}]);
+  var cands=[];for(var g=0;g<makers.length&&cands.length<3;g++){var m=makers[g]();if(!m)continue;var cc=cloud(m.ps);if(hausdorff(tc,cc)<4.5)continue;if(cands.some(function(o){return hausdorff(o.cl,cc)<3;}))continue;m.cl=cc;cands.push(m);}
+  if(cands.length<3)continue;
+  var opts=shuf([{ps:T,why:'identical'}].concat(cands)),Lb=['A','B','C','D'],ai=opts.findIndex(function(o){return o.ps===T;});
+  var it=mk('match','Which choice is IDENTICAL to the target (not mirrored, not rotated, no detail changed)?',Lb[ai],Lb.filter(function(x,i){return i!==ai;}),'Option '+Lb[ai]+' matches. Others: '+opts.map(function(o,i){return i===ai?null:Lb[i]+' = '+o.why;}).filter(Boolean).join('; ')+'.','G','<div class="mtarget"><b>Target</b>'+sketch(T,c,{cls:'mfig tgt',k:1.2})+'</div>',true);
+  it.chimg=opts.map(function(o){return sketch(o.ps,c,{cls:'mfig',k:1.2});});it.obj=name;it.optParts=opts.map(function(o){return o.ps;});it.tParts=T;return it;}}
+/* ---------- SHAPE COMPLETION / ODD FIT ---------- */
+function ck(r,c){return r+','+c;}
+function cells2(s){return s.map(function(k){return k.split(',').map(Number);});}
+function canonRot(cl){var best=null,cur=cl.map(function(q){return [q[0],q[1]];});for(var i=0;i<4;i++){var mr=Math.min.apply(null,cur.map(function(q){return q[0];})),mc=Math.min.apply(null,cur.map(function(q){return q[1];}));
+  var s=cur.map(function(q){return [q[0]-mr,q[1]-mc];}).sort(function(a,b){return a[0]-b[0]||a[1]-b[1];}).map(function(q){return q.join(',');}).join(';');if(best===null||s<best)best=s;cur=cur.map(function(q){return [q[1],-q[0]];});}return best;}
+function rotN(cl,k){var cur=cl;for(var i=0;i<k;i++)cur=cur.map(function(q){return [q[1],-q[0]];});var mr=Math.min.apply(null,cur.map(function(q){return q[0];})),mc=Math.min.apply(null,cur.map(function(q){return q[1];}));return cur.map(function(q){return [q[0]-mr,q[1]-mc];});}
+function connected(cl){if(!cl.length)return false;var S={};cl.forEach(function(q){S[ck(q[0],q[1])]=1;});var st=[cl[0]],seen={};seen[ck(cl[0][0],cl[0][1])]=1;var n=1;
+ while(st.length){var q=st.pop();[[1,0],[-1,0],[0,1],[0,-1]].forEach(function(d){var k=ck(q[0]+d[0],q[1]+d[1]);if(S[k]&&!seen[k]){seen[k]=1;n++;st.push([q[0]+d[0],q[1]+d[1]]);}});}return n===cl.length;}
+function growPiece(N,size,avoid){avoid=avoid||{};for(var t=0;t<100;t++){var s=[[R(0,N-1),R(0,N-1)]];if(avoid[ck(s[0][0],s[0][1])])continue;var S={};S[ck(s[0][0],s[0][1])]=1;
+  for(var g=0;g<200&&s.length<size;g++){var q=pick(s),d=pick([[1,0],[-1,0],[0,1],[0,-1]]),r=q[0]+d[0],c=q[1]+d[1],k=ck(r,c);if(r<0||c<0||r>=N||c>=N||S[k]||avoid[k])continue;S[k]=1;s.push([r,c]);}
+  if(s.length===size)return s;}return null;}
+function nearMiss(p){var out=[],cp=canonRot(p),mir=p.map(function(q){return [q[0],-q[1]];});if(canonRot(mir)!==cp)out.push({cl:mir,why:'mirror image of the right piece'});
+ for(var t=0;t<40;t++){var i=R(0,p.length-1),rest=p.filter(function(_,j){return j!==i;});var q=pick(rest),d=pick([[1,0],[-1,0],[0,1],[0,-1]]),nc=[q[0]+d[0],q[1]+d[1]];
+  if(p.some(function(z){return z[0]===nc[0]&&z[1]===nc[1];}))continue;var np=rest.concat([nc]);if(!connected(np))continue;var k=canonRot(np);if(k===cp||out.some(function(o){return canonRot(o.cl)===k;}))continue;out.push({cl:np,why:'one square in a different place'});}
+ return out;}
+function fitsGap(piece,gap){return canonRot(piece)===canonRot(gap);}
+function canTile(pieces,N){var board={},used=pieces.map(function(){return false;}),total=pieces.reduce(function(a,p){return a+p.length;},0);if(total!==N*N)return false;
+ var orients=pieces.map(function(p){var seen={},o=[];for(var k=0;k<4;k++){var r=rotN(p,k).sort(function(a,b){return a[0]-b[0]||a[1]-b[1];}),key=r.join(';');if(!seen[key]){seen[key]=1;o.push(r);}}return o;});
+ function rec(){var fr=-1,fc=-1;for(var r=0;r<N&&fr<0;r++)for(var c=0;c<N;c++)if(!board[ck(r,c)]){fr=r;fc=c;break;}if(fr<0)return true;
+  for(var i=0;i<pieces.length;i++){if(used[i])continue;for(var j=0;j<orients[i].length;j++){var o=orients[i][j],dr=fr-o[0][0],dc=fc-o[0][1],ok=true;
+    for(var m=0;m<o.length;m++){var r2=o[m][0]+dr,c2=o[m][1]+dc;if(r2<0||c2<0||r2>=N||c2>=N||board[ck(r2,c2)]){ok=false;break;}}if(!ok)continue;
+    o.forEach(function(q){board[ck(q[0]+dr,q[1]+dc)]=1;});used[i]=true;if(rec())return true;used[i]=false;o.forEach(function(q){delete board[ck(q[0]+dr,q[1]+dc)];});}}return false;}
+ return rec();}
+function edgesPath(cl,u,ox,oy){var S={};cl.forEach(function(q){S[ck(q[0],q[1])]=1;});var d='';cl.forEach(function(q){var x=ox+q[1]*u,y=oy+q[0]*u;
+  if(!S[ck(q[0]-1,q[1])])d+='M'+x+' '+y+'h'+u;if(!S[ck(q[0]+1,q[1])])d+='M'+x+' '+(y+u)+'h'+u;if(!S[ck(q[0],q[1]-1)])d+='M'+x+' '+y+'v'+u;if(!S[ck(q[0],q[1]+1)])d+='M'+(x+u)+' '+y+'v'+u;});return d;}
+function pieceG(cl,u,ox,oy,fill,dash){return cl.map(function(q){return '<rect x="'+(ox+q[1]*u)+'" y="'+(oy+q[0]*u)+'" width="'+u+'" height="'+u+'" fill="'+fill+'" stroke="#0002" stroke-width=".6"/>';}).join('')+'<path d="'+edgesPath(cl,u,ox,oy)+'" stroke="#123" stroke-width="'+(dash?1.6:2.6)+'" fill="none" stroke-linecap="square"'+(dash?' stroke-dasharray="4 3"':'')+'/>';}
+function pieceSVG(cl,u){var w=Math.max.apply(null,cl.map(function(q){return q[1];}))+1,h=Math.max.apply(null,cl.map(function(q){return q[0];}))+1,S=Math.max(w,h)*u+8;
+ return '<svg viewBox="0 0 '+S+' '+S+'" xmlns="http://www.w3.org/2000/svg" class="fig">'+pieceG(cl,u,(S-w*u)/2,(S-h*u)/2,'#ffd27a')+'</svg>';}
+var PCOL=['#9ecbff','#ffd27a','#b9e6a8','#f4a9c0'];
+function setSVG(set,u){var o='',x=4,H=0;set.forEach(function(cl,i){var w=Math.max.apply(null,cl.map(function(q){return q[1];}))+1,h=Math.max.apply(null,cl.map(function(q){return q[0];}))+1;o+=pieceG(cl,u,x,4,PCOL[i%4]);x+=w*u+8;H=Math.max(H,h*u);});
+ return '<svg viewBox="0 0 '+x+' '+(H+8)+'" xmlns="http://www.w3.org/2000/svg" class="fig">'+o+'</svg>';}
+function genShapeGap(){for(;;){var N=pick([4,4,5]),k=R(4,N===5?6:5),gap=growPiece(N,k);if(!gap)continue;var G={};gap.forEach(function(q){G[ck(q[0],q[1])]=1;});
+  var rest=[];for(var r=0;r<N;r++)for(var c=0;c<N;c++)if(!G[ck(r,c)])rest.push([r,c]);
+  var nm=shuf(nearMiss(gap));if(nm.length<3)continue;nm=nm.slice(0,3);
+  var opts=shuf([{cl:gap,why:'fits'}].concat(nm)),Lb=['A','B','C','D'],ai=opts.findIndex(function(o){return o.cl===gap;}),u=22;
+  var fig=svg(N*u+12,N*u+12,'<rect x="6" y="6" width="'+N*u+'" height="'+N*u+'" fill="#fff" stroke="#123" stroke-width="1.4" stroke-dasharray="4 3"/>'+pieceG(rest,u,6,6,'#9ecbff'));
+  var it=mk('shape','The '+N+'×'+N+' square has a piece missing (dashed area). Which piece completes it? Pieces may be <b>turned</b> but not flipped over.',Lb[ai],Lb.filter(function(x,i){return i!==ai;}),'Option '+Lb[ai]+' has exactly the gap\'s shape ('+k+' squares). Others: '+opts.map(function(o,i){return i===ai?null:Lb[i]+' = '+o.why;}).filter(Boolean).join('; ')+'.','G',fig,true);
+  var shown=opts.map(function(o){return rotN(o.cl,R(0,3));});it.chimg=shown.map(function(cl){return pieceSVG(cl,18);});it.kind='gap';it.gap=gap;it.optCells=shown;return it;}}
+function partition(N,np){for(var t=0;t<500;t++){var own={},pcs=[],cellsAll=shuf([].concat.apply([],Array.apply(null,{length:N}).map(function(_,r){return Array.apply(null,{length:N}).map(function(_,c){return [r,c];});}))).slice(0,np);
+  cellsAll.forEach(function(q,i){own[ck(q[0],q[1])]=i;pcs.push([q]);});var left=N*N-np,g=0;
+  while(left>0&&g<5000){g++;var i=R(0,np-1),q=pick(pcs[i]),d=pick([[1,0],[-1,0],[0,1],[0,-1]]),r=q[0]+d[0],c=q[1]+d[1];if(r<0||c<0||r>=N||c>=N||own[ck(r,c)]!=null)continue;if(pcs[i].length>=7)continue;own[ck(r,c)]=i;pcs[i].push([r,c]);left--;}
+  if(left===0&&pcs.every(function(p){return p.length>=4;}))return pcs;}return null;}
+function genShapeOdd(){for(var att=0;att<200;att++){var N=4,pcs=partition(N,3);if(!pcs)continue;var Lb=['A','B','C','D'];
+  if(Math.random()<.5){var j=R(0,2),nm=nearMiss(pcs[j]);if(!nm.length)continue;var imp=pick(nm),opts=shuf(pcs.map(function(p){return {cl:p};}).concat([{cl:imp.cl,imp:1}]));
+   var fitIdx=[];opts.forEach(function(o,i){if(canTile(opts.filter(function(_,k){return k!==i;}).map(function(x){return x.cl;}),N))fitIdx.push(i);});if(fitIdx.length!==1)continue;var ai=fitIdx[0];
+   var it=mk('shape','Three of these pieces fit together to make a 4×4 square. Which piece does <b>NOT</b> fit? (Pieces may be turned, not flipped.)',Lb[ai],Lb.filter(function(x,i){return i!==ai;}),'Without piece '+Lb[ai]+' the other three tile the 4×4 square exactly; piece '+Lb[ai]+' is the '+imp.why.replace('of the right piece','of a real piece')+'.','G','',true);
+   var shown=opts.map(function(o){return rotN(o.cl,R(0,3));});it.chimg=shown.map(function(cl){return pieceSVG(cl,18);});it.kind='odd';it.optCells=shown;return it;}
+  else{var sets=[pcs],whys=['fits'],ok=true;for(var j=0;j<3&&ok;j++){var nm=nearMiss(pcs[j]);if(!nm.length){ok=false;break;}var m=pick(nm),s=pcs.slice();s[j]=m.cl;if(canTile(s,N)){ok=false;break;}sets.push(s);whys.push(m.why.replace('of the right piece','of a real piece'));}
+   if(!ok)continue;var order=shuf([0,1,2,3]),ai=order.indexOf(0);
+   var it=mk('shape','Which set of three pieces fits together to make a complete 4×4 square? (Pieces may be turned, not flipped.)',Lb[ai],Lb.filter(function(x,i){return i!==ai;}),'Set '+Lb[ai]+' tiles the square exactly. In each other set one piece is wrong: '+order.map(function(o,i){return o===0?null:Lb[i]+' has a '+whys[o];}).filter(Boolean).join('; ')+'.','G','',true);
+   var shown=order.map(function(o){return shuf(sets[o]).map(function(cl){return rotN(cl,R(0,3));});});it.chimg=shown.map(function(s){return setSVG(s,12);});it.kind='set';it.optSets=shown;return it;}}}
+function genShape(){return Math.random()<.5?genShapeGap():genShapeOdd();}
+GENS.sw=genSwitch;GENS.defect=genDefect;GENS.match=genMatch;GENS.shape=genShape;delete GENS.clock;
+</script><script>/* v3 critical-reading passages: [question, answer, [wrong x3], explanation] */
+var CRIT=[
+{p:"When the new runway opened, airport officials predicted that delays would fall by half. A year later, delays had fallen only slightly. Officials now say the runway \"performed as designed,\" noting that it handled more flights than ever. Travelers stuck at the gate may find that comfort somewhat thin.",
+ qs:[["The author's attitude toward the officials' explanation is best described as:","Mildly skeptical",["Strongly approving","Openly furious","Completely neutral"],"\"Find that comfort somewhat thin\" is a gentle, ironic doubt — not anger, not praise."],
+ ["What is implied about why delays did not fall much?","Extra capacity was filled by more flights rather than used to reduce delays",["The runway was never opened","Travelers arrived late to the gate","Officials stopped counting delays"],"The officials stress that it \"handled more flights than ever\" — the new capacity was used for volume."],
+ ["The phrase \"performed as designed\" is used by officials mainly to:","Shift attention from the missed prediction to a different measure of success",["Admit the runway failed","Promise the delays will soon end","Explain how runways are built"],"They change the yardstick from delays (the original promise) to flights handled."]]},
+{p:"Some argue that cadets should not use calculators in navigation training because pilots must be able to compute headings mentally. But in the cockpit, pilots have flight computers, and the real skill is noticing when an answer is unreasonable. Banning calculators trains arithmetic; it does not necessarily train judgment.",
+ qs:[["What is the main point of the passage?","The goal of training should be judging whether answers are reasonable, not just computing them",["Calculators should be banned from cockpits","Pilots are poor at arithmetic","Flight computers often fail"],"Every sentence builds toward the last line: judgment, not arithmetic, is the key skill."],
+ ["The argument against calculators assumes that:","Mental computation is a skill pilots actually need in flight",["Calculators are expensive","Cadets dislike arithmetic","Flight computers never make mistakes"],"Banning calculators only makes sense if pilots really must compute mentally — which the author disputes."],
+ ["Which finding would most WEAKEN the author's view?","Pilots who practice mental arithmetic are better at spotting unreasonable computer outputs",["Most cockpits now have flight computers","Cadets prefer using calculators","Calculators make training faster"],"If arithmetic practice itself builds judgment, banning calculators would train judgment after all."]]},
+{p:"Maria's report on the mountain village was meticulous: rainfall tables, crop yields, the price of rice in each season. Yet when her supervisor read it, he asked only one question: \"Did anyone in the village ask you to come?\" Maria realized she had not thought to ask.",
+ qs:[["What does the supervisor's question imply?","The villagers' own wishes matter more than the data she gathered",["The report contained calculation errors","Maria visited the wrong village","The rainfall tables were too long"],"He ignores the data entirely and asks about consent and need — the people's own view."],
+ ["The word \"meticulous\" most nearly means:","Extremely careful and detailed",["Hastily written","Hard to understand","Strongly opinionated"],"Rainfall tables, yields and seasonal prices show great care for detail."],
+ ["What can be inferred about Maria at the end?","She recognizes a gap in her approach",["She plans to quit her job","She thinks the supervisor is wrong","She will delete the report"],"\"She had not thought to ask\" shows sudden awareness of an oversight."]]},
+{p:"A survey found that people who eat breakfast daily earn more on average than those who skip it. A cereal company has cited the survey in advertisements suggesting that eating breakfast leads to career success.",
+ qs:[["The advertisement assumes that:","Eating breakfast causes higher earnings rather than merely occurring alongside them",["Everyone eats cereal","The survey was very large","Breakfast is the most expensive meal"],"Moving from \"those who eat breakfast earn more\" to \"breakfast leads to success\" assumes cause and effect."],
+ ["Which fact would most WEAKEN the advertisement's claim?","People with regular office hours are both more likely to eat breakfast and to earn more",["Most people like cereal","The survey was done in two cities","Some rich people skip breakfast occasionally"],"A third factor (stable schedules) could explain both, so breakfast need not cause the earnings."],
+ ["The author's tone toward the advertisement is mainly:","Neutral, simply reporting what was claimed",["Enthusiastic","Mocking","Fearful"],"The passage only reports the survey and the ad — no judging words are used."]]},
+{p:"For decades the lighthouse keeper logged every passing ship by hand. When automation arrived, the logbooks were boxed and sent to a warehouse. Last year, climate researchers opened the boxes and found, in the margins, forty years of daily notes on sea ice, written by a man who thought no one would ever read them.",
+ qs:[["What is the main idea of the passage?","Records kept for one purpose turned out valuable for another",["Lighthouses should not be automated","Sea ice has disappeared","The keeper wanted to become a scientist"],"Ship logs became climate data — the central irony of the story."],
+ ["What does the last phrase suggest about the keeper?","He kept the notes from personal habit or care, not for recognition",["He was paid to record sea ice","He expected to become famous","He disliked his job"],"He wrote \"thinking no one would ever read them\" — so not for credit."],
+ ["The details about the warehouse mainly serve to:","Show that the logbooks were nearly forgotten",["Describe how lighthouses work","Prove that automation is dangerous","Explain how sea ice forms"],"Being boxed and stored emphasizes how close the notes came to being lost."],
+ ["The author's attitude toward the keeper is best described as:","Quietly admiring",["Critical","Indifferent","Amused"],"Forty years of faithful, unrecognized work is presented with respect."]]},
+{p:"The council voted to close the old market and build a parking garage, arguing that shoppers avoid the town center because parking is scarce. Shop owners point out that the market itself drew most of the shoppers who came.",
+ qs:[["The council's argument assumes that:","Lack of parking, not lack of attractions, is what keeps shoppers away",["The market is too expensive to repair","Shoppers prefer walking","Garages earn more than markets"],"The plan only works if parking is the real obstacle."],
+ ["The shop owners' point suggests the plan may:","Remove the main reason people visit the town center",["Make parking even scarcer","Raise taxes","Attract more tourists"],"If the market draws shoppers, closing it removes the attraction the parking was meant to serve."],
+ ["Which would most STRENGTHEN the council's case?","Surveys show most people who skip the town center cite parking as the reason",["The market building is very old","Many towns have parking garages","Shop owners oppose most changes"],"Direct evidence that parking is the barrier supports their key assumption."]]},
+{p:"Every pilot learns the phrase \"aviate, navigate, communicate.\" In an emergency, the order matters. A crew that spends precious seconds on the radio while the aircraft drifts toward terrain has the right words in the wrong sequence.",
+ qs:[["\"The right words in the wrong sequence\" means the crew:","Did correct tasks but prioritized them badly",["Used incorrect radio phrases","Forgot the phrase entirely","Spoke a foreign language"],"Radio work is a valid task — but it should come after flying the aircraft."],
+ ["The main point of the passage is that:","In emergencies, flying the aircraft comes first",["Radios are unreliable","Navigation is the hardest skill","Pilots talk too much"],"Aviate is first in the phrase and the example shows the danger of reversing it."],
+ ["What can be inferred about the drifting aircraft?","No one was focused on controlling its flight path",["Its engine had failed","It was on autopilot","It had no radio"],"It drifted while the crew was busy on the radio — no one was aviating."]]},
+{p:"Critics call the new textbook \"too simple,\" but its author, a veteran teacher, says simplicity was the point. Students, she argues, drown in detail before they grasp the core idea. Whether her students later master the details she left out is a question the book's sales figures cannot answer.",
+ qs:[["The last sentence suggests that:","Popularity does not prove the book teaches well",["The book sold poorly","The author has no students","Critics have read the sales figures"],"Sales measure demand, not learning — the author of the passage notes this limit."],
+ ["The teacher's argument assumes that:","Understanding the core idea first makes details easier to learn later",["Details are never important","Critics have never taught","Simple books are cheaper"],"Leaving out detail is only wise if the core idea helps students master details afterward."],
+ ["\"Drown in detail\" most nearly means:","Are overwhelmed by too much information",["Study near the sea","Enjoy fine points","Ignore the textbook"],"A figurative phrase for being overwhelmed."],
+ ["The passage's tone toward the teacher is:","Balanced — it presents her view and raises an open question",["Harshly critical","Worshipful","Sarcastic"],"It gives her argument fairly, then notes what is still unknown."]]},
+{p:"In 1900 most experts believed powered flight was decades away. Within three years, two bicycle makers with no university training had flown. Their advantage, historians suggest, was not genius but method: they tested every idea with small models before trusting it with their lives.",
+ qs:[["The main point of the passage is that the brothers succeeded mainly because of:","Careful, systematic testing",["Exceptional genius","University training","Better funding than experts"],"\"Not genius but method\" — testing with models."],
+ ["The detail \"no university training\" mainly serves to:","Contrast them with the experts who doubted flight was near",["Show they were poor students","Explain why they built bicycles","Prove universities are useless"],"It sets up the surprise: outsiders beat the experts."],
+ ["Which would most STRENGTHEN the historians' view?","Their records show hundreds of wind-tunnel tests before each design change",["They were very ambitious","Other inventors also built bicycles","Experts were often wrong in 1900"],"Direct evidence of extensive testing supports \"method\" as the cause."]]},
+{p:"The memo announced that, \"to improve efficiency,\" the maintenance team would now report to the finance department. Nowhere did it mention safety. Mechanics noticed.",
+ qs:[["What is implied by \"Mechanics noticed\"?","The mechanics were concerned that safety had been left out",["The mechanics were promoted","The memo was not delivered","The mechanics agreed with the change"],"The short sentence after \"nowhere did it mention safety\" implies worry about the omission."],
+ ["The author's tone is best described as:","Pointed and quietly critical",["Cheerful","Confused","Openly angry"],"Short, flat sentences highlight the problem without open outrage."],
+ ["What assumption seems to underlie the reorganization?","Efficiency gains will not reduce maintenance quality",["Finance staff are mechanics","Safety is already perfect","The memo will be kept secret"],"Putting maintenance under finance for efficiency assumes standards won't suffer."]]},
+{p:"Dr. Reyes found that students who took handwritten notes remembered lectures better than those who typed. Her explanation: typists tend to copy words verbatim, while writers, who cannot keep up, must summarize — and summarizing forces them to think.",
+ qs:[["According to Dr. Reyes, the key reason handwriting helps is that it:","Forces students to summarize, which requires thinking",["Is faster than typing","Uses better paper","Prevents distraction by the internet"],"Her stated mechanism is summarizing, not speed or distraction."],
+ ["Which result would most WEAKEN her explanation?","Typists told to summarize in their own words still remember less than handwriters",["Some students type faster than others","Handwriting is slower","Most students own laptops"],"If summarizing typists still do worse, summarizing is not the reason."],
+ ["\"Verbatim\" most nearly means:","Word for word",["In summary","Very quickly","In large print"],"Copying verbatim = copying exact words."],
+ ["What can be inferred about typing students?","They often record more words but process them less",["They never attend lectures","They remember nothing","They write by hand at home"],"They can keep up and copy everything, so less thinking happens."]]},
+{p:"After the storm, the mayor praised residents for their \"remarkable patience\" while power remained out for nine days. Residents, many of whom had spent those days queuing for fuel and water, used other words.",
+ qs:[["\"Used other words\" implies that residents:","Described the situation far less positively",["Spoke another language","Agreed completely with the mayor","Did not speak about it"],"Contrast with \"remarkable patience\" implies frustration or criticism."],
+ ["The author's attitude toward the mayor's praise is:","Ironic",["Admiring","Neutral","Grateful"],"Placing praise next to nine days of queuing makes it sound out of touch."],
+ ["The details about fuel and water mainly serve to:","Show the hardship behind the mayor's polite description",["Explain how storms form","Prove the mayor was absent","List supplies needed for storms"],"They reveal what \"patience\" actually involved."]]}
+];
+var _staticV2=staticItems;
+staticItems=function(){var out=_staticV2().filter(function(x){return x.t!=='reading';});
+ CRIT.forEach(function(r){r.qs.forEach(function(q){out.push(mk('reading','<div class="passage">'+r.p+'</div>'+q[0],q[1],q[2],q[3],'O'));});});return out;};
+</script><script>var MEM={};var LS={get:function(k){try{return localStorage.getItem(k);}catch(e){return MEM[k]||null;}},set:function(k,v){try{localStorage.setItem(k,v);}catch(e){MEM[k]=v;}}};var MINS='5',USER=null;
+var USERS={daniel:{h:'94281819bf4726bb6824a301654a5ffddd8b581923dd321d4d644e8097ca1484',n:'Daniel'},mophet:{h:'b7894b57dc0032844a6aa97371ae681cf299543e494234640fb6eec4fdae5445',n:'Mophet'},abram:{h:'15aaa238f5180b484c9b02e2b80f9b4215f2ca693569ee464d826664e09d897d',n:'Abram'}};
+function uk(k){return k+':'+USER;}
+async function sha256hex(s){var b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(function(x){return ('0'+x.toString(16)).slice(-2);}).join('');}
+async function doLogin(ev){if(ev)ev.preventDefault();var u=document.getElementById('lu').value.trim().toLowerCase(),p=document.getElementById('lp').value,m=document.getElementById('lmsg');
+ if(!window.crypto||!crypto.subtle){m.textContent='Secure login needs HTTPS (WebCrypto unavailable).';return false;}
+ var h=await sha256hex(u+':'+p);if(USERS[u]&&USERS[u].h===h){USER=u;LS.set('mpatUser',u);m.textContent='';document.getElementById('lp').value='';enterApp();}else{m.textContent='Wrong username or password.';}return false;}
+function logout(){if(S){clearInterval(TICK);S=null;}USER=null;try{localStorage.removeItem('mpatUser');}catch(e){MEM.mpatUser=null;}document.getElementById('app').style.display='none';document.getElementById('login').style.display='block';}
+function enterApp(){document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';document.getElementById('who').textContent=USERS[USER].n;show('home');}
 var STATIC=staticItems(),S=null,TICK=null;
 var $=function(id){return document.getElementById(id);};
 function deckFor(topic){return shuf(STATIC.filter(function(x){return !topic||x.t===topic;}));}
@@ -557,7 +808,7 @@ function start(mode,topic){mode=mode||MINS;var secs=(+mode)*60;S={mode:mode,topi
  show('quiz');ask();clearInterval(TICK);TICK=setInterval(tick,250);tick();}
 function tick(){var r=Math.max(0,Math.round((S.end-Date.now())/1000));$('timer').textContent=Math.floor(r/60)+':'+('0'+r%60).slice(-2);$('timer').className=r<=30?'low':'';if(r<=0)finish();}
 function ask(){var it=S.cur=nextItem();S.sel=null;S.msel=[];$('qnum').textContent='Q'+(S.log.length+1)+' · '+TOPICS[it.t];
- $('qtext').innerHTML=it.q;$('qfig').innerHTML=it.fig;$('next').textContent='Next';$('qtext').parentNode.classList.toggle('ismatch',it.t==='match');
+ $('qtext').innerHTML=it.q;$('qfig').innerHTML=it.fig;$('next').textContent='Next';$('qtext').parentNode.classList.toggle('ismatch',it.t==='match');$('qtext').parentNode.classList.toggle('isshape',it.t==='shape'&&it.kind==='set');
  if(it.multi){$('choices').innerHTML='<div class="grid">'+it.cells.map(function(c,i){return '<button class="cell" data-i="'+i+'"><span>'+(i+1)+'</span>'+c+'</button>';}).join('')+'</div>';
   $('next').textContent='Submit';
   document.querySelectorAll('.cell').forEach(function(b){b.onclick=function(){var i=+b.dataset.i,k=S.msel.indexOf(i);if(k<0)S.msel.push(i);else S.msel.splice(k,1);b.classList.toggle('sel',k<0);$('next').disabled=!S.msel.length;};});}
@@ -567,9 +818,9 @@ function ask(){var it=S.cur=nextItem();S.sel=null;S.msel=[];$('qnum').textConten
 function multiScore(it,sel){var hit=sel.filter(function(i){return it.ans.indexOf(i)>=0;}).length;return {hit:hit,fp:sel.length-hit,ok:hit===it.ans.length&&sel.length===hit};}
 function record(skip){var it=S.cur;if(it.multi){var sel=skip?[]:S.msel.slice().sort(function(a,b){return a-b;}),sc=multiScore(it,sel);S.log.push({it:it,sel:skip||!sel.length?null:sel.map(function(i){return '#'+(i+1);}).join(', '),ok:!skip&&sc.ok,part:sc});return;}S.log.push({it:it,sel:skip?null:S.sel,ok:!skip&&S.sel===it.a});}
 function finish(){clearInterval(TICK);if(!S)return;var log=S.log,ok=log.filter(function(l){return l.ok;}).length,ans=log.filter(function(l){return l.sel!==null;}).length;
- var key=S.topic?'topic:'+S.topic:'mixed'+S.mode,H=JSON.parse(LS.get('mpatHist')||'{}');var prev=H[key];
+ var key=S.topic?'topic:'+S.topic:'mixed'+S.mode,H=JSON.parse(LS.get(uk('mpatHist'))||'{}');var prev=H[key];
  var rec={ok:ok,n:log.length,date:new Date().toLocaleString()};if(!prev||ok>prev.ok)H[key]=rec;
- var runs=JSON.parse(LS.get('mpatRuns')||'[]');runs.unshift({k:key,ok:ok,n:log.length,d:rec.date});LS.set('mpatRuns',JSON.stringify(runs.slice(0,20)));LS.set('mpatHist',JSON.stringify(H));
+ var runs=JSON.parse(LS.get(uk('mpatRuns'))||'[]');runs.unshift({k:key,ok:ok,n:log.length,d:rec.date});LS.set(uk('mpatRuns'),JSON.stringify(runs.slice(0,20)));LS.set(uk('mpatHist'),JSON.stringify(H));
  var by={};log.forEach(function(l){var b=by[l.it.t]||(by[l.it.t]={ok:0,n:0});b.n++;if(l.ok)b.ok++;});
  var h='<h2>Score: '+ok+' / '+log.length+'</h2><p>Answered '+ans+', skipped '+(log.length-ans)+'. Accuracy on answered: '+(ans?Math.round(ok/ans*100):0)+'%'+(!prev||ok>prev.ok?' · <b>New best!</b>':' · Best: '+prev.ok)+'</p><table><tr><th>Topic</th><th>Correct</th></tr>';
  Object.keys(by).forEach(function(t){h+='<tr><td>'+TOPICS[t]+'</td><td>'+by[t].ok+' / '+by[t].n+'</td></tr>';});h+='</table><h3>Review of missed items</h3>';
@@ -579,8 +830,8 @@ function revFig(l){var it=l.it;if(it.multi)return '<div class="grid rv">'+it.cel
  if(it.chimg)return '<div class="imgch">'+it.ch.map(function(c,i){return '<div class="ch ich'+(c===it.a?' right':'')+'"><b>'+c+'</b>'+it.chimg[i]+'</div>';}).join('')+'</div>';return '';}
 function setMins(m){MINS=m;document.querySelectorAll('.mbtn').forEach(function(b){b.classList.toggle('sel',b.dataset.m===m);});}
 function show(id){['home','quiz','res'].forEach(function(x){$(x).style.display=x===id?'block':'none';});if(id==='home')renderHome();}
-function renderHome(){var H=JSON.parse(LS.get('mpatHist')||'{}');
+function renderHome(){var H=JSON.parse(LS.get(uk('mpatHist'))||'{}');
  $('topics').innerHTML=Object.keys(TOPICS).map(function(t){var b=H['topic:'+t];return '<button class="tp" onclick="start(null,\''+t+'\')">'+TOPICS[t]+(b?'<span class="small"> best '+b.ok+'/'+b.n+'</span>':'')+'</button>';}).join('');
  $('best').innerHTML=['5','7','10'].map(function(m){var b=H['mixed'+m];return m+'-min best: '+(b?b.ok+'/'+b.n+' ('+b.date+')':'—');}).join('<br>');}
-(function(){$('next').onclick=function(){record(false);ask();};$('skip').onclick=function(){record(true);ask();};$('stop').onclick=function(){finish();};show('home');setMins('5');})();
+(function(){$('next').onclick=function(){record(false);ask();};$('skip').onclick=function(){record(true);ask();};$('stop').onclick=function(){finish();};setMins('5');var u=LS.get('mpatUser');if(u&&USERS[u]){USER=u;enterApp();}else logout();})();
 </script></body></html>
