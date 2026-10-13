@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PAF MPAT Practice</title><meta name="mpat-version" content="v3-2026-10-13"><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#0b1d33;color:#111}
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PAF MPAT Practice</title><meta name="mpat-version" content="v4-2026-10-13"><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#0b1d33;color:#111}
 .wrap{max-width:720px;margin:0 auto;padding:12px}.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:12px}
 h1{color:#fff;font-size:1.3em;margin:8px 0}h2{margin-top:0}button{font-size:1em;padding:12px;border-radius:8px;border:1px solid #888;background:#f3f6fa;cursor:pointer}
 .big{display:block;width:100%;margin:8px 0;background:#1e5aa8;color:#fff;border:0;font-weight:bold}.tp{margin:4px;width:calc(50% - 8px)}
@@ -21,15 +21,102 @@ h1{color:#fff;font-size:1.3em;margin:8px 0}h2{margin-top:0}button{font-size:1em;
 #login input{display:block;width:100%;font-size:1.05em;padding:12px;margin:6px 0;border:1px solid #999;border-radius:8px}.ubar{color:#fff;display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-bottom:8px}.ubar button{padding:6px 10px}
 .swbase{background:#fff;border:2px solid #1e5aa8;border-radius:8px}.swbase .clk{max-width:170px}.card.isshape .imgch{grid-template-columns:1fr}.card.isshape .ich svg{max-height:90px}
 .swbase{width:150px;flex:none}
+.dviews{display:flex;flex-wrap:wrap;justify-content:center;gap:4px}.dviews div{text-align:center;font-size:.8em;color:#555}.dviews svg{width:84px;height:auto;display:block}.ich .dview{max-height:95px}
+.clkrow .clk{max-width:210px}.ich .clk{max-height:120px}
+.insp{margin:6px 0}.irow{display:grid;grid-template-columns:14px repeat(12,1fr);gap:1px;align-items:center;margin-bottom:2px}.irow b{font-size:.6em;color:#888}.insp .cell{padding:0;border-width:1.5px;border-radius:3px;min-width:0}
+.insp .cell.sel{background:#cfe0ff}.insp.rv .cell.bad{border-color:#d00}
+.tips h3{margin:14px 0 4px;color:#1e5aa8}.tips li{margin:3px 0}.ubar{flex-wrap:wrap}
 </style></head><body><div class="wrap">
 <h1>✈ PAF MPAT Practice</h1>
 <div id="login" class="card" style="display:none"><h2>Sign in</h2><form onsubmit="return doLogin(event)"><input id="lu" placeholder="Username" autocomplete="username" autocapitalize="none"><input id="lp" type="password" placeholder="Password" autocomplete="current-password"><button class="big" type="submit">Log in</button></form><p id="lmsg" class="bad"></p></div>
-<div id="app" style="display:none"><div class="ubar">Logged in as <b id="who"></b> <button class="small" onclick="logout()">Logout</button></div>
-<div id="home"><div class="card"><p>Rapid-fire timed sets like the real Military Pilot Aptitude Test. Every set is randomly generated. <span class="small">v3 · 2026-10-13</span></p>
+<div id="app" style="display:none"><div class="ubar"><button class="small" onclick="show('home')">Practice</button><button class="small" onclick="show('tips')">Tips &amp; Tricks</button><span>Logged in as <b id="who"></b></span> <button class="small" onclick="logout()">Logout</button></div>
+<div id="home"><div class="card"><p>Rapid-fire timed sets like the real Military Pilot Aptitude Test. Every set is randomly generated. <span class="small">v4 · 2026-10-13</span></p>
 <p><b>Time limit (applies to mixed set and every category):</b></p><div class="row"><button class="mbtn" data-m="5" onclick="setMins('5')">5 min</button><button class="mbtn" data-m="7" onclick="setMins('7')">7 min</button><button class="mbtn" data-m="10" onclick="setMins('10')">10 min</button></div><button class="big" onclick="start()">Start mixed set</button><p class="small" id="best"></p></div>
 <div class="card"><h3>Per-topic practice (uses the time limit above)</h3><div id="topics"></div></div></div>
 <div id="quiz" style="display:none"><div class="bar"><span id="qnum"></span><span id="timer"></span></div><div class="card"><div id="qtext"></div><div id="qfig"></div><div id="choices"></div>
 <div class="row"><button id="skip">Skip</button><button id="next" class="big" style="margin:0">Next</button></div><p><button id="stop" class="small">End set now</button></p></div></div>
+<div id="tips" style="display:none"><div class="card tips"><h2>Tips &amp; Tricks for speed aptitude tests</h2>
+<p class="small">Practical study notes written for this practice app. Not affiliated with, or endorsed by, the PAF, AFP or any other armed force; no real test items are reproduced. Always follow the official instructions given on test day.</p>
+<h3>1. What pilot aptitude batteries measure</h3>
+<p>Military pilot screening around the world tests broadly similar abilities under time pressure. The PAF's Military Pilot Aptitude Test (MPAT) is reported to cover spatial awareness, reasoning, mathematics, mechanical/aviation knowledge and mental speed, and it comes after the AFP Service Aptitude Test (AFPSAT) and PAF General Classification Test for officer applicants, alongside psychological/neuropsychiatric, medical and interview screening. The US Air Force's AFOQT has timed subtests such as Word Knowledge, Arithmetic Reasoning, Math Knowledge, Reading Comprehension, Instrument Comprehension, Block Counting, Table Reading and Aviation Information, and pilot candidates also take the computer-based TBAS (psychomotor, spatial and multitasking). The RAF's Defence Aptitude Assessment (formerly the Airman Selection Test) has six timed parts, and officer/aircrew candidates are assessed further at the Officer and Aircrew Selection Centre (OASC). Canada's CFAT measures verbal skills, spatial ability and problem solving; Australia's ADF starts with a 20-minute online Job Opportunities Assessment of numerical, verbal and abstract reasoning; Germany's DLR in Hamburg runs computer-based tests of basic cognitive abilities, operational competencies and personality for pilot applicants. Common thread: <b>speed + accuracy on many short items</b>, so technique matters as much as knowledge.</p>
+<h3>2. Time budgeting</h3>
+<ul><li>Divide the time by the number of items before you start (e.g., 50 items in 10 min = 12 s each). Check the clock at the quarter marks, not after every item.</li>
+<li>Never spend more than about twice the average time on one item. Mark it, guess if wrong answers are not penalised, and move on.</li>
+<li>Practise here with the 5-minute limit to build pace, then 10 minutes for accuracy.</li></ul>
+<h3>3. Skip-and-return &amp; elimination</h3>
+<ul><li>First pass: answer everything you can do in one look. Second pass: the "maybe" items. Last: the hard ones.</li>
+<li>Cross out choices that are clearly impossible (wrong units, wrong sign, wrong size). Two eliminations turn a 25% guess into a 50% guess.</li>
+<li>Find out beforehand whether wrong answers are penalised; if not, never leave a blank.</li></ul>
+<h3>4. Estimation &amp; mental-math shortcuts</h3>
+<ul><li><b>Units digit first</b>: in vertical addition/multiplication, the units digit of the answer often eliminates three choices immediately.</li>
+<li>Round and compare: 48 + 73 + 29 ≈ 50 + 70 + 30 = 150, so look for an answer near 150.</li>
+<li>Multiply 2-digit numbers by splitting: 47 × 23 = 47 × 20 + 47 × 3 = 940 + 141 = 1081. ×11: 63 × 11 = 6 (6+3) 3 = 693. ×5 = ×10 ÷ 2. ×25 = ×100 ÷ 4.</li>
+<li>Subtraction by adding up: 92 − 57 → 57 + 3 = 60, + 32 = 92, so 35.</li>
+<li>Casting out nines to check a sum: digit-sum of the answer must equal digit-sum of the parts (mod 9).</li></ul>
+<h3>5. Word problems: recognise the structure</h3>
+<ul><li><b>D = R × T</b>. Toward each other → ADD speeds; same direction / catching up → SUBTRACT speeds.</li>
+<li><b>Trains</b>: passing a pole = own length; passing a platform/bridge = train + platform; two trains = both lengths ÷ (sum or difference of speeds).</li>
+<li><b>Work &amp; pipes</b>: think "fraction of the job per hour". Rates add; drains/leaks are negative. Two workers: ab/(a+b). Fill + drain: ab/(b−a).</li>
+<li><b>Ages</b>: one variable for the present age; the age difference never changes.</li>
+<li><b>Buildings &amp; shadows</b>: same sun → height/shadow ratios equal. 45° → rise = run. Use 3-4-5, 5-12-13, 8-15-17 right triangles.</li>
+<li><b>Expression answers</b>: don't compute — set up the formula with the letters, then check the units (km ÷ km/h = hours). Plug in easy numbers (x = 2, y = 3) to test a choice.</li>
+<li><b>Letter-diagram answers</b>: find the start position, add/subtract the distance moved (speed × time), then read which labelled point you land on.</li></ul>
+<h3>6. Inspection / defect rows: pattern scanning</h3>
+<ul><li>Study the first object of each row for 1–2 seconds and name its parts ("handle, clip, tip").</li>
+<li>Sweep left to right checking ONE feature at a time (all tips, then all clips). The eye spots a missing part faster than a "different" whole object.</li>
+<li>Expect at most one defect per row here, and some perfect rows: once you find it, jump to the next row.</li>
+<li>Keep a steady rhythm; don't re-check finished rows unless you have spare time.</li></ul>
+<h3>7. Mental rotation: dice &amp; clocks</h3>
+<ul><li><b>Dice</b>: faces that ever appear together in a view are neighbours, never opposite. Collect each face's neighbours; the one face left over is opposite. On a cube each face has exactly four neighbours.</li>
+<li>For "which cube could it be", reject any picture that puts two opposite faces side by side, then check the order (clockwise) of the three faces around the shared corner — a mirror order is impossible.</li>
+<li><b>Clocks</b>: read the arrow sweep in eighths of a circle (45° each). Follow one landmark only — usually the 12 — and ask where it will be after the turn: 90° clockwise puts 12 at the right, 180° at the bottom, 90° counter-clockwise at the left. Combine two arrows by adding clockwise and subtracting counter-clockwise turns.</li>
+<li>Rotate the picture, not yourself: keep your head still and imagine the paper turning.</li></ul>
+<h3>8. Shape completion / odd fit</h3>
+<ul><li>Count squares first: a piece with the wrong number of squares can never fit.</li>
+<li>Then compare the outline: look for the "corner" or "bump" of the gap and find it on each piece.</li>
+<li>Pieces may be turned but not flipped — a mirror-image piece does NOT fit.</li></ul>
+<h3>9. Reading: skim strategies</h3>
+<ul><li>Read the questions first, then skim the passage: first and last sentences of each paragraph carry the main idea.</li>
+<li>"Main idea" and "best title" answers cover the WHOLE passage, not one detail. Answers with "always", "never", "only" are usually wrong.</li>
+<li>For vocabulary-in-context, replace the word with each choice and reread the sentence.</li>
+<li>Answer only from the passage, not from outside knowledge.</li></ul>
+<h3>10. Vocabulary: roots, prefixes, suffixes</h3>
+<ul><li>Prefixes: <b>bene-</b> good (benevolent), <b>mal-</b> bad (malevolent), <b>in-/im-/un-</b> not (immutable), <b>circum-</b> around (circumspect), <b>pre-</b> before, <b>re-</b> again/back (refute), <b>de-</b> down/away (deride), <b>ex-</b> out (exonerate), <b>omni-</b> all (omnipresent).</li>
+<li>Roots: <b>loqu</b> speak (loquacious), <b>ver</b> true (veracity), <b>cred</b> believe (credulous), <b>vor</b> eat (voracious), <b>mut</b> change (immutable), <b>pac/plac</b> peace (placate), <b>culp</b> guilt (culpable), <b>magn</b> great, <b>anim</b> mind/spirit (equanimity).</li>
+<li>Suffixes: <b>-ous/-ious</b> full of (copious), <b>-ity</b> quality of (paucity), <b>-ate</b> to make (alleviate), <b>-ible/-able</b> can be (feasible).</li>
+<li>Decide if the word "feels" positive or negative; that alone often eliminates two choices. Many distractors are antonyms.</li></ul>
+<h3>11. Mechanical principles cheat sheet</h3>
+<ul><li><b>Levers</b>: effort × effort arm = load × load arm. 1st class: fulcrum in middle (seesaw); 2nd: load in middle (wheelbarrow); 3rd: effort in middle (tweezers).</li>
+<li><b>Pulleys</b>: ideal MA = number of rope segments holding the moving block. <b>Inclined plane</b>: longer ramp → less force, more distance.</li>
+<li><b>Gears</b>: meshed gears turn opposite ways; an idler restores direction; small gear driving big gear → slower, more torque. Speed ratio = teeth ratio.</li>
+<li><b>Fluids</b>: Pascal — pressure in a closed fluid is transmitted equally (hydraulic brakes, jacks). Narrow pipe → faster flow, lower pressure (Bernoulli).</li>
+<li><b>Engines</b>: four-stroke = intake, compression, power, exhaust (2 crank revolutions). Two-stroke = power every revolution; mixture goes intake → crankcase → transfer port → cylinder; piston opens the ports; oil is mixed with fuel.</li>
+<li><b>Brakes</b>: pedal → master cylinder → brake lines/fluid → calipers squeeze pads on the rotor (disc) or wheel cylinders push shoes against the drum. Spongy pedal = air in lines. ABS pulses pressure so wheels don't lock and you can still steer.</li></ul>
+<h3>12. Test-day preparation</h3>
+<ul><li>Protect sleep for the whole week before, not just the last night; no cramming new material the night before.</li>
+<li>Eat a normal meal, bring the required documents, IDs and pencils, arrive early, and use the restroom before the start.</li>
+<li>Listen to every instruction: timing, how to mark answers and whether guessing is penalised differ between tests.</li></ul>
+<h3>13. Managing anxiety</h3>
+<ul><li>Box breathing: in 4 s, hold 4 s, out 4 s, hold 4 s — two rounds before each section.</li>
+<li>Expect to not finish every section; speed tests are designed that way. One hard item is worth the same as an easy one.</li>
+<li>If you blank, drop that item, answer the next easy one to regain rhythm, then come back.</li>
+<li>Talk to yourself like an instructor: "next item, eyes on the question".</li></ul>
+<h3>Sources (public information, paraphrased)</h3>
+<ul class="small">
+<li><a href="https://afpsat.afp.mil.ph/" target="_blank" rel="noopener">AFP Service Aptitude Test (AFPSAT) – official portal</a></li>
+<li><a href="https://topnotcher.ph/become-a-pilot-philippine-air-force/" target="_blank" rel="noopener">TOPNOTCHER PH – How to become a pilot in the Philippine Air Force (MPAT overview)</a></li>
+<li><a href="https://filipiknow.net/how-to-become-a-pilot-in-the-philippine-air-force/" target="_blank" rel="noopener">FilipiKnow – PAF pilot guide (AFPSAT, PAFGCT, MPAT)</a></li>
+<li><a href="https://www.pearsonvue.com/us/en/afoqt.html" target="_blank" rel="noopener">Pearson VUE – AFOQT overview and subtests</a></li>
+<li><a href="https://www.airforce.com/content/dam/airforce/en/pdf/AFOQT_PracticePamphlet.pdf" target="_blank" rel="noopener">US Air Force – AFOQT information pamphlet</a></li>
+<li><a href="https://afrotc.wvu.edu/testing/tbas" target="_blank" rel="noopener">AFROTC Det. 915 – Test of Basic Aviation Skills (TBAS)</a></li>
+<li><a href="https://recruitment.raf.mod.uk/how-to-apply/daa" target="_blank" rel="noopener">Royal Air Force – Defence Aptitude Assessment familiarisation</a></li>
+<li><a href="https://www.canada.ca/en/department-national-defence/corporate/policies-standards/defence-administrative-orders-directives/5000-series/5002/5002-5-canadian-forces-personnel-selection.html" target="_blank" rel="noopener">Canada DND – DAOD 5002-5 Personnel Selection (CFAT)</a></li>
+<li><a href="https://www.canada.ca/content/dam/dnd-mdn/documents/jobs/20170906-preparing-for-aptitude-test.pdf" target="_blank" rel="noopener">Canada DND – CFAT practice version (PDF)</a></li>
+<li><a href="https://www.adfcareers.gov.au/-/media/ADF/Documents/Tri-Service/ADF-RECREF132-Guide-to-Job-Opportunities-Assessment-for-ADF.pdf" target="_blank" rel="noopener">ADF Careers – Guide to the Job Opportunities Assessment (PDF)</a></li>
+<li><a href="https://www.dlr.de/en/research-and-transfer/research-infrastructure/aerospace-psychology-test-center" target="_blank" rel="noopener">DLR – Aerospace Psychology Test Center, Hamburg</a></li>
+<li><a href="https://www.dlr.de/en/me/about-us/departments/aerospace-psychology/dlr-certificate-cockpit" target="_blank" rel="noopener">DLR – Certificate Cockpit</a></li>
+</ul>
+</div><button class="big" onclick="show('home')">Back to menu</button></div>
 <div id="res" style="display:none"><div class="card" id="result"></div><button class="big" onclick="show('home')">Back to menu</button></div>
 </div></div><script>// Static banks. src: R = from Daniel's reviewer, O = original
 var VOCAB = [
@@ -787,6 +874,321 @@ var CRIT=[
 var _staticV2=staticItems;
 staticItems=function(){var out=_staticV2().filter(function(x){return x.t!=='reading';});
  CRIT.forEach(function(r){r.qs.forEach(function(q){out.push(mk('reading','<div class="passage">'+r.p+'</div>'+q[0],q[1],q[2],q[3],'O'));});});return out;};
+</script><script>/* ===== v4 data (Oct 13 2026): single-word vocabulary, long reading passages, car/brake/two-stroke mechanical ===== */
+var VOCAB4=("abate:lessen:intensify,prolong,provoke|abhor:detest:admire,crave,ignore|abstain:refrain:indulge,persist,compete|acrimony:bitterness:harmony,courtesy,generosity|"+
+"adept:skillful:clumsy,timid,careless|admonish:warn:praise,reward,ignore|adversity:hardship:prosperity,comfort,victory|affluent:wealthy:destitute,frugal,modest|"+
+"alleviate:relieve:aggravate,worsen,provoke|ambivalent:undecided:certain,resolute,eager|ameliorate:improve:deteriorate,damage,neglect|amiable:friendly:hostile,aloof,sullen|"+
+"apathy:indifference:enthusiasm,passion,concern|arduous:strenuous:effortless,simple,brief|astute:shrewd:naive,foolish,dull|audacious:bold:timid,meek,cautious|"+
+"austere:severe:lavish,ornate,lenient|banal:trite:original,striking,novel|belligerent:hostile:peaceful,friendly,docile|benevolent:kind:malicious,cruel,selfish|"+
+"brusque:curt:polite,gracious,verbose|cajole:coax:threaten,command,force|candid:frank:evasive,secretive,deceitful|capricious:fickle:steady,constant,predictable|"+
+"censure:criticize:commend,applaud,endorse|circumspect:cautious:reckless,rash,careless|coerce:compel:liberate,permit,excuse|cogent:convincing:weak,irrelevant,confusing|"+
+"complacent:smug:anxious,concerned,humble|copious:plentiful:scarce,meager,sparse|corroborate:confirm:refute,deny,contradict|credulous:gullible:skeptical,suspicious,wary|"+
+"culpable:guilty:innocent,blameless,faultless|deference:respect:contempt,defiance,scorn|deleterious:harmful:beneficial,healthy,helpful|deride:mock:praise,honor,admire|"+
+"diligent:industrious:lazy,idle,negligent|discern:perceive:overlook,confuse,miss|disparage:belittle:extol,praise,flatter|docile:submissive:unruly,rebellious,wild|"+
+"dogmatic:opinionated:flexible,tolerant,uncertain|ebullient:exuberant:gloomy,listless,somber|eccentric:peculiar:conventional,ordinary,typical|efface:erase:inscribe,engrave,preserve|"+
+"elated:overjoyed:dejected,miserable,sullen|emulate:imitate:ignore,oppose,neglect|enervate:weaken:invigorate,strengthen,energize|ephemeral:fleeting:permanent,enduring,eternal|"+
+"equanimity:composure:agitation,panic,anxiety|erratic:unpredictable:consistent,steady,regular|exacerbate:aggravate:soothe,ease,relieve|exonerate:acquit:convict,blame,accuse|"+
+"expedite:hasten:delay,hinder,obstruct|extol:praise:criticize,condemn,belittle|fallacy:misconception:truth,fact,certainty|fastidious:meticulous:sloppy,careless,negligent|"+
+"feasible:practicable:impossible,impractical,unworkable|fervent:passionate:indifferent,apathetic,cool|flagrant:blatant:subtle,hidden,minor|frugal:thrifty:wasteful,lavish,extravagant|"+
+"futile:useless:effective,fruitful,productive|garrulous:talkative:taciturn,reticent,quiet|gregarious:sociable:reclusive,shy,introverted|hackneyed:clichéd:fresh,original,novel|"+
+"haughty:arrogant:humble,modest,meek|heinous:atrocious:admirable,noble,trivial|hinder:impede:assist,facilitate,promote|immutable:unchangeable:variable,flexible,fluid|"+
+"impartial:unbiased:prejudiced,partisan,biased|impetuous:rash:deliberate,cautious,prudent|incessant:constant:intermittent,sporadic,occasional|indolent:lazy:energetic,diligent,active|"+
+"inept:incompetent:capable,skilled,adroit|innocuous:harmless:toxic,dangerous,offensive|intrepid:fearless:cowardly,timid,fearful|jeopardize:endanger:protect,secure,safeguard|"+
+"judicious:wise:foolish,rash,imprudent|laconic:terse:verbose,wordy,chatty|lament:mourn:celebrate,rejoice,cheer|lethargic:sluggish:energetic,lively,alert|"+
+"lucid:clear:obscure,vague,murky|malevolent:malicious:benign,kindly,gentle|meager:scanty:abundant,ample,lavish|mundane:ordinary:extraordinary,exotic,remarkable|"+
+"negligent:careless:attentive,careful,thorough|nonchalant:unconcerned:anxious,worried,excited|novice:beginner:expert,veteran,master|obsolete:outdated:modern,current,novel|"+
+"ominous:threatening:promising,auspicious,reassuring|opulent:luxurious:shabby,plain,humble|ostentatious:showy:modest,plain,understated|paucity:scarcity:abundance,plenty,surplus|"+
+"pernicious:destructive:wholesome,harmless,beneficial|placate:appease:provoke,enrage,irritate|plausible:credible:absurd,unlikely,improbable|pragmatic:practical:idealistic,impractical,theoretical|"+
+"precarious:unstable:secure,steady,safe|prodigal:extravagant:thrifty,frugal,stingy|prudent:sensible:reckless,foolish,rash|quell:suppress:incite,provoke,arouse|"+
+"rancor:resentment:goodwill,friendship,affection|recalcitrant:defiant:obedient,compliant,docile|refute:disprove:prove,confirm,support|relinquish:surrender:retain,keep,seize|"+
+"reticent:reserved:outspoken,talkative,forward|sagacious:perceptive:obtuse,foolish,naive|scrutinize:examine:ignore,overlook,skim|serene:tranquil:turbulent,agitated,frantic|"+
+"spurious:fake:genuine,authentic,real|squander:waste:save,conserve,hoard|stoic:impassive:emotional,excitable,hysterical|superfluous:excessive:essential,necessary,vital|"+
+"surreptitious:secret:open,overt,public|tenacious:persistent:yielding,irresolute,wavering|tirade:diatribe:compliment,tribute,praise|trepidation:fear:confidence,courage,calm|"+
+"ubiquitous:omnipresent:rare,scarce,absent|vacillate:waver:decide,commit,persist|venerate:revere:despise,scorn,mock|adroit:dexterous:clumsy,awkward,bungling|"+
+"zealous:ardent:apathetic,indifferent,lukewarm|voracious:ravenous:satiated,picky,abstemious|wary:watchful:trusting,careless,heedless|tacit:implied:explicit,stated,spoken|"+
+"zenith:peak:nadir,bottom,base|nadir:bottom:summit,peak,apex|acumen:insight:ignorance,stupidity,ineptitude|alacrity:eagerness:reluctance,hesitation,apathy|"+
+"candor:honesty:deceit,evasion,duplicity|levity:frivolity:gravity,solemnity,seriousness|veracity:truthfulness:dishonesty,falsehood,deceit|vigilant:alert:negligent,careless,inattentive|"+
+"wane:decline:grow,increase,expand|wily:cunning:naive,guileless,artless|insipid:bland:flavorful,exciting,zesty|inundate:flood:drain,dry,empty|"+
+"lucrative:profitable:unprofitable,costly,ruinous|mollify:pacify:anger,provoke,inflame|pensive:thoughtful:carefree,shallow,thoughtless|pliable:flexible:rigid,stiff,brittle|"+
+"rebuke:reprimand:praise,commend,compliment|resilient:tough:fragile,brittle,delicate|sporadic:occasional:frequent,constant,regular|tedious:boring:exciting,interesting,engaging|"+
+"volatile:explosive:stable,calm,steady|assuage:soothe:aggravate,intensify,worsen|belie:contradict:confirm,attest,verify|consensus:agreement:dispute,disagreement,conflict|"+
+"dearth:shortage:surplus,excess,abundance|didactic:instructive:entertaining,frivolous,trivial|enigma:mystery:answer,solution,explanation|fortitude:courage:cowardice,weakness,timidity|"+
+"gratuitous:unwarranted:justified,necessary,warranted|illicit:illegal:lawful,legitimate,permitted|myriad:countless:few,limited,scant|oblivious:unaware:conscious,alert,attentive|"+
+"perfunctory:cursory:thorough,careful,meticulous|quandary:dilemma:solution,certainty,resolution|replete:full:empty,lacking,devoid|sanguine:optimistic:pessimistic,gloomy,despondent|"+
+"unkempt:untidy:neat,groomed,tidy|virtuoso:master:novice,amateur,beginner|obstinate:stubborn:yielding,flexible,compliant|indigent:poor:wealthy,affluent,rich|tyro:novice:expert,veteran,master").split('|').map(function(s){var p=s.split(':');return [p[0],p[1],p[2].split(',')];});
+function genVocab4(){var w=pick(VOCAB4);return mk('vocab','<b>'+w[0].toUpperCase()+'</b> most nearly means:',w[1],w[2],w[0]+' = '+w[1]+'. (Distractors: '+w[2].join(', ')+' — mostly opposites; eliminate them first.)','O');}
+
+var LONGREAD=[
+{p:"Spatial disorientation is one of the oldest and most stubborn killers in aviation. On the ground, people keep their balance by combining three sources of information: their eyes, the balance organs of the inner ear, and pressure sensors in the skin, muscles and joints. When a pilot flies into cloud or over a dark sea at night, the most reliable of these sources, vision, is suddenly reduced to a few instruments on the panel. The remaining senses are easily fooled.<br><br>The inner ear detects rotation through fluid moving inside small curved canals. If a turn is entered gently and held for more than about twenty seconds, the fluid catches up with the canal walls and the sensation of turning fades. The pilot now feels level even though the aircraft is still banked. When the pilot finally rolls out, the fluid lags behind again and produces a convincing feeling of turning the opposite way. A pilot who obeys this false sensation may roll back into the original turn, lose altitude, and pull back on the controls, tightening a descending spiral. This chain of events has been described in accident reports for decades.<br><br>Training cannot make the inner ear more accurate, but it can change what a pilot does with its signals. Student pilots are taught to recognise the classic illusions, to expect them, and above all to trust the attitude indicator when the instruments and the body disagree. Many air forces use rotating chairs and motion simulators so that students feel the illusions in safety before meeting them in the air. Instructors stress that disorientation is not a sign of weakness; experienced pilots suffer it too. The difference is that the trained pilot treats a strong sensation as a warning to cross-check the instruments rather than as a fact.",
+ qs:[["What is the main idea of the passage?","Pilots can be misled by their senses and must learn to rely on instruments",["The inner ear is useless in flight","Only beginners suffer disorientation","Rotating chairs prevent all accidents"],"The passage explains the problem (fooled senses) and the remedy (trust instruments)."],
+     ["According to the passage, why does a steady turn eventually feel like level flight?","The inner-ear fluid stops moving relative to the canals",["The attitude indicator fails","The pilot's eyes adjust to darkness","Pressure sensors in the skin become stronger"],"Paragraph 2: the fluid 'catches up' with the canal walls."],
+     ["The word 'convincing' in paragraph 2 most nearly means:","Persuasive",["Painful","Temporary","Accurate"],"A convincing feeling is one that seems true even though it is false."],
+     ["Which statement would the author most likely agree with?","Experienced pilots also need to cross-check instruments",["Disorientation shows a pilot is unfit to fly","Sensations are more reliable than instruments at night","Simulators are dangerous for students"],"Last paragraph: 'experienced pilots suffer it too'."]]},
+{p:"Mangrove forests grow where few other trees can survive: in the salty, oxygen-poor mud between land and sea. For much of the twentieth century they were treated as wasteland. Large areas in Southeast Asia were cleared for fishponds, salt beds and coastal housing, and the loss was rarely counted as a cost. Today scientists and local governments see these forests very differently.<br><br>The first reason is protection. The tangled prop roots of mangroves slow incoming waves and trap sediment, so a wide belt of forest can reduce the height of storm surges before they reach a village. Studies after major typhoons have found that communities sheltered behind healthy mangroves often suffered less damage than neighbouring communities whose coastline had been cleared, although mangroves cannot stop the largest surges on their own. The second reason is food. The roots form a nursery where young fish, crabs and shrimp hide from predators, and many of the species caught offshore spend their early lives there. The third reason is climate. Mangrove mud stores large amounts of carbon that can remain locked away for centuries if the forest is left undisturbed, but is released when the trees are cut and the soil is dug up.<br><br>Replanting has become popular, yet early projects taught hard lessons. Seedlings were sometimes planted on mudflats where mangroves had never grown naturally, and most of them died. Others were planted as a single species in neat rows, producing a fragile plantation rather than a forest. More successful programmes now begin by restoring the natural flow of tides, involve the fishing communities who depend on the coast, and choose species that suit each site. The lesson, as one researcher put it, is that a mangrove forest is not simply a collection of trees but a living system that must be allowed to rebuild itself.",
+ qs:[["The passage is mainly concerned with:","Why mangroves are now valued and how they should be restored",["How to build fishponds","The history of typhoons in Asia","Why replanting always fails"],"It covers the value of mangroves and lessons on restoration."],
+     ["Which is NOT given as a benefit of mangroves?","Producing timber for export",["Reducing storm-surge damage","Sheltering young fish","Storing carbon"],"Timber export is never mentioned."],
+     ["Why did some early replanting projects fail?","Seedlings were placed where mangroves do not naturally grow",["The seedlings were too expensive","Fishermen destroyed them","There was too much oxygen in the mud"],"Paragraph 3: planted 'on mudflats where mangroves had never grown naturally'."],
+     ["The author's attitude toward mangrove protection is best described as:","Supportive but realistic",["Strongly opposed","Completely neutral","Mocking"],"The author values mangroves but notes they 'cannot stop the largest surges' and that projects fail if done badly."]]},
+{p:"In the early years of commercial aviation, the captain was regarded as the unquestioned master of the aircraft. Co-pilots and flight engineers were expected to carry out orders, not to challenge them. Investigations of several serious accidents in the 1970s revealed a troubling pattern: the aircraft had been mechanically sound, and in some cases a junior crew member had noticed the danger, but the warning was given too softly, too late, or not at all. The problem was not a lack of skill but a failure of communication.<br><br>The response was a training approach that came to be called Crew Resource Management, or CRM. Its central idea is that everyone on the flight deck, and the cabin crew, air traffic controllers and maintenance staff beyond it, is a source of information that the captain must use. CRM courses teach practical habits: briefing the plan before a critical phase of flight, stating concerns clearly and with a proposed action, repeating back important instructions, and dividing workload so that someone is always flying the aircraft while others solve the problem. Junior crew members learn assertive phrases for raising doubts, while captains learn to invite challenges instead of discouraging them.<br><br>CRM does not remove the captain's authority. The final decision still belongs to the pilot in command, and in an emergency there may be no time for discussion. What changes is the quality of the information on which that decision is based. Military aviation, medicine and firefighting have adopted similar programmes because they share the same weakness: highly trained people working in hierarchies can fail together when the person who sees the problem does not feel able to speak. Critics point out that a classroom course alone cannot change a culture; the habits must be practised in simulators and reinforced by leaders every day.",
+ qs:[["According to the passage, what did the 1970s accident investigations reveal?","Poor communication, not mechanical failure, was often to blame",["Aircraft were badly designed","Captains lacked flying skill","Air traffic controllers ignored pilots"],"Paragraph 1: 'not a lack of skill but a failure of communication'."],
+     ["Which is an example of a CRM habit described in the passage?","Repeating back important instructions",["Letting the captain decide without input","Removing co-pilots from the cockpit","Flying without a briefing"],"Listed in paragraph 2."],
+     ["What does the passage say about the captain's authority under CRM?","It remains, but decisions are better informed",["It is abolished","It passes to the co-pilot","It belongs to air traffic control"],"Paragraph 3: 'CRM does not remove the captain's authority'."],
+     ["The critics mentioned in the last paragraph argue that:","Training must be practised and reinforced, not just taught",["CRM is unnecessary","Hierarchies should be eliminated","Medicine should not use CRM"],"'A classroom course alone cannot change a culture'."]]},
+{p:"Forecasting the path of a typhoon is a problem of physics on an enormous scale. A tropical cyclone does not steer itself; it is pushed along by the winds of the surrounding atmosphere, much as a leaf is carried by a stream. Forecasters therefore spend as much effort studying the large pressure systems around a storm as the storm itself. A strong ridge of high pressure to the north, for example, tends to drive a storm westward toward the Philippines, while a weakness in that ridge may allow it to curve northward toward Taiwan or Japan.<br><br>Modern forecasts are produced by computer models that divide the atmosphere into millions of boxes and calculate how temperature, pressure, moisture and wind will change in each one. Because the starting data are never perfect, forecasting centres run the same model many times with slightly different starting conditions. The spread of the results, often shown as a cone on forecast maps, tells the public how certain the forecast is. A narrow cone means the runs agree; a wide cone means small differences in the starting data lead to very different outcomes. The cone shows uncertainty in the position of the centre, not the size of the storm, a point that is often misunderstood.<br><br>Track forecasts have improved steadily over recent decades, largely thanks to satellite observations and faster computers. Forecasting the strength of a storm has proved much harder. A typhoon can intensify rapidly over very warm water, sometimes gaining a full category in less than a day, and the processes inside the eyewall that control this are still not fully understood. For this reason officials often prepare for a stronger storm than the one forecast. Experts also warn that the most dangerous effects, storm surge and flooding rain, may be severe even when the wind speed is modest.",
+ qs:[["According to the passage, what mainly determines a typhoon's path?","The surrounding large-scale winds and pressure systems",["The storm's own eye","The temperature of the eyewall","The size of the forecast cone"],"Paragraph 1: it 'is pushed along by the winds of the surrounding atmosphere'."],
+     ["What does a WIDE forecast cone indicate?","The model runs disagree, so the track is uncertain",["The storm is very large","The storm is weakening","The forecast is certain"],"Paragraph 2 explains the spread of runs."],
+     ["The word 'intensify' in paragraph 3 most nearly means:","Strengthen",["Slow","Turn","Dissolve"],"Gaining a category = getting stronger."],
+     ["Which conclusion is best supported by the passage?","Intensity forecasts are less reliable than track forecasts",["Track forecasts have become worse","Wind speed is the only danger","Satellites are no longer used"],"Paragraph 3 contrasts improved tracks with harder intensity forecasting."]]},
+{p:"The jet engine is often described as a single invention, but its history shows how an idea can appear in several places at once. During the 1930s, a young British officer, Frank Whittle, and a German physicist, Hans von Ohain, each worked out independently that an aircraft could be propelled by a gas turbine. Air would be drawn in and compressed, mixed with fuel and burned, and the hot, expanding gas would spin a turbine that drove the compressor before rushing out of a nozzle at high speed. The thrust came from accelerating a large mass of air rearward, an application of Newton's third law.<br><br>Neither man found the path easy. Whittle patented his design years before he received serious official support, and his small team struggled with burners that would not stay lit and turbine blades that softened in the heat. Von Ohain found a sponsor in an aircraft manufacturer and saw his engine fly first, in 1939, but the early engines on both sides were thirsty, unreliable and short-lived. Piston engines were a mature technology with decades of refinement behind them, and many experts doubted that the new machines would ever compete.<br><br>What changed their minds was speed. A propeller loses efficiency as its blade tips approach the speed of sound, which places a practical ceiling on how fast a piston-engined aircraft can fly. The jet faced no such limit. Within a few years of the war's end, jet fighters had replaced propeller fighters in most air forces, and by the end of the 1950s jet airliners were carrying passengers across oceans in a fraction of the time. Engineers have since added large fans, better materials and computer control, yet every modern turbofan still follows the basic cycle the two pioneers described: suck, squeeze, burn and blow.",
+ qs:[["Why does the author say the jet engine was not 'a single invention'?","Two people developed it independently at about the same time",["It was invented by a committee","It was copied from the piston engine","It was never patented"],"Paragraph 1: Whittle and von Ohain worked independently."],
+     ["What practical problem limited propeller-driven aircraft?","Propeller efficiency drops as blade tips near the speed of sound",["Propellers were too heavy to build","Piston engines could not use fuel","Propellers caused turbine blades to melt"],"Paragraph 3."],
+     ["According to the passage, early jet engines were:","Unreliable and fuel-hungry",["Immediately better than piston engines","Used only in airliners","Built without turbines"],"'thirsty, unreliable and short-lived'."],
+     ["'Suck, squeeze, burn and blow' refers to:","Intake, compression, combustion and exhaust",["Four different types of aircraft","The four stages of pilot training","Whittle's four patents"],"It summarises the gas-turbine cycle described in paragraph 1."]]},
+{p:"Sleep is often the first thing sacrificed when a schedule becomes crowded, and for students preparing for demanding examinations the temptation is especially strong. An extra two hours of review late at night seems like a clear gain. The research on memory suggests that the trade is usually a poor one.<br><br>Learning does not end when a person closes the book. During sleep, and particularly during the deep stages early in the night, the brain appears to replay and strengthen the connections formed during the day, moving new information into more stable long-term storage. Experiments in which volunteers learn a list of words or a motor skill and are then tested after either a night of sleep or an equal period awake have repeatedly found better performance after sleep. Losing sleep before learning is also harmful: a tired brain absorbs new material less efficiently, so the late-night session itself is less productive than it feels.<br><br>Sleep loss also affects the very abilities that timed aptitude tests measure. Reaction time slows, attention drifts, and people make more careless errors on simple, repetitive tasks such as checking columns of figures or scanning rows of objects for a defect. Perhaps most worrying, sleep-deprived people tend to underestimate how impaired they are, so they do not compensate by working more carefully. None of this means that a single poor night before an examination guarantees failure; nervousness often disturbs sleep, and a calm candidate can still perform well. The practical advice from sleep researchers is to protect sleep consistently in the weeks before a test, to finish heavy studying earlier in the evening, and to treat the final night as a time for rest rather than for cramming new material.",
+ qs:[["What is the author's main argument?","Giving up sleep to study is usually counterproductive",["Students should study only at night","Sleep has no effect on memory","One bad night guarantees failure"],"Paragraph 1: 'the trade is usually a poor one'."],
+     ["According to the passage, what happens during deep sleep early in the night?","New memories are strengthened and stabilised",["The brain stops working","Reaction time becomes faster","New information is forgotten"],"Paragraph 2."],
+     ["Why is it 'most worrying' that sleep-deprived people underestimate their impairment?","They fail to compensate by working more carefully",["They sleep too much afterwards","They refuse to take tests","They become faster than rested people"],"Paragraph 3."],
+     ["What does the author recommend for the night before an exam?","Rest instead of cramming new material",["Study until morning","Take a long practice test","Drink coffee and skip sleep"],"Last sentence."]]}
+];
+
+var CARMECH=[
+["Which car part converts the engine's up-and-down piston motion into rotation?","Crankshaft",["Camshaft","Alternator","Driveshaft"],"Connecting rods turn the crankshaft."],
+["The part that charges the battery and powers electrics while the engine runs is the:","Alternator",["Starter motor","Distributor","Radiator"],"The alternator is belt-driven by the engine."],
+["Which component removes heat from the engine coolant?","Radiator",["Muffler","Carburetor","Battery"],"Coolant flows through the radiator where air carries heat away."],
+["The thermostat in the cooling system:","Keeps coolant flowing to the engine until it warms up, then opens to the radiator",["Measures oil pressure","Mixes air and fuel","Ignites the mixture"],"It speeds warm-up and regulates temperature."],
+["The water pump's job is to:","Circulate coolant through the engine and radiator",["Pump fuel to the injectors","Wash the windshield","Fill the brake reservoir"],"Usually belt-driven."],
+["What does the clutch do in a manual car?","Connects and disconnects the engine from the gearbox",["Stops the wheels","Cools the transmission","Steers the front wheels"],"Pressing the pedal disengages drive so gears can be changed."],
+["The differential allows:","The left and right wheels to turn at different speeds in a turn",["The engine to run faster","The car to reverse","The brakes to cool"],"The outer wheel travels farther in a turn."],
+["Shock absorbers (dampers) mainly:","Control spring bounce and keep tires on the road",["Hold the car's weight","Absorb engine noise","Charge the battery"],"Springs hold the weight; dampers stop oscillation."],
+["The starter motor:","Turns the engine over to start it",["Keeps the engine running","Charges the battery","Drives the cooling fan"],"It engages the flywheel ring gear."],
+["The spark plug:","Ignites the air-fuel mixture in a gasoline engine",["Injects fuel","Cools the cylinder","Opens the valves"],"Diesels use compression ignition instead."],
+["The catalytic converter:","Changes harmful exhaust gases into less harmful ones",["Increases engine power","Silences the exhaust","Filters engine oil"],"It converts CO, HC and NOx."],
+["The air filter protects the engine by:","Stopping dust from entering the intake",["Cooling the oil","Cleaning the exhaust","Removing water from fuel"],"A clogged filter reduces power."],
+["The timing belt (or chain) keeps the:","Camshaft and crankshaft turning in step",["Wheels aligned","Battery charged","Brakes adjusted"],"Valves must open at the right piston position."],
+["The fuel injector:","Sprays metered fuel into the intake or cylinder",["Ignites the fuel","Stores fuel","Cools the engine"],"Modern replacement for the carburetor."],
+["Engine oil mainly:","Lubricates moving parts and reduces friction and wear",["Cools the radiator","Powers the brakes","Charges the battery"],"It also carries away some heat."],
+["The muffler:","Reduces exhaust noise",["Increases compression","Cleans the air filter","Cools the oil"],"Baffles and chambers absorb sound."],
+["The steering rack-and-pinion converts:","The steering wheel's rotation into side-to-side motion of the tie rods",["Engine power into rotation","Brake pressure into heat","Up-down motion into rotation"],"Pinion turns, rack slides."],
+["What does the transmission (gearbox) do?","Changes the gear ratio between engine and wheels",["Stops the car","Starts the engine","Cools the clutch"],"Low gears for torque, high gears for speed."],
+["A drive belt that squeals when the engine starts is most likely:","Loose or worn",["Over-filled with oil","A sign of good tension","Caused by the brakes"],"Slipping belts squeal."],
+["The battery in a car mainly supplies power to:","The starter and electrics when the engine is off",["The wheels directly","The radiator fan only","The fuel tank"],"Once running, the alternator takes over."],
+["The master cylinder in a hydraulic brake system:","Converts brake-pedal force into hydraulic pressure",["Squeezes the pads on the rotor","Stores spare brake pads","Cools the brake fluid"],"Pedal → master cylinder → lines → calipers/wheel cylinders."],
+["The brake caliper:","Squeezes the brake pads against the rotor",["Stores brake fluid","Measures wheel speed","Turns the drum"],"Hydraulic pistons in the caliper push the pads."],
+["In a disc brake, the pads press against the:","Rotor (disc)",["Drum","Shoes","Master cylinder"],"The rotor turns with the wheel."],
+["In a drum brake, which parts press outward against the drum?","Brake shoes",["Brake pads","Calipers","Rotors"],"A wheel cylinder pushes the shoes outward."],
+["Brake fluid is used because it:","Is nearly incompressible, so pressure is transmitted to every wheel",["Is compressible like air","Lubricates the engine","Cools the tires"],"Pascal's principle."],
+["Air bubbles in brake lines cause:","A soft or spongy pedal",["Harder braking","Brighter brake lights","Faster tire wear only"],"Air compresses; bleeding the brakes removes it."],
+["Brake fluid must be changed periodically mainly because it:","Absorbs moisture, lowering its boiling point",["Evaporates in a week","Turns into oil","Becomes magnetic"],"Most glycol fluids are hygroscopic."],
+["ABS (anti-lock braking system) works by:","Rapidly releasing and reapplying brake pressure to stop wheels locking",["Applying the handbrake","Cutting engine power permanently","Inflating the tires"],"Wheel-speed sensors detect lock-up; the modulator pulses pressure."],
+["The main benefit of ABS during hard braking is that the driver:","Can still steer the car",["Always stops in a shorter distance on gravel","Never needs to press the pedal hard","Saves brake pads"],"Rolling tires keep steering grip."],
+["Which ABS part tells the controller that a wheel is about to lock?","Wheel-speed sensor",["Master cylinder","Brake shoe","Thermostat"],"Usually a toothed ring and sensor at each wheel."],
+["Brakes that 'fade' after long downhill use are usually:","Overheated",["Over-filled with oil","Too cold","Missing a spark plug"],"Hot pads/drums and boiled fluid lose grip."],
+["A grinding noise when braking usually means the:","Pads are worn down to metal",["Brake fluid is new","ABS is switched off","Tires are over-inflated"],"Metal-on-metal damages the rotor."],
+["The brake booster (servo) uses engine vacuum to:","Multiply the driver's pedal force",["Cool the brakes","Store brake fluid","Measure wheel speed"],"Makes the pedal easier to press."],
+["The parking (hand) brake usually acts on the rear brakes:","Mechanically, through a cable",["Through the ABS pump only","Through the radiator","Through the fuel line"],"It works even if hydraulics fail."]
+];
+var TWOSTROKE=[
+["In the diagram, which number marks the TRANSFER PORT?","3","Channel from the crankcase up to the cylinder."],
+["In the diagram, which number marks the EXHAUST PORT?","2","Opening in the cylinder wall leading to the exhaust pipe."],
+["In the diagram, which number marks the INTAKE PORT (with reed valve)?","4","Where fresh mixture enters the crankcase."],
+["In the diagram, which number marks the CRANKCASE?","5","Sealed chamber around the crank where mixture is pre-compressed."],
+["In the diagram, which number marks the SPARK PLUG?","1","At the top of the combustion chamber."],
+["In the diagram, which number marks the PISTON?","6","It opens and closes the ports as it moves."],
+["In the diagram, which number marks the CONNECTING ROD?","7","Links the piston to the crankshaft."],
+["In the diagram, which number marks the COMBUSTION CHAMBER?","8","Space above the piston where the mixture burns."]
+];
+var TWOSTROKE_Q=[
+["Following the blue arrows, what is the path of the fresh fuel-air mixture?","Intake port → crankcase → transfer port → cylinder",["Exhaust port → cylinder → crankcase","Cylinder → transfer port → intake port","Spark plug → crankcase → exhaust port"],"Two-strokes use the crankcase as a pump."],
+["In a two-stroke engine, the fresh mixture is pre-compressed in the:","Crankcase",["Exhaust pipe","Radiator","Spark plug"],"The descending piston squeezes the crankcase charge."],
+["As the piston moves UP, what happens in the crankcase?","Pressure drops and fresh mixture is drawn in through the intake",["Exhaust is pushed out","Oil is pumped to the sump","The spark plug fires in the crankcase"],"Rising piston enlarges crankcase volume."],
+["As the piston moves DOWN on the power stroke, it first uncovers the:","Exhaust port, then the transfer port",["Transfer port, then the spark plug","Intake port only","Crankcase drain"],"Exhaust port sits higher so burnt gas escapes first (blowdown)."],
+["'Scavenging' in a two-stroke engine means:","Fresh charge from the transfer port pushes burnt gas out the exhaust port",["Cleaning the carburetor","Draining the oil","Cooling the piston"],"Some fresh mixture is lost out the exhaust, which is why two-strokes pollute more."],
+["Why is oil mixed with the fuel in most small two-stroke engines?","The crankcase carries fuel mixture, so it cannot hold an oil sump",["To raise octane","To cool the exhaust","To make the spark stronger"],"Premix lubricates the crank and bearings."],
+["How often does a two-stroke engine produce a power stroke?","Once every crankshaft revolution",["Once every two revolutions","Twice per revolution","Once every four revolutions"],"Four-strokes fire every second revolution."],
+["What opens and closes the ports in a simple two-stroke engine?","The piston itself",["Camshaft and valves","The spark plug","The radiator cap"],"No valve train — the piston skirt and crown act as valves (plus a reed valve on intake)."],
+["The reed valve at the intake port:","Lets mixture into the crankcase but stops it blowing back out",["Lets exhaust into the crankcase","Controls the spark timing","Seals the combustion chamber"],"A one-way flap valve."]
+];
+function twoStrokeSVG(){var lb=function(n,x,y,lx,ly){return '<line x1="'+x+'" y1="'+y+'" x2="'+lx+'" y2="'+ly+'" stroke="#333" stroke-width="1"/><circle cx="'+lx+'" cy="'+ly+'" r="10" fill="#ffd54f" stroke="#333"/>'+txt(lx,ly,n,12,'font-weight="bold"');};
+ var A=function(d,c){return '<path d="'+d+'" fill="none" stroke="'+c+'" stroke-width="3.5" marker-end="url(#ah'+(c==='#1565c0'?'b':'r')+')"/>';};
+ var o='<defs><marker id="ahb" markerWidth="8" markerHeight="8" refX="5" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#1565c0"/></marker><marker id="ahr" markerWidth="8" markerHeight="8" refX="5" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#c62828"/></marker></defs>';
+ o+='<path d="M85,98 L110,98 L110,175 L85,190 Z" fill="#e3f2fd"/>'; // transfer channel fill
+ o+='<path d="M85,190 L110,175 L210,175 L235,190 L235,280 Q235,292 223,292 L97,292 Q85,292 85,280 Z" fill="#e3f2fd"/>'; // crankcase fill
+ o+='<path d="M110,40 Q160,18 210,40 L210,175 L110,175 Z" fill="#fff3e0"/>';
+ var S='stroke="#222" stroke-width="3" fill="none"';
+ o+='<path d="M110,98 V40 Q160,18 210,40 V90" '+S+'/><path d="M210,112 V175 L235,190 V280 Q235,292 223,292 H97 Q85,292 85,280 V255" '+S+'/><path d="M85,230 V98 H110" '+S+'/><path d="M110,116 V175 L85,190" '+S+' stroke-dasharray="0"/>';
+ o+='<path d="M210,90 H305 M210,112 H305" '+S+'/><path d="M20,230 H85 M20,255 H85" '+S+'/><path d="M85,230 L97,242 L85,255" stroke="#555" stroke-width="2" fill="none"/>'; // ducts + reed
+ o+='<rect x="152" y="6" width="16" height="18" fill="#bbb" stroke="#222"/><line x1="160" y1="24" x2="160" y2="34" stroke="#222" stroke-width="2"/>'; // plug
+ o+='<rect x="113" y="118" width="94" height="40" rx="3" fill="#9e9e9e" stroke="#222" stroke-width="2"/><line x1="113" y1="125" x2="207" y2="125" stroke="#444"/><line x1="113" y1="131" x2="207" y2="131" stroke="#444"/><circle cx="160" cy="145" r="4" fill="#fff" stroke="#222"/>';
+ o+='<circle cx="160" cy="240" r="30" fill="#cfd8dc" stroke="#222" stroke-width="2"/><circle cx="160" cy="240" r="4" fill="#222"/><line x1="160" y1="145" x2="176" y2="252" stroke="#555" stroke-width="7" stroke-linecap="round"/><circle cx="176" cy="252" r="5" fill="#fff" stroke="#222"/>';
+ o+=A('M22,242 H78','#1565c0')+A('M100,262 Q96,230 97,200 V112 Q100,104 112,104','#1565c0')+A('M118,100 Q140,82 150,60','#1565c0');
+ o+=A('M175,60 Q200,80 206,98','#c62828')+A('M214,101 H300','#c62828');
+ o+=lb('1',168,15,200,12)+lb('2',260,101,262,72)+lb('3',97,150,62,150)+lb('4',45,242,45,212)+lb('5',210,270,262,265)+lb('6',190,138,262,138)+lb('7',170,205,262,205)+lb('8',150,75,70,50);
+ o+=txt(262,120,'EXHAUST',10)+txt(40,272,'INTAKE',10);
+ return svg(320,300,o)+'<div class="legend"><span style="color:#1565c0;font-weight:bold">Blue</span> = fresh fuel-air-oil mixture · <span style="color:#c62828;font-weight:bold">Red</span> = burnt exhaust gas. Piston shown near the bottom of its stroke with both ports uncovered.</div>';}
+function genTwoStroke(){var fig=twoStrokeSVG();if(Math.random()<.5){var p=pick(TWOSTROKE);return mk('mech',p[0],p[1],shuf(['1','2','3','4','5','6','7','8'].filter(function(x){return x!==p[1];})).slice(0,3),p[2],'O',fig,true);}
+ var q=pick(TWOSTROKE_Q);return mk('mech','Two-stroke engine (see diagram): '+q[0],q[1],q[2],q[3],'O',fig);}
+function genMech4(){var r=Math.random();if(r<.35)return genTwoStroke();if(r<.5)return genMechCalc();var c=pick(CARMECH);return mk('mech',c[0],c[1],c[2],c[3],'O');}
+
+var _staticV3=staticItems;
+staticItems=function(){var out=_staticV3().filter(function(x){return TOPICS[x.t]&&x.t!=='reading'&&x.t!=='vocab';});
+ LONGREAD.forEach(function(r){r.qs.forEach(function(q){out.push(mk('reading','<div class="passage">'+r.p+'</div>'+q[0],q[1],q[2],q[3],'O'));});});return out;};
+</script><script>/* ===== v4 generators (Oct 13 2026): dice A-F, clock rotation, 2-digit arithmetic, odd-fit shapes, inspection rows, word problems v4 ===== */
+TOPICS = {
+ cube:"Dice & cubes", clock:"Clock rotation", defect:"Inspection / defects", match:"Matching images",
+ shape:"Shape Completion / Odd Fit", vocab:"English vocabulary", synant:"Synonym / antonym",
+ reading:"Reading comprehension", arith:"Fast arithmetic", word:"Math word problems", mech:"Mechanical / car parts & engine"
+};
+var L6=['A','B','C','D','E','F'];
+function item6(t,q,fig,opts,ai,e,extra){var it={t:t,q:q,fig:fig,ch:L6.slice(0,opts.length),a:L6[ai],e:e,s:'G',fixed:true,chimg:opts};for(var k in extra)it[k]=extra[k];return it;}
+
+/* ---------- DICE (3-5 views, choices A-F, no nets) ---------- */
+var SYM=['★','●','▲','■','♥','✚','◆','☾','✱'];
+function trip(lab,r){return [lab[r[0]],lab[r[2]],lab[r[5]]];}
+function tripSet(lab){var s={};ROTS.forEach(function(r){s[trip(lab,r).join('')]=1;});return s;}
+function cubeView(v,s){s=s||34;return '<svg viewBox="0 0 '+(2*s+8)+' '+(2*s+8)+'" xmlns="http://www.w3.org/2000/svg" class="dview">'+cubeSVG(v[0],v[1],v[2],4,4+s/2,s)+'</svg>';}
+function genDice(){for(var att=0;att<200;att++){
+ var L=shuf(SYM).slice(0,6),nv=R(3,5),views=[],rs=shuf(ROTS);
+ for(var i=0;i<rs.length&&views.length<nv;i++){var v=trip(L,rs[i]);if(!views.some(function(w){return w.join()===v.join();}))views.push(v);}
+ if(uniq([].concat.apply([],views)).length<6)continue;
+ var cons=PERM6.map(function(pm){return pm.map(function(i){return L[i];});}).filter(function(lab){var S=tripSet(lab);return views.every(function(v){return S[v.join('')];});});
+ var sets=cons.map(tripSet),all=[];L.forEach(function(a){L.forEach(function(b){L.forEach(function(c){if(a!==b&&b!==c&&a!==c)all.push(a+b+c);});});});
+ var inAll=all.filter(function(k){return sets.every(function(S){return S[k];})&&!views.some(function(v){return v.join('')===k;});}),inNone=all.filter(function(k){return sets.every(function(S){return !S[k];});});
+ var vf='<div class="dviews">'+views.map(function(v,i){return '<div>'+cubeView(v)+'<span>('+(i+1)+')</span></div>';}).join('')+'</div>';
+ var OPP=[1,0,3,2,5,4];
+ if(Math.random()<.55){if(!inAll.length||inNone.length<5)continue;
+  var good=pick(inAll),mir=inNone.filter(function(k){return sets[0][k[0]+k[2]+k[1]];}),bad=shuf(mir).slice(0,3);bad=bad.concat(shuf(inNone.filter(function(k){return bad.indexOf(k)<0;})).slice(0,5-bad.length));
+  var opts=shuf([good].concat(bad)),ai=opts.indexOf(good);
+  return item6('cube','The '+nv+' pictures show the SAME cube in different positions. Which cube (A–F) could also be this cube?',vf,opts.map(function(k){return cubeView(k.split(''),30);}),ai,
+   'Only '+L6[ai]+' ('+good.split('').join('-')+' as top-front-right) is consistent with every view. The others either put two OPPOSITE faces side by side or show three faces in mirror-image order. Tip: find the faces that never appear together — those are opposite pairs.',{kind:'could',key:opts,views:views,cons:cons.length});}
+ var xs=shuf(L).filter(function(x){var o=cons.map(function(lab){return lab[OPP[lab.indexOf(x)]];});return o.every(function(y){return y===o[0];});});if(!xs.length)continue;
+ var x=xs[0],ans=cons[0][OPP[cons[0].indexOf(x)]],ch=L.filter(function(y){return y!==x;}).sort().concat(['Cannot be determined']);
+ return {t:'cube',q:'The '+nv+' pictures show the SAME cube. Which symbol is on the face <b>opposite '+x+'</b>?',fig:vf,ch:ch,a:ans,fixed:true,lab6:true,s:'G',kind:'opp',x:x,views:views,
+  e:'Every symbol that appears next to '+x+' in some view is adjacent, not opposite. '+x+' is seen with '+uniq([].concat.apply([],views.filter(function(v){return v.indexOf(x)>=0;}))).filter(function(y){return y!==x;}).join(', ')+'; the remaining symbol '+ans+' is opposite.'};}
+ return genCubeViews();}
+
+/* ---------- CLOCK ROTATION ---------- */
+function pol(cx,cy,r,a){a=a*Math.PI/180;return [cx+r*Math.sin(a),cy-r*Math.cos(a)];}
+function clockFace(h,m){var o='<circle cx="70" cy="70" r="62" fill="#fff" stroke="#000" stroke-width="3"/>';
+ for(var i=0;i<60;i++){var a=pol(70,70,62,i*6),b=pol(70,70,i%5?58:54,i*6);o+='<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke="#000" stroke-width="'+(i%5?0.8:2)+'"/>';}
+ for(var n=1;n<=12;n++){var p=pol(70,70,45,n*30);o+=txt(p[0].toFixed(1),p[1].toFixed(1),n,12,'font-weight="bold"'+(n===12?' fill="#c00"':''));}
+ var ha=(h%12)*30+m/2,ma=m*6,hp=pol(70,70,28,ha),mp=pol(70,70,42,ma);
+ return o+'<line x1="70" y1="70" x2="'+hp[0]+'" y2="'+hp[1]+'" stroke="#000" stroke-width="5" stroke-linecap="round"/><line x1="70" y1="70" x2="'+mp[0]+'" y2="'+mp[1]+'" stroke="#000" stroke-width="2.5" stroke-linecap="round"/><circle cx="70" cy="70" r="3"/>';}
+function rotArrow(r,a0,deg,dir,col){var a1=a0+dir*deg,p0=pol(70,70,r,a0),p1=pol(70,70,r,a1),large=deg>180?1:0,sw=dir>0?1:0;
+ var t=a1*Math.PI/180,tx=Math.cos(t)*dir,ty=Math.sin(t)*dir,nx=-ty,ny=tx,h=8;
+ var tip=[p1[0]+tx*h*0.9,p1[1]+ty*h*0.9],b1=[p1[0]+nx*h*0.6,p1[1]+ny*h*0.6],b2=[p1[0]-nx*h*0.6,p1[1]-ny*h*0.6];
+ return '<path d="M'+p0[0].toFixed(1)+','+p0[1].toFixed(1)+' A'+r+','+r+' 0 '+large+' '+sw+' '+p1[0].toFixed(1)+','+p1[1].toFixed(1)+'" fill="none" stroke="'+col+'" stroke-width="4"/><circle cx="'+p0[0].toFixed(1)+'" cy="'+p0[1].toFixed(1)+'" r="3" fill="'+col+'"/><polygon points="'+[tip,b1,b2].map(function(q){return q[0].toFixed(1)+','+q[1].toFixed(1);}).join(' ')+'" fill="'+col+'"/>';}
+function guide(){var o='<circle cx="70" cy="70" r="34" fill="none" stroke="#bbb" stroke-dasharray="2 3"/>';for(var i=0;i<8;i++){var a=pol(70,70,30,i*45),b=pol(70,70,38,i*45);o+='<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke="#999"/>';}return o;}
+function clockSVGr(h,m,rot,extra){return '<svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" class="clk"><g transform="rotate('+rot+' 70 70)">'+clockFace(h,m)+'</g>'+(extra||'')+'</svg>';}
+function md(x){return ((x%360)+360)%360;}
+function genClock(){var h=R(1,12),m=R(0,11)*5,two=Math.random()<.3,SW=[45,90,135,180,225,270],arrs=[],net=0,desc=[];
+ var n=two?2:1;for(var i=0;i<n;i++){var deg=pick(two?[45,90,135,180]:SW),dir=Math.random()<.5?1:-1;arrs.push({deg:deg,dir:dir});net+=dir*deg;desc.push(deg+'° '+(dir>0?'clockwise':'counter-clockwise'));}
+ net=md(net);if(net===0)return genClock();
+ var ov='',cols=['#d0021b','#1e5aa8'];arrs.forEach(function(a,i){ov+=rotArrow(i?22:34,R(0,7)*45,a.deg,a.dir,cols[i]);});
+ var pool=uniq([md(-net),md(net+90),md(net-90),md(net+180),md(net+45),md(net-45),0].filter(function(x){return x!==net;}));
+ if(two)pool=uniq([md(arrs[0].dir*arrs[0].deg-arrs[1].dir*arrs[1].deg)].concat(pool).filter(function(x){return x!==net;}));
+ var wrong=(two?[pool[0]].concat(shuf(pool.slice(1)).slice(0,2)):shuf(pool).slice(0,3)),rots=shuf([net].concat(wrong)),ai=rots.indexOf(net);
+ var lg='<div class="legend">Arrow size = how far to turn: ⅛ circle = 45°, ¼ = 90°, ⅜ = 135°, ½ = 180°, ¾ = 270° (the dotted ring marks 45° steps). Turn the WHOLE clock in the arrow\'s direction.'+(two?' Two arrows: apply both (red first, then blue).':'')+'</div>';
+ return {t:'clock',q:'Rotate this clock as the arrow'+(two?'s show':' shows')+'. Which clock is the result?',fig:'<div class="clkrow">'+clockSVGr(h,m,0,'<g opacity=".93"><circle cx="70" cy="70" r="40" fill="#fff" opacity=".45"/>'+guide()+ov+'</g>')+'</div>'+lg,
+  ch:L6.slice(0,4),a:L6[ai],fixed:true,s:'G',chimg:rots.map(function(r){return clockSVGr(h,m,r);}),rots:rots,net:net,arrs:arrs,
+  e:'Arrow'+(two?'s':'')+': '+desc.join(' + ')+' → net turn '+(net===180?'180° (a half turn, same either way)':net<180?net+'° clockwise':(360-net)+'° counter-clockwise')+'. Watch where the red 12 ends up: it moves from the top to '+(net===90?'the right (3 o\'clock position)':net===180?'the bottom':net===270?'the left':'a diagonal')+'.'};}
+
+/* ---------- FAST ARITHMETIC: vertical, 2-digit numbers only ---------- */
+function genArith(){var nums,op,ans,r=Math.random();
+ if(r<.5){var n=R(3,5);nums=[];for(var i=0;i<n;i++)nums.push(R(10,99));op='+';ans=nums.reduce(function(a,b){return a+b;},0);}
+ else if(r<.8){var a=R(21,99),b=R(10,a-1);nums=[a,b];op='−';ans=a-b;}
+ else{nums=[R(11,99),R(11,29)];op='×';ans=nums[0]*nums[1];}
+ var it=mk('arith','Compute (every number is 2 digits):',ans,closeWrong(ans),nums.join(' '+op+' ')+' = '+ans+'. Add the units column first, carry, then the tens. For ×, split: '+nums[0]+'×'+nums[1]+' = '+nums[0]+'×'+(nums[1]-nums[1]%10)+' + '+nums[0]+'×'+nums[1]%10+'.','G',stackHTML(nums,op));
+ it.ch.sort(function(x,y){return x-y;});it.fixed=true;it.nums=nums;it.op=op;return it;}
+
+/* ---------- SHAPE COMPLETION: diagram first, then pick piece(s) that will NOT fit ---------- */
+function genShape(){for(var att=0;att<300;att++){var N=pick([4,5]),k=R(4,N===5?6:5),gap=growPiece(N,k);if(!gap)continue;var G={};gap.forEach(function(q){G[ck(q[0],q[1])]=1;});
+ var rest=[];for(var r=0;r<N;r++)for(var c=0;c<N;c++)if(!G[ck(r,c)])rest.push([r,c]);
+ var nm=nearMiss(gap),mi=nm.filter(function(x){return /mirror/.test(x.why);});if(!mi.length)continue;nm=mi.concat(shuf(nm.filter(function(x){return mi.indexOf(x)<0;})));var nb=pick([1,1,2]);if(nm.length<nb)continue;
+ var opts=[];for(var i=0;i<5-nb;i++)opts.push({cl:rotN(gap,R(0,3)),fit:true});nm.slice(0,nb).forEach(function(x){opts.push({cl:rotN(x.cl,R(0,3)),fit:false,why:x.why});});opts=shuf(opts);
+ var u=22,fig=svg(N*u+12,N*u+12,'<rect x="6" y="6" width="'+N*u+'" height="'+N*u+'" fill="#fff" stroke="#123" stroke-width="1.4" stroke-dasharray="4 3"/>'+pieceG(rest,u,6,6,'#9ecbff'));
+ var bad=[];opts.forEach(function(o,i){if(!o.fit)bad.push(i);});
+ return {t:'shape',multi:true,q:'<b>Step 1:</b> study the diagram — the dashed area is the gap. <b>Step 2:</b> look at the pieces below. Tap EVERY piece that will <b>NOT</b> fit the gap (pieces may be turned, not flipped), then Submit.',fig:fig,
+  cells:opts.map(function(o){return pieceSVG(o.cl,16);}),ans:bad,a:bad.map(function(i){return '#'+(i+1);}).join(', '),ch:[],fixed:true,s:'G',kind:'oddfit',gap:gap,optCells:opts.map(function(o){return o.cl;}),
+  e:'Gap = '+k+' squares. '+bad.map(function(i){return '#'+(i+1)+' is a '+opts[i].why.replace('of the right piece','of the gap shape');}).join('; ')+'. The rest are the gap shape, only turned.'};}}
+
+/* ---------- INSPECTION ROWS (12 per row, 15 rows) ---------- */
+var IS='fill="none" stroke="#111" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"';
+var INSP={
+ pliers:{d:['pivot','grip','jaw'],f:function(v){return '<path d="M15,18 L11,3 M15,18 L'+(v==='jaw'?'17.5,9':'19,3')+'" '+IS+'/><path d="M13,19 L7,38 M17,19 L23,38" '+IS+'/><path d="M8.5,33 L7,38'+(v==='grip'?'':' M21.5,33 L23,38')+'" stroke="#111" stroke-width="4" stroke-linecap="round"/>'+(v==='pivot'?'':'<circle cx="15" cy="18" r="2.6" fill="#fff" stroke="#111" stroke-width="1.4"/>');}},
+ tape:{d:['hole','tail'],f:function(v){return '<circle cx="15" cy="18" r="11" '+IS+'/>'+(v==='hole'?'':'<circle cx="15" cy="18" r="4.5" '+IS+'/>')+(v==='tail'?'':'<path d="M26,18 L26,34 L21,34" '+IS+'/>');}},
+ pen:{d:['clip','tip','band'],f:function(v){return '<rect x="12" y="5" width="6" height="26" rx="2" '+IS+'/>'+(v==='tip'?'':'<path d="M12,31 L15,38 L18,31" '+IS+'/>')+(v==='clip'?'':'<path d="M18,7 L20.5,7 L20.5,17" '+IS+'/>')+(v==='band'?'':'<line x1="12" y1="21" x2="18" y2="21" '+IS+'/>');}},
+ lock:{d:['key','open'],f:function(v){return '<rect x="7" y="18" width="16" height="16" rx="2" '+IS+'/><path d="M10,18 V11 A5,5 0 0 1 20,11 V'+(v==='open'?'13.5':'18')+'" '+IS+'/>'+(v==='key'?'':'<circle cx="15" cy="24.5" r="1.8" fill="#111"/><line x1="15" y1="25" x2="15" y2="29.5" stroke="#111" stroke-width="1.6"/>');}},
+ dropper:{d:['collar','tip','bulb'],f:function(v){return '<ellipse cx="15" cy="8" rx="5" ry="6" fill="'+(v==='bulb'?'#fff':'#777')+'" stroke="#111" stroke-width="1.4"/>'+(v==='collar'?'':'<rect x="11" y="14" width="8" height="3" fill="#111"/>')+'<rect x="13" y="17" width="4" height="15" '+IS+'/>'+(v==='tip'?'':'<line x1="15" y1="32" x2="15" y2="38" '+IS+'/>');}},
+ phone:{d:['button','speaker','camera'],f:function(v){return '<rect x="8" y="3" width="14" height="34" rx="3" '+IS+'/><rect x="10" y="8" width="10" height="21" fill="#dde6f0" stroke="#111" stroke-width="1"/>'+(v==='button'?'':'<circle cx="15" cy="33" r="1.7" '+IS+'/>')+(v==='speaker'?'':'<line x1="13" y1="5.5" x2="17" y2="5.5" stroke="#111" stroke-width="1.4"/>')+(v==='camera'?'':'<circle cx="19.3" cy="5.5" r=".9" fill="#111"/>');}},
+ screwdriver:{d:['grip','short','tip'],f:function(v){var e=v==='short'?29:34;return '<rect x="11" y="2" width="8" height="14" rx="3" '+IS+'/><path d="M13,4.5 V13.5 M15,4.5 V13.5'+(v==='grip'?'':' M17,4.5 V13.5')+'" stroke="#111" stroke-width="1"/><line x1="15" y1="16" x2="15" y2="'+e+'" stroke="#111" stroke-width="2"/>'+(v==='tip'?'':'<path d="M13.5,'+e+' L16.5,'+e+' L15.6,'+(e+4)+' L14.4,'+(e+4)+' Z" fill="#111"/>');}},
+ scissors:{d:['ring','pivot'],f:function(v){return '<path d="M12,28 L18,3 M18,28 L12,3" '+IS+'/><circle cx="10" cy="32" r="4" '+IS+'/>'+(v==='ring'?'':'<circle cx="20" cy="32" r="4" '+IS+'/>')+(v==='pivot'?'':'<circle cx="15" cy="16" r="1.6" fill="#111"/>');}},
+ switchplate:{d:['screw','down'],f:function(v){return '<rect x="6" y="5" width="18" height="30" rx="2" '+IS+'/><rect x="12.5" y="14" width="5" height="12" rx="1" '+IS+'/><rect x="13.3" y="'+(v==='down'?20.5:14.8)+'" width="3.4" height="4.7" fill="#111"/><circle cx="15" cy="9" r="1.3" '+IS+'/>'+(v==='screw'?'':'<circle cx="15" cy="31" r="1.3" '+IS+'/>');}},
+ tube:{d:['cap','crimp'],f:function(v){return '<path d="M9,6 L21,6 L19,31 L11,31 Z" '+IS+'/>'+(v==='crimp'?'':'<path d="M10,9 L20,9 M10,11.5 L20,11.5" stroke="#111" stroke-width="1"/>')+(v==='cap'?'':'<rect x="12" y="31" width="6" height="6" fill="#111"/>');}},
+ spring:{d:['coil'],f:function(v){var n=v==='coil'?5:6,p='M15,2 L15,6',y=6,st=28/n;for(var i=0;i<n;i++){p+=' L22,'+(y+st/4)+' L8,'+(y+3*st/4)+' L15,'+(y+st);y+=st;}return '<path d="'+p+' L15,38" '+IS+'/>';}},
+ paperclip:{d:['short'],f:function(v){return '<path d="M12,33 V9 A4,4 0 0 1 20,9 V31 A3,3 0 0 1 14,31 V'+(v==='short'?'21':'13')+'" '+IS+'/>';}}
+};
+function inspSVG(name,v){return '<svg viewBox="0 0 30 40" xmlns="http://www.w3.org/2000/svg" class="cellfig">'+INSP[name].f(v||'')+'</svg>';}
+var DEFDESC={pivot:'pivot rivet missing',grip:'one grip missing',jaw:'one jaw shorter',hole:'center hole missing',tail:'loose tape end missing',clip:'clip missing',tip:'tip missing',band:'band line missing',key:'keyhole missing',open:'shackle not closed',collar:'collar ring missing',bulb:'bulb not shaded',button:'home button missing',speaker:'speaker slot missing',camera:'camera dot missing',short:'shorter than the others',ring:'one finger ring missing',screw:'one screw missing',down:'toggle in the other position',cap:'cap missing',crimp:'crimp lines missing',coil:'one coil fewer'};
+function genDefect(){var ROWS=15,COLS=12,names=Object.keys(INSP),order=[];while(order.length<ROWS)order=order.concat(shuf(names));order=order.slice(0,ROWS);
+ var cells=[],ans=[],specs=[],notes=[],rowObj=[];
+ order.forEach(function(name,r){rowObj.push(name);var bi=Math.random()<.8?R(0,COLS-1):-1,dv=bi>=0?pick(INSP[name].d):null;
+  for(var c=0;c<COLS;c++){var d=c===bi?dv:null;cells.push(inspSVG(name,d));specs.push(d?{row:r,col:c,obj:name,def:d}:null);if(d){ans.push(r*COLS+c);notes.push('Row '+(r+1)+' #'+(c+1)+' ('+name+'): '+DEFDESC[d]);}}});
+ return {t:'defect',multi:true,cols:COLS,rowObj:rowObj,specs:specs,cells:cells,ans:ans,ch:[],fig:'',fixed:true,s:'G',
+  q:'Each row shows 12 copies of the same object. In most rows ONE item is defective (a missing part or a different detail); some rows are perfect. Tap every defective item, then Submit.',
+  a:ans.map(function(i){return 'R'+(Math.floor(i/COLS)+1)+'#'+(i%COLS+1);}).join(', ')||'(none)',
+  e:'Defects: '+notes.join('; ')+'. Strategy: learn the first item of each row, then sweep left→right checking ONE feature at a time.'};}
+
+/* ---------- WORD PROBLEMS v4 ---------- */
+function W(q,a,wrong,e,fig){return mk('word',q,a,wrong,e,'G',fig);}
+function unitW(ans,u,offs){return numWrong(ans,offs,function(d){return d>0;}).map(function(d){return d+u;});}
+var EXPR=[ // [question, answer, distractors, explanation]
+ ["A plane flies at r km/h for t hours. Which expression gives the distance?","rt",["r + t","r/t","t/r"],"D = R × T."],
+ ["Two planes are d km apart and fly toward each other at v and 3v km/h. Which expression gives the time until they meet?","d/(4v)",["d/(2v)","d/(3v)","4d/v"],"Toward each other → add speeds: v + 3v = 4v. T = d/4v."],
+ ["A car going 4v km/h is d km behind a truck going v km/h (same direction). Time to catch up?","d/(3v)",["d/(5v)","3d/v","d/(4v)"],"Same direction → subtract speeds: 4v − v = 3v."],
+ ["A can finish a job in x days, B in y days. Which expression gives their time working together?","xy/(x + y)",["x + y","(x + y)/xy","(x + y)/2"],"Rates add: 1/x + 1/y = (x+y)/xy, so time = xy/(x+y)."],
+ ["A pipe fills a tank in a hours; a drain empties it in b hours (b > a). Which is the NET filling rate per hour?","1/a − 1/b",["1/a + 1/b","a − b","b − a"],"Filling is +, draining is −."],
+ ["A pipe fills a tank in a hours; a drain empties it in b hours (b > a). Time to fill with both open?","ab/(b − a)",["ab/(a + b)","b − a","(a + b)/ab"],"1/(1/a − 1/b) = ab/(b−a)."],
+ ["A man h m tall casts a shadow s m long. A building's shadow is S m at the same time. The building's height is:","hS/s",["hs/S","sS/h","h + S − s"],"Same sun angle: H/S = h/s → H = hS/s."],
+ ["A father is k times as old as his son. Their ages total A. The son's age is:","A/(k + 1)",["A/k","A/(k − 1)","A(k + 1)"],"x + kx = A → x = A/(k+1)."],
+ ["Maria is x years old. Her brother is 4 years older. What will the brother's age be in 6 years?","x + 10",["x + 6","x + 4","x − 2"],"Brother now x + 4; in 6 years x + 10."],
+ ["Pedro is now p years old. How old was he n years ago, and what is twice that?","2(p − n)",["2p − n","p − 2n","2(p + n)"],"n years ago: p − n; twice: 2(p − n)."],
+ ["A train L metres long moves at v m/s. Time to pass a pole completely?","L/v",["Lv","v/L","L + v"],"The train covers only its own length."],
+ ["A train L₁ m long at v m/s passes a platform L₂ m long. Time needed?","(L₁ + L₂)/v",["L₁/v","(L₁ − L₂)/v","v/(L₁ + L₂)"],"Distance = train + platform."],
+ ["Two trains of lengths L₁ and L₂ travel toward each other at v₁ and v₂. Time to pass each other completely?","(L₁ + L₂)/(v₁ + v₂)",["(L₁ + L₂)/(v₁ − v₂)","(L₁ − L₂)/(v₁ + v₂)","(v₁ + v₂)/(L₁ + L₂)"],"Add lengths, add speeds (opposite directions)."],
+ ["The ratio of A to B is m:n and A + B = T. A equals:","mT/(m + n)",["nT/(m + n)","mT/n","T/(m + n)"],"A = mx, B = nx → x = T/(m+n)."],
+ ["A boat's speed in still water is b, the current is c. Time to go d km UPSTREAM?","d/(b − c)",["d/(b + c)","d(b − c)","(b − c)/d"],"Upstream the current slows you: b − c."],
+ ["A price P is increased by r percent. The new price is:","P(1 + r/100)",["P + r","P(1 − r/100)","Pr/100"],"Increase → multiply by (1 + r/100)."],
+ ["Let x = the son's age now. The father is 3 times as old, and in 10 years he will be twice as old as the son. Which equation fits?","3x + 10 = 2(x + 10)",["3x = 2x + 10","3(x + 10) = 2x","3x + 10 = 2x + 10"],"Add 10 to BOTH ages, then father = 2 × son."],
+ ["A car leaves at v km/h; t hours later a second car follows at w km/h (w > v). Let T = hours the second car drives until it catches up. Which equation is correct?","wT = v(T + t)",["wT = vT","w(T + t) = vT","wT + vT = t"],"Both have covered the same distance when they meet; the first car has driven t hours longer."],
+ ["Two pipes fill a tank in a and b hours. Let T = time with both open. Which equation is correct?","T/a + T/b = 1",["a + b = T","T/a − T/b = 1","aT + bT = 1"],"Each pipe does T/a and T/b of the tank; together one full tank."],
+ ["Building 1 is h m tall. From its top, the angle of elevation to the top of building 2 is 45°, and the buildings are d m apart. Building 2's height is:","h + d",["d − h","hd","h + d/2"],"At 45° the rise equals the run: extra height = d."]
+];
+var MOVES=null;
+function lineFig(pts,labels,ticks){var o='<line x1="10" y1="40" x2="370" y2="40" stroke="#000" stroke-width="2"/>';pts.forEach(function(x,i){o+='<circle cx="'+x+'" cy="40" r="4"/>'+txt(x,22,labels[i],15,'font-weight="bold"')+(ticks?txt(x,60,ticks[i],12):'');});return svg(380,72,o);}
+function genWord(){var r=R(0,15);switch(r){
+ case 0:case 1:case 2:var e=pick(EXPR);return mk('word',e[0]+' <span class="small">(choose the expression)</span>',e[1],e[2],e[3],'G');
+ case 3:{var v1=R(2,9)*10,v2=R(2,9)*10,t=R(2,5),d=(v1+v2)*t;return W('Two planes '+d+' km apart fly toward each other at '+v1+' km/h and '+v2+' km/h. After how many hours do they meet?',t+' h',unitW(t,' h',[1,2,3]),'Add speeds: '+(v1+v2)+' km/h. '+d+'/'+(v1+v2)+' = '+t+' h.');}
+ case 4:{var s=R(4,9)*10,f=s+R(1,4)*10,g=(f-s)*R(1,4);var t=g/(f-s);return W('A jeep is '+g+' km behind a truck. The jeep goes '+f+' km/h, the truck '+s+' km/h. How long until the jeep catches up?',t+' h',unitW(t,' h',[1,2,0.5]),'Same direction: '+f+' − '+s+' = '+(f-s)+' km/h. '+g+'/'+(f-s)+' = '+t+' h.');}
+ case 5:{var P=pick([[40,60,48],[30,60,40],[60,90,72],[40,120,60],[50,75,60],[20,30,24]]);return W('A pilot flies to a town at '+P[0]+' km/h and returns over the same route at '+P[1]+' km/h. What is the average speed for the round trip?',P[2]+' km/h',[((P[0]+P[1])/2)+' km/h'].concat(numWrong(P[2],[2,4,6],function(d){return d>0&&d!==(P[0]+P[1])/2;}).slice(0,2).map(function(d){return d+' km/h';})),'Average speed = 2ab/(a+b) = 2·'+P[0]+'·'+P[1]+'/'+(P[0]+P[1])+' = '+P[2]+' km/h (NOT the simple average).');}
+ case 6:{var v=R(10,30),L=v*R(5,15),pl=v*R(5,20);if(Math.random()<.5){var t=L/v;return W('A train '+L+' m long runs at '+v+' m/s. How long does it take to pass a signal post?',t+' s',unitW(t,' s',[2,5,pl/v]),'Distance = train length only: '+L+'/'+v+' = '+t+' s.');}
+  var t=(L+pl)/v;return W('A train '+L+' m long at '+v+' m/s crosses a platform '+pl+' m long. Time to clear it completely?',t+' s',[L/v+' s',pl/v+' s'].concat(unitW(t,' s',[2,3])).filter(function(x){return x!==t+' s';}),'Distance = '+L+' + '+pl+' = '+(L+pl)+' m. ÷ '+v+' = '+t+' s.');}
+ case 7:{var a=R(10,20),b=R(10,20),L1=R(5,15)*10,L2=R(5,15)*10,s=a+b,tot=L1+L2;if(tot%s)return genWord();var t=tot/s;return W('Two trains, '+L1+' m and '+L2+' m long, run on parallel tracks toward each other at '+a+' m/s and '+b+' m/s. How long do they take to pass each other completely?',t+' s',unitW(t,' s',[1,2,3]),'('+L1+' + '+L2+')/('+a+' + '+b+') = '+tot+'/'+s+' = '+t+' s.');}
+ case 8:{var p=pick(PAIRS);return W('Pipe A fills a tank in '+p[0]+' hours and pipe B in '+p[1]+' hours. With both open, how long to fill it?',p[2]+' hours',unitW(p[2],' hours',[1,2,3]),'Product over sum: '+p[0]+'×'+p[1]+'/('+p[0]+'+'+p[1]+') = '+p[2]+' h.');}
+ case 9:{var IO=[[3,6,6],[4,12,6],[6,12,12],[2,3,6],[10,15,30],[12,20,30],[8,24,12],[4,6,12]],p=pick(IO);return W('An inlet pipe fills a tank in '+p[0]+' h; an outlet pipe empties it in '+p[1]+' h. Both are opened on an empty tank. Time to fill?',p[2]+' h',unitW(p[2],' h',[1,2,3,4]),'1/'+p[0]+' − 1/'+p[1]+' = 1/'+p[2]+'.');}
+ case 10:{var p=pick(PAIRS);return W('Juan can paint a hangar in '+p[0]+' days, Carlo in '+p[1]+' days. Working together, how many days?',p[2]+' days',unitW(p[2],' days',[1,2,3]),'1/'+p[0]+' + 1/'+p[1]+' = 1/'+p[2]+'.');}
+ case 11:{for(;;){var k=R(3,5),m=R(2,k-1),n=R(2,20),num=(m-1)*n,den=k-m;if(num%den===0&&num/den>=2)break;}var s=num/den;return W('A mother is '+k+' times as old as her daughter. In '+n+' years she will be '+m+' times as old. How old is the daughter now?',s,numWrong(s,[1,2,3,n],function(d){return d>0;}),k+'x + '+n+' = '+m+'(x + '+n+') → x = '+s+'.');}
+ case 12:{var s=R(5,20),d=R(20,35),y=R(3,10);return W('A father is '+d+' years older than his son. '+y+' years ago their ages totalled '+(2*s+d-2*y)+'. How old is the son now?',s,numWrong(s,[1,2,y],function(x){return x>0;}),'Now: x and x+'+d+'. '+y+' years ago: 2x + '+d+' − '+(2*y)+' = '+(2*s+d-2*y)+' → x = '+s+'.');}
+ case 13:{var h1=R(2,8)*5,d=R(2,8)*5;if(Math.random()<.5){var H=h1+d;return W('Two buildings stand '+d+' m apart. From the roof of the '+h1+'-m building, the angle of elevation to the top of the other building is 45°. How tall is the other building?',H+' m',unitW(H,' m',[5,h1,d]).filter(function(x){return x!==H+' m';}),'tan 45° = 1, so the taller one rises '+d+' m above '+h1+' m → '+H+' m.',svg(220,155,'<rect x="20" y="'+(130-h1*1.5)+'" width="30" height="'+(h1*1.5)+'" fill="#cde"/><rect x="150" y="'+(130-H*1.5)+'" width="30" height="'+(H*1.5)+'" fill="#cde"/><line x1="50" y1="'+(130-h1*1.5)+'" x2="150" y2="'+(130-H*1.5)+'" stroke="#c00" stroke-dasharray="4 3"/>'+'<line x1="50" y1="138" x2="150" y2="138" stroke="#555"/>'+txt(100,148,d+' m',11)+txt(35,(124-h1*1.5),h1+' m',11)+txt(70,(120-h1*1.5),'45°',11)));}
+  var T=[[3,4,5],[6,8,10],[5,12,13],[8,15,17],[9,12,15]][R(0,4)],k=R(1,3),dh=T[0]*k,dd=T[1]*k,hyp=T[2]*k,a=R(3,9)*5;return W('Building A is '+a+' m tall and building B is '+(a+dh)+' m tall. They are '+dd+' m apart. A cable runs straight from the top of A to the top of B. How long is the cable?',hyp+' m',unitW(hyp,' m',[1,2,dh]),'Height difference '+dh+' m, distance '+dd+' m → √('+dh+'² + '+dd+'²) = '+hyp+' m.');}
+ case 14:{var hp=R(3,6)/2*1,sp=R(2,4),S=sp*R(3,8);var H=hp*S/sp;H=Math.round(H*10)/10;return W('A '+hp+'-m pole casts a '+sp+'-m shadow. At the same time a building casts a '+S+'-m shadow. How tall is the building?',H+' m',unitW(H,' m',[hp,sp,2]).filter(function(x){return x!==H+' m';}),'H/'+S+' = '+hp+'/'+sp+' → H = '+H+' m.');}
+ default:{// letter-position diagram (from the user's ChatGPT notes)
+  var n=5,labels=['A','B','C','D','E'],seg=[];for(var i=0;i<n-1;i++)seg.push(R(1,4)*10);var pos=[0];seg.forEach(function(s){pos.push(pos[pos.length-1]+s);});var tot=pos[n-1],xs=pos.map(function(p,i){return 25+i*82;});
+  var st=R(0,n-1),tg;do{tg=R(0,n-1);}while(tg===st);var dist=Math.abs(pos[tg]-pos[st]),vs=[10,20,30,40,60].filter(function(x){return dist%x===0&&dist/x<=6;}),v=vs.length?pick(vs):10,t=dist/v;
+  if(dist%v)return genWord();var dir=tg>st?'toward E':'toward A';
+  return mk('word','Points A–E on a straight road (km markers measured from A; spacing not to scale). A vehicle starts at <b>'+labels[st]+'</b> and travels '+dir+' at '+v+' km/h for '+t+' h. At which point does it stop?',labels[tg],labels.filter(function(x,i){return i!==tg;}),labels[st]+' is at '+pos[st]+' km; it moves '+v+'×'+t+' = '+dist+' km '+dir+' → '+pos[tg]+' km = point '+labels[tg]+'.','G',lineFig(xs,labels,pos.map(function(p){return p+' km';})),true);}
+}}
+
+GENS={cube:genDice,clock:genClock,defect:genDefect,match:genMatch,shape:genShape,vocab:genVocab4,synant:genSynAnt,arith:genArith,word:genWord,mech:genMech4};
 </script><script>var MEM={};var LS={get:function(k){try{return localStorage.getItem(k);}catch(e){return MEM[k]||null;}},set:function(k,v){try{localStorage.setItem(k,v);}catch(e){MEM[k]=v;}}};var MINS='5',USER=null;
 var USERS={daniel:{h:'94281819bf4726bb6824a301654a5ffddd8b581923dd321d4d644e8097ca1484',n:'Daniel'},mophet:{h:'b7894b57dc0032844a6aa97371ae681cf299543e494234640fb6eec4fdae5445',n:'Mophet'},abram:{h:'15aaa238f5180b484c9b02e2b80f9b4215f2ca693569ee464d826664e09d897d',n:'Abram'}};
 function uk(k){return k+':'+USER;}
@@ -809,14 +1211,14 @@ function start(mode,topic){mode=mode||MINS;var secs=(+mode)*60;S={mode:mode,topi
 function tick(){var r=Math.max(0,Math.round((S.end-Date.now())/1000));$('timer').textContent=Math.floor(r/60)+':'+('0'+r%60).slice(-2);$('timer').className=r<=30?'low':'';if(r<=0)finish();}
 function ask(){var it=S.cur=nextItem();S.sel=null;S.msel=[];$('qnum').textContent='Q'+(S.log.length+1)+' · '+TOPICS[it.t];
  $('qtext').innerHTML=it.q;$('qfig').innerHTML=it.fig;$('next').textContent='Next';$('qtext').parentNode.classList.toggle('ismatch',it.t==='match');$('qtext').parentNode.classList.toggle('isshape',it.t==='shape'&&it.kind==='set');
- if(it.multi){$('choices').innerHTML='<div class="grid">'+it.cells.map(function(c,i){return '<button class="cell" data-i="'+i+'"><span>'+(i+1)+'</span>'+c+'</button>';}).join('')+'</div>';
+ if(it.multi){$('choices').innerHTML=it.cols?inspGrid(it,false):'<div class="grid">'+it.cells.map(function(c,i){return '<button class="cell" data-i="'+i+'"><span>'+(i+1)+'</span>'+c+'</button>';}).join('')+'</div>';
   $('next').textContent='Submit';
   document.querySelectorAll('.cell').forEach(function(b){b.onclick=function(){var i=+b.dataset.i,k=S.msel.indexOf(i);if(k<0)S.msel.push(i);else S.msel.splice(k,1);b.classList.toggle('sel',k<0);$('next').disabled=!S.msel.length;};});}
- else{$('choices').innerHTML=(it.chimg?'<div class="imgch">':'')+it.ch.map(function(c,i){return '<button class="ch'+(it.chimg?' ich':'')+'" data-i="'+i+'">'+(it.chimg?'<b>'+c+'</b>'+it.chimg[i]:(it.fixed?'':'ABCD'[i]+'. ')+c)+'</button>';}).join('')+(it.chimg?'</div>':'');
+ else{$('choices').innerHTML=(it.chimg?'<div class="imgch">':'')+it.ch.map(function(c,i){return '<button class="ch'+(it.chimg?' ich':'')+'" data-i="'+i+'">'+(it.chimg?'<b>'+c+'</b>'+it.chimg[i]:(it.fixed&&!it.lab6?'':'ABCDEF'[i]+'. ')+c)+'</button>';}).join('')+(it.chimg?'</div>':'');
  document.querySelectorAll('.ch').forEach(function(b){b.onclick=function(){S.sel=it.ch[+b.dataset.i];document.querySelectorAll('.ch').forEach(function(x){x.classList.remove('sel');});b.classList.add('sel');$('next').disabled=false;};});}
  $('next').disabled=true;window.scrollTo(0,0);}
 function multiScore(it,sel){var hit=sel.filter(function(i){return it.ans.indexOf(i)>=0;}).length;return {hit:hit,fp:sel.length-hit,ok:hit===it.ans.length&&sel.length===hit};}
-function record(skip){var it=S.cur;if(it.multi){var sel=skip?[]:S.msel.slice().sort(function(a,b){return a-b;}),sc=multiScore(it,sel);S.log.push({it:it,sel:skip||!sel.length?null:sel.map(function(i){return '#'+(i+1);}).join(', '),ok:!skip&&sc.ok,part:sc});return;}S.log.push({it:it,sel:skip?null:S.sel,ok:!skip&&S.sel===it.a});}
+function record(skip){var it=S.cur;if(it.multi){var sel=skip?[]:S.msel.slice().sort(function(a,b){return a-b;}),sc=multiScore(it,sel);S.log.push({it:it,idx:sel,sel:skip||!sel.length?null:sel.map(function(i){return it.cols?'R'+(Math.floor(i/it.cols)+1)+'#'+(i%it.cols+1):'#'+(i+1);}).join(', '),ok:!skip&&sc.ok,part:sc});return;}S.log.push({it:it,sel:skip?null:S.sel,ok:!skip&&S.sel===it.a});}
 function finish(){clearInterval(TICK);if(!S)return;var log=S.log,ok=log.filter(function(l){return l.ok;}).length,ans=log.filter(function(l){return l.sel!==null;}).length;
  var key=S.topic?'topic:'+S.topic:'mixed'+S.mode,H=JSON.parse(LS.get(uk('mpatHist'))||'{}');var prev=H[key];
  var rec={ok:ok,n:log.length,date:new Date().toLocaleString()};if(!prev||ok>prev.ok)H[key]=rec;
@@ -826,10 +1228,11 @@ function finish(){clearInterval(TICK);if(!S)return;var log=S.log,ok=log.filter(f
  Object.keys(by).forEach(function(t){h+='<tr><td>'+TOPICS[t]+'</td><td>'+by[t].ok+' / '+by[t].n+'</td></tr>';});h+='</table><h3>Review of missed items</h3>';
  log.forEach(function(l,i){if(l.ok)return;h+='<div class="rev"><div class="small">Q'+(i+1)+' · '+TOPICS[l.it.t]+'</div><div>'+l.it.q+'</div>'+l.it.fig+revFig(l)+'<p>Your answer: <span class="bad">'+(l.sel===null?'(skipped)':l.sel)+'</span><br>Correct: <span class="good">'+l.it.a+'</span>'+(l.part&&l.sel!==null?'<br>Partial credit: found '+l.part.hit+' of '+l.it.ans.length+' defective, '+l.part.fp+' wrong pick(s)':'')+'</p><p class="small">'+l.it.e+'</p></div>';});
  $('result').innerHTML=h;S=null;show('res');}
-function revFig(l){var it=l.it;if(it.multi)return '<div class="grid rv">'+it.cells.map(function(c,i){var bad=it.ans.indexOf(i)>=0,p=l.sel&&(', '+l.sel+',').indexOf(' #'+(i+1)+',')>=0;return '<div class="cell'+(bad?' bad':'')+(p?' sel':'')+'"><span>'+(i+1)+'</span>'+c+'</div>';}).join('')+'</div><p class="small">Red border = defective; blue fill = your pick.</p>';
+function inspGrid(it,rv,selArr){var h='<div class="insp'+(rv?' rv':'')+'">';for(var r=0;r<it.cells.length/it.cols;r++){h+='<div class="irow"><b>'+(r+1)+'</b>';for(var c=0;c<it.cols;c++){var i=r*it.cols+c;h+=rv?'<div class="cell'+(it.ans.indexOf(i)>=0?' bad':'')+(selArr&&selArr.indexOf(i)>=0?' sel':'')+'">'+it.cells[i]+'</div>':'<button class="cell" data-i="'+i+'">'+it.cells[i]+'</button>';}h+='</div>';}return h+'</div>';}
+function revFig(l){var it=l.it;if(it.cols)return inspGrid(it,true,l.idx)+'<p class="small">Red border = defective; blue fill = your pick.</p>';if(it.multi)return '<div class="grid rv">'+it.cells.map(function(c,i){var bad=it.ans.indexOf(i)>=0,p=l.sel&&(', '+l.sel+',').indexOf(' #'+(i+1)+',')>=0;return '<div class="cell'+(bad?' bad':'')+(p?' sel':'')+'"><span>'+(i+1)+'</span>'+c+'</div>';}).join('')+'</div><p class="small">Red border = defective; blue fill = your pick.</p>';
  if(it.chimg)return '<div class="imgch">'+it.ch.map(function(c,i){return '<div class="ch ich'+(c===it.a?' right':'')+'"><b>'+c+'</b>'+it.chimg[i]+'</div>';}).join('')+'</div>';return '';}
 function setMins(m){MINS=m;document.querySelectorAll('.mbtn').forEach(function(b){b.classList.toggle('sel',b.dataset.m===m);});}
-function show(id){['home','quiz','res'].forEach(function(x){$(x).style.display=x===id?'block':'none';});if(id==='home')renderHome();}
+function show(id){['home','quiz','res','tips'].forEach(function(x){$(x).style.display=x===id?'block':'none';});if(id==='home')renderHome();}
 function renderHome(){var H=JSON.parse(LS.get(uk('mpatHist'))||'{}');
  $('topics').innerHTML=Object.keys(TOPICS).map(function(t){var b=H['topic:'+t];return '<button class="tp" onclick="start(null,\''+t+'\')">'+TOPICS[t]+(b?'<span class="small"> best '+b.ok+'/'+b.n+'</span>':'')+'</button>';}).join('');
  $('best').innerHTML=['5','7','10'].map(function(m){var b=H['mixed'+m];return m+'-min best: '+(b?b.ok+'/'+b.n+' ('+b.date+')':'—');}).join('<br>');}
