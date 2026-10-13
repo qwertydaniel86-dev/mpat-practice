@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PAF MPAT Practice</title><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#0b1d33;color:#111}
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PAF MPAT Practice</title><meta name="mpat-version" content="v2-2026-10-13"><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#0b1d33;color:#111}
 .wrap{max-width:720px;margin:0 auto;padding:12px}.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:12px}
 h1{color:#fff;font-size:1.3em;margin:8px 0}h2{margin-top:0}button{font-size:1em;padding:12px;border-radius:8px;border:1px solid #888;background:#f3f6fa;cursor:pointer}
 .big{display:block;width:100%;margin:8px 0;background:#1e5aa8;color:#fff;border:0;font-weight:bold}.tp{margin:4px;width:calc(50% - 8px)}
@@ -7,11 +7,21 @@ h1{color:#fff;font-size:1.3em;margin:8px 0}h2{margin-top:0}button{font-size:1em;
 .fig{max-width:100%;height:auto;max-height:220px;display:block;margin:8px auto}.optfigs{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}.optfigs div{text-align:center;width:23%;min-width:70px}.optfigs .fig{max-height:110px}
 .passage{background:#f4f1e8;padding:10px;border-radius:6px;margin-bottom:8px;font-size:.95em}.small{font-size:.8em;color:#555}.good{color:#087a2f;font-weight:bold}.bad{color:#b00;font-weight:bold}
 .rev{border-top:1px solid #ddd;padding:8px 0}table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid #ddd;padding:4px;text-align:left}
+.mbtn.sel{background:#1e5aa8;color:#fff}
+.stack{font-family:"Courier New",monospace;font-size:1.9em;line-height:1.15;text-align:right;display:table;margin:8px auto;padding:6px 14px;background:#f4f6fa;border-radius:8px}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin:8px 0}.cell{position:relative;padding:2px;background:#fff;border:2px solid #ccc;border-radius:6px}.cell span{position:absolute;top:1px;left:4px;font-size:.65em;color:#888}
+.cell.sel{background:#cfe0ff;border-color:#1e5aa8}.grid.rv .cell.bad{border-color:#d00}.cellfig{width:100%;height:auto;display:block}
+.imgch{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}.ich{text-align:center!important;padding:6px!important}.ich .fig,.ich svg{max-height:130px;width:100%;margin:0 auto}.ch.right{border:3px solid #087a2f}
+.clkrow{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}.clkrow .clk{max-width:240px;margin:0}.ops{display:flex;align-items:center;gap:4px}.arr{width:48px;height:48px;border:1px solid #aaa;border-radius:6px;background:#fff}
+.legend{font-size:.78em;color:#444;background:#fff8e1;padding:6px;border-radius:6px;margin:4px 0}
+.mtarget{text-align:center}.mfig{width:100%;max-width:150px;height:auto}.mfig.tgt{max-width:170px;border:3px solid #1e5aa8;border-radius:8px}
+@media(min-width:600px){.qmatch{display:flex}}
+.card.ismatch{display:grid;grid-template-columns:36% 1fr;gap:8px;align-items:center}.card.ismatch>#qtext,.card.ismatch>.row,.card.ismatch>p{grid-column:1/-1}
 </style></head><body><div class="wrap">
 <h1>✈ PAF MPAT Practice</h1>
-<div id="home"><div class="card"><p>Rapid-fire timed sets like the real Military Pilot Aptitude Test. Every set is randomly generated.</p>
-<button class="big" onclick="start('5')">5-minute mixed set</button><button class="big" onclick="start('10')">10-minute mixed set</button><p class="small" id="best"></p></div>
-<div class="card"><h3>Per-topic practice (5 min)</h3><div id="topics"></div></div></div>
+<div id="home"><div class="card"><p>Rapid-fire timed sets like the real Military Pilot Aptitude Test. Every set is randomly generated. <span class="small">v2 · 2026-10-13</span></p>
+<p><b>Time limit (applies to mixed set and every category):</b></p><div class="row"><button class="mbtn" data-m="5" onclick="setMins('5')">5 min</button><button class="mbtn" data-m="7" onclick="setMins('7')">7 min</button><button class="mbtn" data-m="10" onclick="setMins('10')">10 min</button></div><button class="big" onclick="start()">Start mixed set</button><p class="small" id="best"></p></div>
+<div class="card"><h3>Per-topic practice (uses the time limit above)</h3><div id="topics"></div></div></div>
 <div id="quiz" style="display:none"><div class="bar"><span id="qnum"></span><span id="timer"></span></div><div class="card"><div id="qtext"></div><div id="qfig"></div><div id="choices"></div>
 <div class="row"><button id="skip">Skip</button><button id="next" class="big" style="margin:0">Next</button></div><p><button id="stop" class="small">End set now</button></p></div></div>
 <div id="res" style="display:none"><div class="card" id="result"></div><button class="big" onclick="show('home')">Back to menu</button></div>
@@ -403,16 +413,138 @@ function staticItems(){var out=[];
  ANALOGY.forEach(function(a){out.push(mk('analogy',a[0],a[1],a[2],a[3],'O'));});
  RELATION.forEach(function(a){out.push(mk('relation',a[0],a[1],a[2],a[3],'O'));});
  MECH.forEach(function(a){out.push(mk('mech',a[0],a[1],a[2],a[3],a[4]));});
- ENGINE.forEach(function(a){out.push(mk('engine',a[0],a[1],a[2],a[3],a[4]));});
+ ENGINE.forEach(function(a){out.push(mk('mech',a[0],a[1],a[2],a[3],a[4]));});
  ENGINE_PARTS.forEach(function(p){var o=shuf(ENGINE_PARTS.filter(function(x){return x!==p;})).slice(0,3);
-  out.push(mk('engine','Engine part: <b>'+p[0]+'</b>. What does it do?',p[1],o.map(function(x){return x[1];}),p[0]+': '+p[1]+'.','R'));
-  out.push(mk('engine','Which engine part: "'+p[1]+'"?',p[0],o.map(function(x){return x[0];}),p[0]+': '+p[1]+'.','R'));});
+  out.push(mk('mech','Engine part: <b>'+p[0]+'</b>. What does it do?',p[1],o.map(function(x){return x[1];}),p[0]+': '+p[1]+'.','R'));
+  out.push(mk('mech','Which engine part: "'+p[1]+'"?',p[0],o.map(function(x){return x[0];}),p[0]+': '+p[1]+'.','R'));});
  READING.forEach(function(r){r.qs.forEach(function(q){out.push(mk('reading','<div class="passage">'+r.p+'</div>'+q[0],q[1],q[2],'See passage.',r.src));});});
  out.push(mk('word','Two men working together finish a job in 24 minutes. One of them alone can do it in 40 minutes. How long would the other take alone?','60 minutes',['16 minutes','64 minutes','48 minutes'],'1/24 − 1/40 = (5−3)/120 = 1/60 → 60 min. (Reviewer item.)','R'));
  out.push(mk('vocab','<b>OBSTINATE</b> most nearly means:','Stubborn',['Obvious','Generous','Fragile'],'Obstinate = stubbornly refusing to change.','R'));
  return out;}
 var GENS={cube:genCube,top:genTop,clock:genClock,defect:genDefect,vocab:genVocab,synant:genSynAnt,vector:genVector,drt:genDRT,arith:genArith,word:genWord,mech:genMechCalc};
-</script><script>var MEM={};var LS={get:function(k){try{return LS.get(k);}catch(e){return MEM[k]||null;}},set:function(k,v){try{LS.set(k,v);}catch(e){MEM[k]=v;}}};
+</script><script>/* ===== v2 generators (Oct 2026 update) ===== */
+TOPICS = {
+ cube:"Dice & cubes", top:"3D shape from above", clock:"Clock position", defect:"Defect in products", match:"Matching images",
+ vocab:"English vocabulary", synant:"Synonym / antonym", analogy:"Analogy", relation:"Relationship",
+ reading:"Reading comprehension", vector:"Vector math", drt:"DRT (dial reading)", arith:"Fast arithmetic",
+ word:"Math word problems", mech:"Mechanical & engine"
+};
+function f1(v){return Math.round(v*10)/10;}
+
+/* ---------- ARITHMETIC (vertical) ---------- */
+function stackHTML(nums,op){var w=Math.max.apply(null,nums.map(function(n){return String(n).length;}))+2;
+ var lines=nums.map(function(n,i){var s=String(n);var pre=(i===nums.length-1?op:' ');return pre+Array(w-s.length).join(' ')+s;});
+ return '<pre class="stack">'+lines.join('\n')+'\n'+Array(w+1).join('─')+'</pre>';}
+function closeWrong(ans){var out=[],t=0;while(out.length<3&&t<500){t++;var pos=Math.random()<.55?1:10;var d=ans+pos*R(1,9)*(Math.random()<.5?-1:1);
+  if(d>0&&d!==ans&&out.indexOf(d)<0&&String(d).length===String(ans).length)out.push(d);}
+ var k=1;while(out.length<3){var d=ans+k;if(out.indexOf(d)<0)out.push(d);k++;}return out;}
+function genArith(){var nums,op,ans,r=Math.random();
+ if(r<.38){var n=R(3,4);nums=[];for(var i=0;i<n;i++)nums.push(R(10,Math.random()<.5?99:999));op='+';ans=nums.reduce(function(a,b){return a+b;},0);}
+ else if(r<.7){var a=R(1000,9999),b=R(100,a-100);if(Math.random()<.4){a=R(200,999);b=R(10,a-10);}nums=[a,b];op='−';ans=a-b;}
+ else{var a=R(12,99),b=Math.random()<.75?R(3,9):R(11,39);nums=[a,b];op='×';ans=a*b;}
+ var it=mk('arith','Compute:',ans,closeWrong(ans),nums.join(' '+op+' ')+' = '+ans+'. Choices differ only in the last one or two digits, so check the units digit first, then the tens.','G',stackHTML(nums,op));
+ it.ch.sort(function(x,y){return x-y;});it.fixed=true;return it;}
+
+/* ---------- ROUGH SVG helpers ---------- */
+function jt(a){return (Math.random()*2-1)*a;}
+function roughLine(pts,closed,J,sw,fill){var o='';for(var pass=0;pass<2;pass++){var p=pts.map(function(q){return [f1(q[0]+jt(J)),f1(q[1]+jt(J))];});
+  var d='M'+p[0].join(' ');for(var i=1;i<p.length;i++){var a=p[i-1],b=p[i],mx=(a[0]+b[0])/2+jt(J),my=(a[1]+b[1])/2+jt(J);d+=' Q'+f1(mx)+' '+f1(my)+' '+b.join(' ');}
+  if(closed){var a=p[p.length-1],b=p[0];d+=' Q'+f1((a[0]+b[0])/2+jt(J))+' '+f1((a[1]+b[1])/2+jt(J))+' '+b.join(' ');}
+  o+='<path d="'+d+'" fill="'+(pass===0&&fill?fill:'none')+'" stroke="#222" stroke-width="'+(pass?sw*.6:sw)+'" stroke-linecap="round" stroke-linejoin="round" opacity="'+(pass?.7:1)+'"/>';}return o;}
+function circPts(cx,cy,r,ry){var p=[];for(var i=0;i<14;i++){var a=i/14*2*Math.PI;p.push([cx+r*Math.cos(a),cy+(ry||r)*Math.sin(a)]);}return p;}
+// parts: [id, kind('p' polyline,'c' closed poly,'o' circle), data, removable]
+var SKETCH={
+ cup:[['body','c',[[20,20],[70,20],[64,80],[26,80]],0],['handle','p',[[69,32],[86,34],[86,58],[66,62]],1],['rim','p',[[22,28],[68,28]],1],['steam1','p',[[38,14],[34,8],[39,2]],1],['steam2','p',[[52,14],[48,8],[53,2]],1],['dot','o',[45,52,5],1]],
+ house:[['wall','c',[[20,45],[80,45],[80,88],[20,88]],0],['roof','c',[[14,46],[50,14],[86,46]],0],['door','c',[[44,88],[44,66],[56,66],[56,88]],1],['win1','c',[[26,54],[38,54],[38,64],[26,64]],1],['win2','c',[[62,54],[74,54],[74,64],[62,64]],1],['chim','c',[[64,30],[64,16],[72,16],[72,37]],1]],
+ car:[['body','c',[[8,62],[18,46],[34,44],[44,32],[70,32],[80,44],[94,48],[94,62]],0],['w1','o',[26,64,8],1],['w2','o',[76,64,8],1],['win','c',[[47,36],[67,36],[74,44],[47,44]],1],['lamp','o',[90,53,2.5],1],['door','p',[[52,46],[52,60]],1]],
+ bulb:[['glass','o',[50,36,24],0],['neck','c',[[40,58],[60,58],[58,72],[42,72]],0],['th1','p',[[41,76],[59,76]],1],['th2','p',[[42,81],[58,81]],1],['fil','p',[[42,40],[46,30],[50,40],[54,30],[58,40]],1],['tip','p',[[47,86],[53,86]],1]],
+ key:[['bow','o',[26,50,16],0],['hole','o',[26,50,5],1],['shaft','p',[[42,50],[90,50]],0],['t1','p',[[80,50],[80,62]],1],['t2','p',[[72,50],[72,60]],1],['t3','p',[[88,50],[88,58]],1]],
+ fish:[['bodyf','o',[46,50,30,16],0],['tail','c',[[76,50],[94,36],[94,64]],0],['eye','o',[28,46,3],1],['fin','c',[[44,35],[54,22],[60,36]],1],['gill','p',[[36,40],[39,50],[36,60]],1],['mouth','p',[[16,52],[22,52]],1]]
+};
+function partSVG(p,J,mod){var k=p[1],d=p[2];
+ if(mod&&mod.scale){var s=mod.scale;if(k==='o')d=[d[0],d[1],d[2]*s,(d[3]||d[2])*s];else{var cx=0,cy=0;d.forEach(function(q){cx+=q[0];cy+=q[1];});cx/=d.length;cy/=d.length;d=d.map(function(q){return [cx+(q[0]-cx)*s,cy+(q[1]-cy)*s];});}}
+ if(mod&&mod.dx){if(k==='o')d=[d[0]+mod.dx,d[1]+mod.dy,d[2],d[3]];else d=d.map(function(q){return [q[0]+mod.dx,q[1]+mod.dy];});}
+ if(k==='o')return roughLine(circPts(d[0],d[1],d[2],d[3]),true,J*.6,2,p[0]==='w1'||p[0]==='w2'?'#ddd':null);
+ return roughLine(d,k==='c',J,2,null);}
+function sketchBB(name){var x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;SKETCH[name].forEach(function(p){var pts=p[1]==='o'?[[p[2][0]-p[2][2],p[2][1]-(p[2][3]||p[2][2])],[p[2][0]+p[2][2],p[2][1]+(p[2][3]||p[2][2])]]:p[2];pts.forEach(function(q){x0=Math.min(x0,q[0]);y0=Math.min(y0,q[1]);x1=Math.max(x1,q[0]);y1=Math.max(y1,q[1]);});});
+ var w=x1-x0,h=y1-y0,S=Math.max(w,h)+22;return f1((x0+x1)/2-S/2)+' '+f1((y0+y1)/2-S/2)+' '+f1(S)+' '+f1(S);}
+function sketchSVG(name,defect){var J=1.1,o='';SKETCH[name].forEach(function(p){
+  if(defect&&defect.id===p[0]){if(defect.type==='miss')return;if(defect.type==='shape'){o+=partSVG(p,J,{scale:defect.s});return;}
+   if(defect.type==='extra'){o+=partSVG(p,J);o+=partSVG(p,J,{dx:defect.dx,dy:defect.dy});return;}}
+  o+=partSVG(p,J);});
+ var bb=sketchBB(name);return '<svg viewBox="'+bb+'" xmlns="http://www.w3.org/2000/svg" class="cellfig">'+o+'</svg>';}
+function genDefect(){var name=pick(Object.keys(SKETCH)),parts=SKETCH[name],N=20,nb=pick([1,1,2,2,3,4]),bad=shuf(Array.apply(null,{length:N}).map(function(_,i){return i;})).slice(0,nb).sort(function(a,b){return a-b;});
+ var cells=[],notes=[];for(var i=0;i<N;i++){var df=null;if(bad.indexOf(i)>=0){var rem=parts.filter(function(p){return p[3];}),p=pick(rem),ty=pick(['miss','miss','shape','extra']);
+   if(ty==='shape')df={id:p[0],type:'shape',s:pick([.55,1.6])};else if(ty==='extra')df={id:p[0],type:'extra',dx:pick([-9,9]),dy:pick([-7,7])};else df={id:p[0],type:'miss'};
+   notes.push('#'+(i+1)+': '+(ty==='miss'?'missing ':ty==='shape'?(df.s<1?'shrunken ':'oversized '):'extra/duplicated ')+p[0].replace(/\d/,''));}
+  cells.push(sketchSVG(name,df));}
+ return {t:'defect',multi:true,q:'Tap EVERY defective '+name+' (missing part, extra part or wrong-size part), then press Submit. The sketchy lines are normal — look for real differences.',cells:cells,ans:bad,a:bad.map(function(i){return '#'+(i+1);}).join(', '),ch:[],fig:'',e:'Defective: '+notes.join('; ')+'. Scan one feature at a time across the whole grid.',s:'G',fixed:true};}
+
+/* ---------- 3D CLOCK ---------- */
+function hr12(n){n=((n%12)+12)%12;return n===0?12:n;}
+function clock3D(L,S,W){W=W||200;var cx=100,cy=86,rx=78,ry=48,dep=14,sk=-.18,o='';
+ function P(a,r){var x=Math.sin(a)*r,y=-Math.cos(a)*r;return [f1(cx+rx*x+sk*ry*y*0),f1(cy+ry*y+sk*x*ry*.25)];}
+ o+='<ellipse cx="'+cx+'" cy="'+(cy+dep)+'" rx="'+rx+'" ry="'+ry+'" fill="#6b7a8f"/><rect x="'+(cx-rx)+'" y="'+cy+'" width="'+(2*rx)+'" height="'+dep+'" fill="#6b7a8f"/>';
+ o+='<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" fill="#fdfcf7" stroke="#2b3a4f" stroke-width="3"/>';
+ for(var i=1;i<=12;i++){var a=i*Math.PI/6,p1=P(a,.86),p2=P(a,.97);o+='<line x1="'+p1[0]+'" y1="'+p1[1]+'" x2="'+p2[0]+'" y2="'+p2[1]+'" stroke="#000" stroke-width="'+(i%3?1.5:3)+'"/>';
+  if(i%3===0){var t=P(a,.72);o+=txt(t[0],t[1],i,13,'font-weight="bold" fill="#333"');}}
+ var pl=P(L*Math.PI/6,.82),ps=P(S*Math.PI/6,.52);
+ o+='<line x1="'+(cx+2)+'" y1="'+(cy+3)+'" x2="'+(pl[0]+2)+'" y2="'+(pl[1]+3)+'" stroke="#0003" stroke-width="3" stroke-linecap="round"/>';
+ o+='<line x1="'+cx+'" y1="'+cy+'" x2="'+pl[0]+'" y2="'+pl[1]+'" stroke="#1e5aa8" stroke-width="3" stroke-linecap="round"/>';
+ o+='<line x1="'+cx+'" y1="'+cy+'" x2="'+ps[0]+'" y2="'+ps[1]+'" stroke="#c00" stroke-width="6" stroke-linecap="round"/><circle cx="'+cx+'" cy="'+cy+'" r="5" fill="#222"/>';
+ return '<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" class="fig clk">'+o+'</svg>';}
+var CLK_OPS={cw:function(p){return hr12(p+1);},ccw:function(p){return hr12(p-1);},V:function(p){return hr12(6-p);},H:function(p){return hr12(12-p);},D1:function(p){return hr12(9-p);},D2:function(p){return hr12(3-p);}};
+var CLK_DESC={cw:'short ↻ = turn both hands 30° clockwise',ccw:'short ↺ = turn both hands 30° counter-clockwise',V:'long ↕ = flip vertically (top↔bottom: 12↔6, 1↔5…)',H:'long ↔ = flip horizontally (left↔right: 3↔9, 1↔11…)',D1:'long ⤢ (↗) = flip along that diagonal (12↔9, 3↔6…)',D2:'long ⤡ (↖) = flip along that diagonal (12↔3, 9↔6…)'};
+function opArrow(op){var o='';var mk2=function(x1,y1,x2,y2){var a=Math.atan2(y2-y1,x2-x1),h=8;return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="#000" stroke-width="3"/><polygon points="'+x2+','+y2+' '+f1(x2-h*Math.cos(a-.45))+','+f1(y2-h*Math.sin(a-.45))+' '+f1(x2-h*Math.cos(a+.45))+','+f1(y2-h*Math.sin(a+.45))+'"/>';};
+ if(op==='cw')o='<path d="M22 32 A12 12 0 1 1 38 32" fill="none" stroke="#000" stroke-width="3"/><polygon points="38,32 30,30 37,24" transform="rotate(30 38 32)"/>';
+ else if(op==='ccw')o='<path d="M38 32 A12 12 0 1 0 22 32" fill="none" stroke="#000" stroke-width="3"/><polygon points="22,32 30,30 23,24" transform="rotate(-30 22 32)"/>';
+ else if(op==='V')o=mk2(30,56,30,4);else if(op==='H')o=mk2(4,30,56,30);else if(op==='D1')o=mk2(8,52,52,8);else o=mk2(52,52,8,8);
+ return '<svg viewBox="0 0 60 60" class="arr" xmlns="http://www.w3.org/2000/svg">'+o+'</svg>';}
+function genClock(){for(;;){var L=R(1,12),S=R(1,12);if(L!==S)break;}
+ var n=pick([1,2,2,3]),ops=[];for(var i=0;i<n;i++)ops.push(pick(['cw','ccw','cw','ccw','V','H','D1','D2']));
+ function run(seq,l,s){seq.forEach(function(o){l=CLK_OPS[o](l);s=CLK_OPS[o](s);});return [l,s];}
+ var ans=run(ops,L,S),key=function(x){return x.join(',');},seen={},cands=[];seen[key(ans)]=1;
+ var alts=[];ops.forEach(function(o,i){var sw={cw:'ccw',ccw:'cw',V:'H',H:'V',D1:'D2',D2:'D1'};var a=ops.slice();a[i]=sw[o];alts.push(run(a,L,S));});
+ alts.push(run(ops.slice(0,-1),L,S));alts.push([ans[1],ans[0]]);alts.push([hr12(ans[0]+1),ans[1]]);alts.push([ans[0],hr12(ans[1]-1)]);alts.push(run(ops.slice().reverse(),L,S));alts.push([L,S]);
+ shuf(alts).forEach(function(a){if(cands.length<3&&!seen[key(a)]&&a[0]!==a[1]){seen[key(a)]=1;cands.push(a);}});
+ while(cands.length<3){var a=[hr12(ans[0]+R(1,11)),ans[1]];if(!seen[key(a)]&&a[0]!==a[1]){seen[key(a)]=1;cands.push(a);}}
+ var opts=shuf([ans].concat(cands)),Lb=['A','B','C','D'],ai=opts.indexOf(ans);
+ var fig='<div class="clkrow">'+clock3D(L,S)+'<div class="ops">'+ops.map(opArrow).join('<span>→</span>')+'</div></div><div class="legend">Blue = long hand, red = short hand. Short curved arrow: turn both hands one hour-step (30°) that way. Long straight arrow: flip the hands 180° across the face in that direction (↕ top↔bottom, ↔ left↔right, diagonal = mirror along that diagonal). Apply arrows left to right.</div>';
+ var it=mk('clock','Apply the arrow instructions to the clock. Which clock shows the result?',Lb[ai],Lb.filter(function(x,i){return i!==ai;}),'Steps: '+ops.map(function(o){return CLK_DESC[o];}).join(' → ')+'. Long hand '+L+'→'+ans[0]+', short hand '+S+'→'+ans[1]+'.','G',fig,true);
+ it.chimg=opts.map(function(o){return clock3D(o[0],o[1]);});it.sol=ans;it.opts=opts;return it;}
+
+/* ---------- MATCHING IMAGES ---------- */
+var MSH=['circ','sq','tri','ring','arrow','dia'],MFILL=['#222','#fff','#999','dot'];
+function mElemSVG(e){var x=e.x,y=e.y,s=8,f=e.f==='dot'?'#fff':e.f,o='';
+ if(e.s==='circ')o='<circle cx="'+x+'" cy="'+y+'" r="'+s+'" fill="'+f+'" stroke="#000" stroke-width="2"/>';
+ else if(e.s==='ring')o='<circle cx="'+x+'" cy="'+y+'" r="'+s+'" fill="none" stroke="#000" stroke-width="4"/>';
+ else if(e.s==='sq')o='<rect x="'+(x-s)+'" y="'+(y-s)+'" width="'+2*s+'" height="'+2*s+'" fill="'+f+'" stroke="#000" stroke-width="2"/>';
+ else if(e.s==='dia')o='<polygon points="'+x+','+(y-s-2)+' '+(x+s+2)+','+y+' '+x+','+(y+s+2)+' '+(x-s-2)+','+y+'" fill="'+f+'" stroke="#000" stroke-width="2"/>';
+ else if(e.s==='tri')o='<polygon points="'+x+','+(y-s-1)+' '+(x+s+1)+','+(y+s)+' '+(x-s-1)+','+(y+s)+'" fill="'+f+'" stroke="#000" stroke-width="2" transform="rotate('+e.d+' '+x+' '+y+')"/>';
+ else o='<polygon points="'+(x-9)+','+(y-3)+' '+(x+2)+','+(y-3)+' '+(x+2)+','+(y-8)+' '+(x+10)+','+y+' '+(x+2)+','+(y+8)+' '+(x+2)+','+(y+3)+' '+(x-9)+','+(y+3)+'" fill="'+f+'" stroke="#000" stroke-width="2" transform="rotate('+e.d+' '+x+' '+y+')"/>';
+ if(e.f==='dot'&&e.s!=='ring')o+='<circle cx="'+x+'" cy="'+y+'" r="2.5"/>';return o;}
+function mSVG(es,cls){return '<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" class="'+(cls||'mfig')+'"><rect x="2" y="2" width="116" height="116" rx="6" fill="#f7f9fc" stroke="#555" stroke-width="2"/>'+es.map(mElemSVG).join('')+'</svg>';}
+function mKey(es){return es.map(function(e){var d=e.s==='tri'||e.s==='arrow'?((e.d%360)+360)%360:0;if(e.s==='ring')return 'ring|'+e.x+'|'+e.y;return e.s+'|'+e.x+'|'+e.y+'|'+e.f+'|'+d;}).sort().join(';');}
+var MG=[20,40,60,80,100];
+function mMirror(es){return es.map(function(e){var n=Object.assign({},e);n.x=120-e.x;if(e.s==='tri')n.d=-e.d;if(e.s==='arrow')n.d=180-e.d;return n;});}
+function mRot(es,k){return es.map(function(e){var n=Object.assign({},e);for(var i=0;i<k;i++){var x=n.x;n.x=120-n.y;n.y=x;n.d=(n.d||0)+90;}return n;});}
+function mTweak(es){var n=es.map(function(e){return Object.assign({},e);}),i=R(0,n.length-1),e=n[i],t=R(0,3);
+ if(t===0&&e.s!=='ring')e.f=pick(MFILL.filter(function(f){return f!==e.f;}));
+ else if(t===1){e.s=pick(MSH.filter(function(s){return s!==e.s;}));e.d=pick([0,90,180,270]);}
+ else if(t===2&&(e.s==='tri'||e.s==='arrow'))e.d+=pick([90,180,270]);
+ else{var used={};n.forEach(function(q){used[q.x+','+q.y]=1;});var free=[];MG.forEach(function(x){MG.forEach(function(y){if(!used[x+','+y]&&Math.abs(x-e.x)+Math.abs(y-e.y)<=40)free.push([x,y]);});});if(free.length){var p=pick(free);e.x=p[0];e.y=p[1];}else e.f=pick(MFILL.filter(function(f){return f!==e.f;}));}
+ return n;}
+function mRandom(){var n=R(4,6),cells=shuf([].concat.apply([],MG.map(function(x){return MG.map(function(y){return [x,y];});}))).slice(0,n);
+ return cells.map(function(c){return {s:pick(MSH),x:c[0],y:c[1],f:pick(MFILL),d:pick([0,90,180,270])};});}
+function genMatch(){for(var att=0;att<100;att++){var T=mRandom(),k0=mKey(T),seen={};seen[k0]=1;var cands=[];
+  var gens=shuf([function(){return mMirror(T);},function(){return mRot(T,pick([1,2,3]));},function(){return mTweak(T);},function(){return mTweak(T);},function(){return mMirror(mRot(T,1));},function(){return mTweak(T);}]);
+  for(var g=0;g<gens.length*3&&cands.length<3;g++){var c=gens[g%gens.length]();var k=mKey(c);if(!seen[k]){seen[k]=1;cands.push(c);}}
+  if(cands.length<3)continue;
+  var opts=shuf([T].concat(cands)),Lb=['A','B','C','D'],ai=opts.indexOf(T);
+  var it=mk('match','Which choice is IDENTICAL to the target (not mirrored, not rotated, no detail changed)?',Lb[ai],Lb.filter(function(x,i){return i!==ai;}),'Option '+Lb[ai]+' matches. The others are mirrored, rotated, or have one shape/shade/position changed — check corner elements and arrow directions first.','G','<div class="mtarget"><b>Target</b>'+mSVG(T,'mfig tgt')+'</div>',true);
+  it.chimg=opts.map(function(o){return mSVG(o);});it.keys=opts.map(mKey);it.tkey=k0;return it;}}
+GENS.match=genMatch;GENS.clock=genClock;GENS.defect=genDefect;GENS.arith=genArith;
+</script><script>var MEM={};var LS={get:function(k){try{return localStorage.getItem(k);}catch(e){return MEM[k]||null;}},set:function(k,v){try{localStorage.setItem(k,v);}catch(e){MEM[k]=v;}}};var MINS='5';
 var STATIC=staticItems(),S=null,TICK=null;
 var $=function(id){return document.getElementById(id);};
 function deckFor(topic){return shuf(STATIC.filter(function(x){return !topic||x.t===topic;}));}
@@ -421,15 +553,19 @@ function nextItem(){var t=S.topic;
  var hasGen=!!GENS[t],st=S.decks[t]||(S.decks[t]=deckFor(t));
  var it;if(hasGen&&(!st.length||Math.random()<.7))it=GENS[t]();else{if(!st.length)st=S.decks[t]=deckFor(t);it=st.pop();}
  it=JSON.parse(JSON.stringify(it));if(!it.fixed)it.ch=shuf(it.ch);return it;}
-function start(mode,topic){var secs=mode==='10'?600:300;S={mode:mode,topic:topic||null,decks:{},log:[],end:Date.now()+secs*1000,secs:secs};
+function start(mode,topic){mode=mode||MINS;var secs=(+mode)*60;S={mode:mode,topic:topic||null,decks:{},log:[],end:Date.now()+secs*1000,secs:secs};
  show('quiz');ask();clearInterval(TICK);TICK=setInterval(tick,250);tick();}
 function tick(){var r=Math.max(0,Math.round((S.end-Date.now())/1000));$('timer').textContent=Math.floor(r/60)+':'+('0'+r%60).slice(-2);$('timer').className=r<=30?'low':'';if(r<=0)finish();}
-function ask(){var it=S.cur=nextItem();S.sel=null;$('qnum').textContent='Q'+(S.log.length+1)+' · '+TOPICS[it.t];
- $('qtext').innerHTML=it.q;$('qfig').innerHTML=it.fig;
- $('choices').innerHTML=it.ch.map(function(c,i){return '<button class="ch" data-i="'+i+'">'+(it.fixed?'':'ABCD'[i]+'. ')+c+'</button>';}).join('');
- Array.prototype.forEach.call(document.querySelectorAll('.ch'),function(b){b.onclick=function(){S.sel=it.ch[+b.dataset.i];document.querySelectorAll('.ch').forEach(function(x){x.classList.remove('sel');});b.classList.add('sel');$('next').disabled=false;};});
+function ask(){var it=S.cur=nextItem();S.sel=null;S.msel=[];$('qnum').textContent='Q'+(S.log.length+1)+' · '+TOPICS[it.t];
+ $('qtext').innerHTML=it.q;$('qfig').innerHTML=it.fig;$('next').textContent='Next';$('qtext').parentNode.classList.toggle('ismatch',it.t==='match');
+ if(it.multi){$('choices').innerHTML='<div class="grid">'+it.cells.map(function(c,i){return '<button class="cell" data-i="'+i+'"><span>'+(i+1)+'</span>'+c+'</button>';}).join('')+'</div>';
+  $('next').textContent='Submit';
+  document.querySelectorAll('.cell').forEach(function(b){b.onclick=function(){var i=+b.dataset.i,k=S.msel.indexOf(i);if(k<0)S.msel.push(i);else S.msel.splice(k,1);b.classList.toggle('sel',k<0);$('next').disabled=!S.msel.length;};});}
+ else{$('choices').innerHTML=(it.chimg?'<div class="imgch">':'')+it.ch.map(function(c,i){return '<button class="ch'+(it.chimg?' ich':'')+'" data-i="'+i+'">'+(it.chimg?'<b>'+c+'</b>'+it.chimg[i]:(it.fixed?'':'ABCD'[i]+'. ')+c)+'</button>';}).join('')+(it.chimg?'</div>':'');
+ document.querySelectorAll('.ch').forEach(function(b){b.onclick=function(){S.sel=it.ch[+b.dataset.i];document.querySelectorAll('.ch').forEach(function(x){x.classList.remove('sel');});b.classList.add('sel');$('next').disabled=false;};});}
  $('next').disabled=true;window.scrollTo(0,0);}
-function record(skip){var it=S.cur;S.log.push({it:it,sel:skip?null:S.sel,ok:!skip&&S.sel===it.a});}
+function multiScore(it,sel){var hit=sel.filter(function(i){return it.ans.indexOf(i)>=0;}).length;return {hit:hit,fp:sel.length-hit,ok:hit===it.ans.length&&sel.length===hit};}
+function record(skip){var it=S.cur;if(it.multi){var sel=skip?[]:S.msel.slice().sort(function(a,b){return a-b;}),sc=multiScore(it,sel);S.log.push({it:it,sel:skip||!sel.length?null:sel.map(function(i){return '#'+(i+1);}).join(', '),ok:!skip&&sc.ok,part:sc});return;}S.log.push({it:it,sel:skip?null:S.sel,ok:!skip&&S.sel===it.a});}
 function finish(){clearInterval(TICK);if(!S)return;var log=S.log,ok=log.filter(function(l){return l.ok;}).length,ans=log.filter(function(l){return l.sel!==null;}).length;
  var key=S.topic?'topic:'+S.topic:'mixed'+S.mode,H=JSON.parse(LS.get('mpatHist')||'{}');var prev=H[key];
  var rec={ok:ok,n:log.length,date:new Date().toLocaleString()};if(!prev||ok>prev.ok)H[key]=rec;
@@ -437,11 +573,14 @@ function finish(){clearInterval(TICK);if(!S)return;var log=S.log,ok=log.filter(f
  var by={};log.forEach(function(l){var b=by[l.it.t]||(by[l.it.t]={ok:0,n:0});b.n++;if(l.ok)b.ok++;});
  var h='<h2>Score: '+ok+' / '+log.length+'</h2><p>Answered '+ans+', skipped '+(log.length-ans)+'. Accuracy on answered: '+(ans?Math.round(ok/ans*100):0)+'%'+(!prev||ok>prev.ok?' · <b>New best!</b>':' · Best: '+prev.ok)+'</p><table><tr><th>Topic</th><th>Correct</th></tr>';
  Object.keys(by).forEach(function(t){h+='<tr><td>'+TOPICS[t]+'</td><td>'+by[t].ok+' / '+by[t].n+'</td></tr>';});h+='</table><h3>Review of missed items</h3>';
- log.forEach(function(l,i){if(l.ok)return;h+='<div class="rev"><div class="small">Q'+(i+1)+' · '+TOPICS[l.it.t]+'</div><div>'+l.it.q+'</div>'+l.it.fig+'<p>Your answer: <span class="bad">'+(l.sel===null?'(skipped)':l.sel)+'</span><br>Correct: <span class="good">'+l.it.a+'</span></p><p class="small">'+l.it.e+'</p></div>';});
+ log.forEach(function(l,i){if(l.ok)return;h+='<div class="rev"><div class="small">Q'+(i+1)+' · '+TOPICS[l.it.t]+'</div><div>'+l.it.q+'</div>'+l.it.fig+revFig(l)+'<p>Your answer: <span class="bad">'+(l.sel===null?'(skipped)':l.sel)+'</span><br>Correct: <span class="good">'+l.it.a+'</span>'+(l.part&&l.sel!==null?'<br>Partial credit: found '+l.part.hit+' of '+l.it.ans.length+' defective, '+l.part.fp+' wrong pick(s)':'')+'</p><p class="small">'+l.it.e+'</p></div>';});
  $('result').innerHTML=h;S=null;show('res');}
+function revFig(l){var it=l.it;if(it.multi)return '<div class="grid rv">'+it.cells.map(function(c,i){var bad=it.ans.indexOf(i)>=0,p=l.sel&&(', '+l.sel+',').indexOf(' #'+(i+1)+',')>=0;return '<div class="cell'+(bad?' bad':'')+(p?' sel':'')+'"><span>'+(i+1)+'</span>'+c+'</div>';}).join('')+'</div><p class="small">Red border = defective; blue fill = your pick.</p>';
+ if(it.chimg)return '<div class="imgch">'+it.ch.map(function(c,i){return '<div class="ch ich'+(c===it.a?' right':'')+'"><b>'+c+'</b>'+it.chimg[i]+'</div>';}).join('')+'</div>';return '';}
+function setMins(m){MINS=m;document.querySelectorAll('.mbtn').forEach(function(b){b.classList.toggle('sel',b.dataset.m===m);});}
 function show(id){['home','quiz','res'].forEach(function(x){$(x).style.display=x===id?'block':'none';});if(id==='home')renderHome();}
 function renderHome(){var H=JSON.parse(LS.get('mpatHist')||'{}');
- $('topics').innerHTML=Object.keys(TOPICS).map(function(t){var b=H['topic:'+t];return '<button class="tp" onclick="start(\'5\',\''+t+'\')">'+TOPICS[t]+(b?'<span class="small"> best '+b.ok+'/'+b.n+'</span>':'')+'</button>';}).join('');
- $('best').innerHTML=['5','10'].map(function(m){var b=H['mixed'+m];return m+'-min best: '+(b?b.ok+'/'+b.n+' ('+b.date+')':'—');}).join('<br>');}
-(function(){$('next').onclick=function(){record(false);ask();};$('skip').onclick=function(){record(true);ask();};$('stop').onclick=function(){finish();};show('home');})();
+ $('topics').innerHTML=Object.keys(TOPICS).map(function(t){var b=H['topic:'+t];return '<button class="tp" onclick="start(null,\''+t+'\')">'+TOPICS[t]+(b?'<span class="small"> best '+b.ok+'/'+b.n+'</span>':'')+'</button>';}).join('');
+ $('best').innerHTML=['5','7','10'].map(function(m){var b=H['mixed'+m];return m+'-min best: '+(b?b.ok+'/'+b.n+' ('+b.date+')':'—');}).join('<br>');}
+(function(){$('next').onclick=function(){record(false);ask();};$('skip').onclick=function(){record(true);ask();};$('stop').onclick=function(){finish();};show('home');setMins('5');})();
 </script></body></html>
