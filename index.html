@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PAF MPAT Practice</title><meta name="mpat-version" content="v5.3-2026-10-15"><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#0b1d33;color:#111}
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PAF MPAT Practice</title><meta name="mpat-version" content="v5.4-2026-10-15"><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#0b1d33;color:#111}
 .wrap{max-width:720px;margin:0 auto;padding:12px}.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:12px}
 h1{color:#fff;font-size:1.3em;margin:8px 0}h2{margin-top:0}button{font-size:1em;padding:12px;border-radius:8px;border:1px solid #888;background:#f3f6fa;cursor:pointer}
 .big{display:block;width:100%;margin:8px 0;background:#1e5aa8;color:#fff;border:0;font-weight:bold}.tp{margin:4px;width:calc(50% - 8px)}
@@ -41,11 +41,19 @@ details.rev.ismiss{border-left:5px solid #b00}details.rev.isok{border-left:5px s
 .pgrank td,.pgtab td{font-size:.9em;vertical-align:middle}.pgbar{display:inline-block;width:60px;height:8px;background:#eee;border-radius:4px;margin-right:4px;vertical-align:middle;overflow:hidden}.pgbar b{display:block;height:100%}
 .pgrec li{margin:4px 0}.pgrule{background:#f3f6fa;padding:6px;border-radius:6px}.pgnote{font-weight:normal!important;font-size:.95em}.pgnote a{font-weight:bold}
 .pgrank td:nth-child(3){white-space:nowrap}.pgbar{width:44px}
+
+/* v5.4 devices / guard */
+#gban{background:#fff3cd;color:#664d03;border-radius:8px;padding:8px 10px;margin-bottom:8px;font-size:.85em}
+.gacct h3{margin:0 0 6px}.gdev{display:flex;gap:8px;align-items:center;justify-content:space-between;border-top:1px solid #e3e8ef;padding:8px 0}.gdev>div{min-width:0}
+.gdev .gua{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom;color:#777}.gdev button{flex:none;padding:8px 10px}
+.gcur{background:#f3f8ff;border-radius:6px;padding:8px 6px}.gtag{background:#1e5aa8;color:#fff;border-radius:10px;padding:1px 7px;font-size:.7em;vertical-align:middle}
+#devs input,#devs select{display:block;width:100%;font-size:1em;padding:10px;margin:6px 0;border:1px solid #999;border-radius:8px;background:#fff}#lmsg{line-height:1.4}
 </style></head><body><div class="wrap">
 <h1>✈ PAF MPAT Practice</h1>
-<div id="login" class="card" style="display:none"><h2>Sign in</h2><form onsubmit="return doLogin(event)"><input id="lu" placeholder="Username" autocomplete="username" autocapitalize="none"><input id="lp" type="password" placeholder="Password" autocomplete="current-password"><button class="big" type="submit">Log in</button></form><p id="lmsg" class="bad"></p></div>
-<div id="app" style="display:none"><div class="ubar"><button class="small" onclick="show('home')">Practice</button><button class="small" onclick="show('prog')">Progress</button><button class="small" onclick="show('tips')">Tips &amp; Tricks</button><span>Logged in as <b id="who"></b></span> <button class="small" onclick="logout()">Logout</button></div>
-<div id="home"><div class="card"><p>Rapid-fire timed sets like the real Military Pilot Aptitude Test. Every set is randomly generated. <span class="small">v5.3 · 2026-10-15</span></p>
+<div id="login" class="card" style="display:none"><h2>Sign in</h2><form onsubmit="return doLogin(event)"><input id="lu" placeholder="Username" autocomplete="username" autocapitalize="none"><input id="lp" type="password" placeholder="Password" autocomplete="current-password"><button class="big" type="submit">Log in</button></form><p id="lmsg" class="bad"></p><button id="gretry" class="big" style="display:none" onclick="gRetry()">Retry</button></div>
+<div id="app" style="display:none"><div class="ubar"><button class="small" onclick="show('home')">Practice</button><button class="small" onclick="show('prog')">Progress</button><button class="small" onclick="show('tips')">Tips &amp; Tricks</button><button class="small" id="gdevbtn" style="display:none" onclick="show('devs')">Devices</button><span>Logged in as <b id="who"></b></span> <button class="small" onclick="logout()">Logout</button></div>
+<div id="gban" style="display:none"></div>
+<div id="home"><div class="card"><p>Rapid-fire timed sets like the real Military Pilot Aptitude Test. Every set is randomly generated. <span class="small">v5.4 · 2026-10-15</span></p>
 <p><b>Time limit (applies to mixed set and every category):</b></p><div class="row"><button class="mbtn" data-m="5" onclick="setMins('5')">5 min</button><button class="mbtn" data-m="7" onclick="setMins('7')">7 min</button><button class="mbtn" data-m="10" onclick="setMins('10')">10 min</button></div><button class="big" onclick="start()">Start mixed set</button><p class="small" id="best"></p></div>
 <div class="card"><h3>Per-topic practice (uses the time limit above)</h3><div id="topics"></div></div></div>
 <div id="quiz" style="display:none"><div class="bar"><span id="qnum"></span><span id="timer"></span></div><div class="card"><div id="qtext"></div><div id="qfig"></div><div id="choices"></div>
@@ -138,6 +146,7 @@ details.rev.ismiss{border-left:5px solid #b00}details.rev.isok{border-left:5px s
 </ul>
 </div><button class="big" onclick="show('home')">Back to menu</button></div>
 <div id="prog" style="display:none"><div id="progbody"></div><button class="big" onclick="show('home')">Back to menu</button></div>
+<div id="devs" style="display:none"><div id="devbody"></div><button class="big" onclick="show('home')">Back to menu</button></div>
 <div id="res" style="display:none"><div class="card" id="result"></div><button class="big" onclick="show('home')">Back to menu</button></div>
 </div></div><script>// Static banks. src: R = from Daniel's reviewer, O = original
 var VOCAB = [
@@ -2151,15 +2160,90 @@ function pgCSV(A){var q=function(v){v=v==null?'':String(v);return /[",\n]/.test(
   Object.keys(a.sub||{}).map(function(k){return k.replace('|',': ')+' '+a.sub[k].ok+'/'+a.sub[k].n;}).join('; ')]);});
  return rows.map(function(r){return r.map(q).join(',');}).join('\n');}
 function pgDownload(A){var b=new Blob([pgCSV(A)],{type:'text/csv'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='mpat-progress-'+USER+'-'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(u);a.remove();},500);}
+</script><script>var GUARD_URL='https://script.google.com/macros/s/AKfycbxjOhBYKHDKQN1AgnBSwxy2Rmxqbs0Z-L95kIV5mp6YelYzUEvaRg74Z22hUoIE80Y9/exec';/* v5.4: MPAT Guard Apps Script /exec URL. Empty = old client-only login (no device limits). Set by deploy54.sh. */
+</script><script>/* ===== v5.4 (Oct 15 2026): MPAT Guard client — server login, per-user device limits, heartbeats, Devices panel =====
+   Active only when GUARD_URL (guardcfg.js) is non-empty; otherwise the app keeps the v5.3 client-only login.
+   Requests are POST with a plain-text JSON body (CORS "simple request": no preflight); fetch follows the
+   Apps Script 302 to script.googleusercontent.com, which answers with Access-Control-Allow-Origin: *.
+   Offline rule: a session validated by the server within the last 24 h keeps working offline; older => blocked with Retry. */
+var G_KEY='mpatGuard',G_DEVKEY='mpatDev',G_OFFLINE_MS=24*3600e3,G_HB_MS=5*60e3,G_TIMEOUT_MS=15000,G_HBT=null,G_LAST=0,G_ADMIN='daniel';
+function gOn(){return typeof GUARD_URL==='string'&&/^https?:\/\//.test(GUARD_URL);}
+/* ---- pure helpers (unit-tested in selftest.js) ---- */
+function gOfflineOk(s,now){return !!(s&&s.tok&&s.at&&now>=s.at-6e4&&now-s.at<G_OFFLINE_MS);}
+function gUaSummary(ua){ua=String(ua||'');var os=/iPhone/.test(ua)?'iPhone':/iPad/.test(ua)?'iPad':/Android/.test(ua)?'Android':/Windows/.test(ua)?'Windows':/CrOS/.test(ua)?'Chromebook':/Mac OS X|Macintosh/.test(ua)?'Mac':/Linux/.test(ua)?'Linux':'Unknown OS';
+ var br=/Edg[A-Z]?\//.test(ua)?'Edge':/OPR\/|Opera/.test(ua)?'Opera':/SamsungBrowser/.test(ua)?'Samsung Internet':/FBAN|FBAV|Instagram|Line\//.test(ua)?'In-app browser':/CriOS|Chrome\//.test(ua)?'Chrome':/FxiOS|Firefox\//.test(ua)?'Firefox':/Safari\//.test(ua)?'Safari':'Browser';return br+' · '+os;}
+function gNewDevId(bytes){var s='d-';for(var i=0;i<bytes.length;i++)s+=('0'+bytes[i].toString(36)).slice(-2);return s.slice(0,34);}
+function gAgo(ms,now){var d=Math.max(0,now-ms),m=Math.round(d/6e4);if(m<2)return 'just now';if(m<60)return m+' min ago';var h=Math.round(m/60);if(h<36)return h+' h ago';return Math.round(h/24)+' days ago';}
+function gLoginMsg(r){r=r||{};if(r.code==='bad')return 'Wrong username or password.'+(r.left>0&&r.left<=3?' '+r.left+' more wrong attempt'+(r.left>1?'s':'')+' will lock this account for 15 minutes.':'');
+ if(r.code==='locked')return 'Too many failed attempts. This account is locked — try again in '+r.mins+' min.';
+ if(r.code==='full')return 'This account is already in use on '+r.n+' devices (limit '+r.max+'). Log out on one of them first, or ask Daniel to remove a device.';
+ if(r.code==='net')return 'Can’t reach the login server. Check your internet connection and try again.';
+ if(r.code==='busy')return 'Login server is busy — please try again in a moment.';return r.msg||'Login failed — please try again.';}
+function gRevokedMsg(why){return why==='removed'?'This device was removed from your account. Sign in again if you still need it.':why==='password_changed'?'Your password was changed, so this device was signed out. Sign in with the new password.':why==='expired'?'You were signed out after 14 days without use. Please sign in again.':why==='logged_out'?'You were logged out on this device.':'Your session has ended. Please sign in again.';}
+/* ---- storage ---- */
+function gSess(){try{var s=JSON.parse(LS.get(G_KEY)||'null');return s&&s.u&&s.tok?s:null;}catch(e){return null;}}
+function gSave(s){LS.set(G_KEY,JSON.stringify(s));}
+function gClear(){LS.set(G_KEY,'');}
+function gDev(){var d=LS.get(G_DEVKEY);if(d&&/^d-[a-z0-9]{8,40}$/.test(d))return d;var b=new Uint8Array(16);crypto.getRandomValues(b);d=gNewDevId(b);LS.set(G_DEVKEY,d);return d;}
+/* ---- network ---- */
+async function gCall(a,o){o=o||{};o.a=a;var ctl=typeof AbortController!=='undefined'?new AbortController():null,tm=ctl?setTimeout(function(){ctl.abort();},G_TIMEOUT_MS):0;
+ try{var r=await fetch(GUARD_URL,{method:'POST',body:JSON.stringify(o),redirect:'follow',credentials:'omit',cache:'no-store',signal:ctl?ctl.signal:undefined});if(!r.ok)throw new Error('HTTP '+r.status);return await r.json();}finally{if(tm)clearTimeout(tm);}}
+function gAuth(o){var s=gSess()||{};o=o||{};o.u=s.u;o.tok=s.tok;o.dev=gDev();return o;}
+/* ---- UI glue ---- */
+function gMsg(t,retry){var m=document.getElementById('lmsg');if(m)m.textContent=t||'';var b=document.getElementById('gretry');if(b)b.style.display=retry?'block':'none';}
+function gBanner(t){var b=document.getElementById('gban');if(b){b.textContent=t||'';b.style.display=t?'block':'none';}}
+function gStartHb(){clearInterval(G_HBT);G_HBT=setInterval(function(){if(document.visibilityState!=='hidden')gCheck('hb');},G_HB_MS);/* hidden tabs don't beat: a forgotten background tab isn't 'in use' */}
+function gStopHb(){clearInterval(G_HBT);G_HBT=null;}
+function gShowLogin(){document.getElementById('app').style.display='none';document.getElementById('login').style.display='block';}
+async function gLogin(u,h){var r;try{r=await gCall('login',{u:u,h:h,dev:gDev(),ua:navigator.userAgent.slice(0,200),label:gUaSummary(navigator.userAgent)});}catch(e){r={ok:false,code:'net'};}
+ if(!r||!r.ok)return r||{ok:false,code:'net'};gSave({u:r.u,tok:r.tok,at:Date.now(),n:r.n,max:r.max,admin:!!r.admin,name:r.name});G_LAST=Date.now();return r;}
+// validate the saved session with the server. Returns true if the app may stay open.
+async function gCheck(why){var s=gSess();if(!s){if(USER)logout(true);return false;}var r=null;
+ try{r=await gCall('hb',gAuth());}catch(e){r=null;}G_LAST=Date.now();s=gSess();if(!s)return false;
+ if(r&&r.ok){s.at=Date.now();s.n=r.n;s.max=r.max;s.admin=!!r.admin;s.name=r.name;gSave(s);gBanner('');if(USER!==s.u){USER=s.u;LS.set('mpatUser',s.u);enterApp();}gStartHb();return true;}
+ if(r&&r.code==='revoked'){logout(true);gMsg(gRevokedMsg(r.why));return false;}
+ if(gOfflineOk(s,Date.now())){gBanner('Offline — can’t reach the login server. Your saved sign-in works until '+new Date(s.at+G_OFFLINE_MS).toLocaleString()+'.');if(USER!==s.u){USER=s.u;enterApp();}gStartHb();return true;}
+ if(typeof S!=='undefined'&&S&&USER)return true; // never cut off a running timed set; re-checked on the next heartbeat
+ USER=null;gStopHb();gShowLogin();gMsg('Can’t reach the login server, and this device hasn’t been verified in the last 24 hours. Connect to the internet and tap Retry.',true);return false;}
+function gBoot(){var s=gSess();if(!s){logout(true);return;}
+ if(gOfflineOk(s,Date.now())){USER=s.u;LS.set('mpatUser',s.u);enterApp();gCheck('load');}else{gShowLogin();gMsg('Checking your sign-in…');gCheck('load');}
+ document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'&&gSess()&&Date.now()-G_LAST>G_HB_MS)gCheck('visible');});}
+function gRetry(){gMsg('Checking your sign-in…');gCheck('retry');}
+/* ---- Devices panel ---- */
+function gEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function gDevHtml(r,me){var now=r.now||Date.now(),h='<div class="card"><h2>Devices</h2><p class="small">'+(r.admin?'You are the admin: every account’s active devices are listed. Limits: Daniel 3, everyone else 2. Removing a device signs it out at its next check (within about 5 minutes).':'Your account can be active on up to '+(r.accounts[0]?r.accounts[0].max:2)+' devices. Remove one you no longer use to free a slot.')+' Devices unused for '+r.inactiveDays+' days are removed automatically.</p></div>';
+ r.accounts.forEach(function(a){h+='<div class="card gacct"><h3>'+gEsc(a.name)+' <span class="small">('+gEsc(a.u)+') · '+a.devices.length+' / '+a.max+' devices'+(a.locked?' · <span class="bad">locked</span>':'')+'</span></h3>';
+  if(!a.devices.length)h+='<p class="small">No active devices.</p>';
+  a.devices.forEach(function(d){h+='<div class="gdev'+(d.cur?' gcur':'')+'"><div><b>'+gEsc(d.label)+'</b>'+(d.cur?' <span class="gtag">This device</span>':'')+'<br><span class="small">Last seen '+gAgo(d.last,now)+' · first '+new Date(d.first).toLocaleDateString()+' · ID '+gEsc(d.dev.slice(2,8))+'</span><br><span class="small gua">'+gEsc(d.ua)+'</span></div>'
+   +'<button class="small gdel" data-u="'+gEsc(a.u)+'" data-d="'+gEsc(d.dev)+'" data-l="'+gEsc(d.label)+'">'+(d.cur?'Log out':'Remove')+'</button></div>';});h+='</div>';});
+ h+='<div class="card"><h3>Change password</h3>'+(r.admin?'<select id="gpu">'+r.accounts.map(function(a){return '<option value="'+gEsc(a.u)+'"'+(a.u===me?' selected':'')+'>'+gEsc(a.name)+'</option>';}).join('')+'</select>':'')
+  +'<input id="gpo" type="password" placeholder="Current password" autocomplete="current-password"><input id="gpn" type="password" placeholder="New password (8+ characters)" autocomplete="new-password"><input id="gpn2" type="password" placeholder="Repeat new password" autocomplete="new-password"><button class="big" id="gpbtn">Change password</button><p id="gpmsg" class="small"></p>'
+  +'<p class="small">Changing your own password signs out your other devices. '+(r.admin?'Resetting another account (current password not needed) signs out all of its devices — then tell them the new password.':'')+'</p></div>';return h;}
+async function renderDevices(){var el=document.getElementById('devbody');el.innerHTML='<div class="card"><p>Loading devices…</p></div>';var r;
+ try{r=await gCall('devices',gAuth());}catch(e){el.innerHTML='<div class="card"><p class="bad">Can’t reach the login server. Try again when online.</p></div>';return;}
+ if(!r.ok){if(r.code==='revoked'){logout(true);gMsg(gRevokedMsg(r.why));return;}el.innerHTML='<div class="card"><p class="bad">'+gEsc(r.msg||'Error')+'</p></div>';return;}
+ el.innerHTML=gDevHtml(r,USER);
+ el.querySelectorAll('.gdel').forEach(function(b){b.onclick=async function(){var mine=b.dataset.u===USER&&b.dataset.d===gDev();if(!confirm(mine?'Log out on this device?':'Remove “'+b.dataset.l+'” from '+b.dataset.u+'? It will be signed out and its slot freed.'))return;b.disabled=true;
+  var x;try{x=await gCall('remove',gAuth({tu:b.dataset.u,tdev:b.dataset.d}));}catch(e){alert('Can’t reach the login server.');b.disabled=false;return;}
+  if(x.ok&&x.self){logout(true);gMsg('You logged out on this device.');return;}if(!x.ok&&x.code==='revoked'){logout(true);gMsg(gRevokedMsg(x.why));return;}renderDevices();};});
+ var sel=document.getElementById('gpu'),po=document.getElementById('gpo'),tg=function(){po.style.display=!sel||sel.value===USER?'block':'none';};if(sel)sel.onchange=tg;tg();
+ document.getElementById('gpbtn').onclick=async function(){var t=sel?sel.value:USER,n=document.getElementById('gpn').value,n2=document.getElementById('gpn2').value,m=document.getElementById('gpmsg');
+  if(n.length<8){m.textContent='New password must be at least 8 characters.';return;}if(n!==n2){m.textContent='The new passwords don’t match.';return;}
+  var o={tu:t,nh:await sha256hex(t+':'+n)};if(t===USER)o.oh=await sha256hex(USER+':'+po.value);m.textContent='Saving…';var x;
+  try{x=await gCall('passwd',gAuth(o));}catch(e){m.textContent='Can’t reach the login server.';return;}
+  m.textContent=x.ok?(t===USER?'Password changed. '+x.signedOut+' other device(s) were signed out.':'Password for '+t+' changed; '+x.signedOut+' device(s) signed out. Tell them the new password.'):(x.msg||'Failed');if(x.ok){po.value='';document.getElementById('gpn').value='';document.getElementById('gpn2').value='';}};}
 </script><script>var MEM={};var LS={get:function(k){try{return localStorage.getItem(k);}catch(e){return MEM[k]||null;}},set:function(k,v){try{localStorage.setItem(k,v);}catch(e){MEM[k]=v;}}};var MINS='5',USER=null;
-var USERS={daniel:{h:'94281819bf4726bb6824a301654a5ffddd8b581923dd321d4d644e8097ca1484',n:'Daniel'},mophet:{h:'b7894b57dc0032844a6aa97371ae681cf299543e494234640fb6eec4fdae5445',n:'Mophet'},abram:{h:'15aaa238f5180b484c9b02e2b80f9b4215f2ca693569ee464d826664e09d897d',n:'Abram'},cicero:{h:'5925710dcce176d09b01d20fdb024653b0281949dec161408f3f34319ce6daea',n:'Cicero'}};
+var USERS={daniel:{n:'Daniel'},mophet:{n:'Mophet'},abram:{n:'Abram'},cicero:{n:'Cicero'}};
 function uk(k){return k+':'+USER;}
 async function sha256hex(s){var b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(function(x){return ('0'+x.toString(16)).slice(-2);}).join('');}
 async function doLogin(ev){if(ev)ev.preventDefault();var u=document.getElementById('lu').value.trim().toLowerCase(),p=document.getElementById('lp').value,m=document.getElementById('lmsg');
  if(!window.crypto||!crypto.subtle){m.textContent='Secure login needs HTTPS (WebCrypto unavailable).';return false;}
- var h=await sha256hex(u+':'+p);if(USERS[u]&&USERS[u].h===h){USER=u;LS.set('mpatUser',u);m.textContent='';document.getElementById('lp').value='';enterApp();}else{m.textContent='Wrong username or password.';}return false;}
-function logout(){if(S){clearInterval(TICK);pgAdd(pgBuild(S,S.log,'logout'));pgLiveClear(S.user);S=null;}USER=null;try{localStorage.removeItem('mpatUser');}catch(e){MEM.mpatUser=null;}document.getElementById('app').style.display='none';document.getElementById('login').style.display='block';}
-function enterApp(){document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';document.getElementById('who').textContent=USERS[USER].n;PG_SEL='overview';try{pgMigrate(USER);pgRecoverAbandoned(USER);}catch(e){}show('home');}
+ var h=await sha256hex(u+':'+p);
+ if(gOn()){var bt=ev&&ev.target&&ev.target.querySelector('button');if(bt)bt.disabled=true;gMsg('Signing in…');var r=await gLogin(u,h);if(bt)bt.disabled=false;
+  if(r.ok){USER=r.u;LS.set('mpatUser',r.u);gMsg('');document.getElementById('lp').value='';enterApp();gStartHb();}else gMsg(gLoginMsg(r));return false;}
+ if(USERS[u]&&USERS[u].h===h){USER=u;LS.set('mpatUser',u);m.textContent='';document.getElementById('lp').value='';enterApp();}else{m.textContent='Wrong username or password.';}return false;}
+function logout(silent){if(gOn()){var gs=gSess();if(gs&&silent!==true)gCall('logout',gAuth()).catch(function(){});gClear();gStopHb();gBanner('');gMsg('');}if(S){clearInterval(TICK);pgAdd(pgBuild(S,S.log,'logout'));pgLiveClear(S.user);S=null;}USER=null;try{localStorage.removeItem('mpatUser');}catch(e){MEM.mpatUser=null;}document.getElementById('app').style.display='none';document.getElementById('login').style.display='block';}
+function enterApp(){document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';document.getElementById('who').textContent=(USERS[USER]||(gSess()||{})).n||(gSess()||{}).name||USER;document.getElementById('gdevbtn').style.display=gOn()?'':'none';PG_SEL='overview';try{pgMigrate(USER);pgRecoverAbandoned(USER);}catch(e){}show('home');}
 var STATIC=staticItems(),S=null,TICK=null;
 var $=function(id){return document.getElementById(id);};
 function deckFor(topic){return shuf(STATIC.filter(function(x){return !topic||x.t===topic;}));}
@@ -2208,9 +2292,9 @@ function inspGrid(it,rv,selArr){var h='<div class="insp'+(rv?' rv':'')+'">';for(
 function revFig(l){var it=l.it;if(it.cols)return inspGrid(it,true,l.idx)+'<p class="small">Red border = defective; blue fill = your pick.</p>';if(it.multi)return '<div class="grid rv">'+it.cells.map(function(c,i){var bad=it.ans.indexOf(i)>=0,p=l.sel&&(', '+l.sel+',').indexOf(' #'+(i+1)+',')>=0;return '<div class="cell'+(bad?' bad':'')+(p?' sel':'')+'"><span>'+(i+1)+'</span>'+c+'</div>';}).join('')+'</div><p class="small">Red border = defective; blue fill = your pick.</p>';
  if(it.chimg)return '<div class="imgch">'+it.ch.map(function(c,i){return '<div class="ch ich'+(c===it.a?' right':'')+'"><b>'+c+'</b>'+it.chimg[i]+'</div>';}).join('')+'</div>';return '';}
 function setMins(m){MINS=m;document.querySelectorAll('.mbtn').forEach(function(b){b.classList.toggle('sel',b.dataset.m===m);});}
-function show(id){['home','quiz','res','tips','prog'].forEach(function(x){$(x).style.display=x===id?'block':'none';});if(id==='home')renderHome();if(id==='prog')renderProgress();}
+function show(id){['home','quiz','res','tips','prog','devs'].forEach(function(x){$(x).style.display=x===id?'block':'none';});if(id==='home')renderHome();if(id==='devs')renderDevices();if(id==='prog')renderProgress();}
 function renderHome(){var H=JSON.parse(LS.get(uk('mpatHist'))||'{}');
  $('topics').innerHTML=Object.keys(TOPICS).map(function(t){var b=H['topic:'+t];return '<button class="tp" onclick="start(null,\''+t+'\')">'+TOPICS[t]+(b?'<span class="small"> best '+b.ok+'/'+b.n+'</span>':'')+'</button>';}).join('');
  $('best').innerHTML=['5','7','10'].map(function(m){var b=H['mixed'+m];return m+'-min best: '+(b?b.ok+'/'+b.n+' ('+b.date+')':'—');}).join('<br>');}
-(function(){$('next').onclick=function(){record(false);ask();};$('skip').onclick=function(){record(true);ask();};$('stop').onclick=function(){finish('quit');};setMins('5');var u=LS.get('mpatUser');if(u&&USERS[u]){USER=u;enterApp();}else logout();})();
+(function(){$('next').onclick=function(){record(false);ask();};$('skip').onclick=function(){record(true);ask();};$('stop').onclick=function(){finish('quit');};setMins('5');if(gOn()){gBoot();return;}var u=LS.get('mpatUser');if(u&&USERS[u]){USER=u;enterApp();}else logout();})();
 </script></body></html>
