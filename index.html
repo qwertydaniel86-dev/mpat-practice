@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PAF MPAT Practice</title><meta name="mpat-version" content="v5.1-2026-10-14"><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#0b1d33;color:#111}
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PAF MPAT Practice</title><meta name="mpat-version" content="v5.2-2026-10-15"><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#0b1d33;color:#111}
 .wrap{max-width:720px;margin:0 auto;padding:12px}.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:12px}
 h1{color:#fff;font-size:1.3em;margin:8px 0}h2{margin-top:0}button{font-size:1em;padding:12px;border-radius:8px;border:1px solid #888;background:#f3f6fa;cursor:pointer}
 .big{display:block;width:100%;margin:8px 0;background:#1e5aa8;color:#fff;border:0;font-weight:bold}.tp{margin:4px;width:calc(50% - 8px)}
@@ -27,11 +27,17 @@ h1{color:#fff;font-size:1.3em;margin:8px 0}h2{margin-top:0}button{font-size:1em;
 .insp .cell.sel{background:#cfe0ff}.insp.rv .cell.bad{border-color:#d00}
 .tips h3{margin:14px 0 4px;color:#1e5aa8}.tips li{margin:3px 0}.ubar{flex-wrap:wrap}
 .clk3row{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}.clk3.big{width:170px;height:170px;background:#fff;border:2px solid #1e5aa8;border-radius:10px}.arr3{width:70px;height:70px}.ich .clk3{max-height:130px;width:100%}
+/* v5.2 debrief */
+details.rev{border:1px solid #d6dde8;border-radius:8px;padding:0;margin:6px 0;background:#fff}details.rev>summary{cursor:pointer;padding:8px 10px;list-style:none;line-height:1.35}details.rev>summary::-webkit-details-marker{display:none}
+details.rev.ismiss{border-left:5px solid #b00}details.rev.isok{border-left:5px solid #087a2f}details.rev[open]>summary{background:#f3f6fa;border-bottom:1px solid #d6dde8}
+.dbody{padding:8px 10px;overflow-x:auto}.mk{font-size:1.1em}.dbf{margin:6px 0}.dbf button{padding:8px 6px}.dbf button.sel{background:#1e5aa8;color:#fff}
+.why{background:#eef7ee;border-radius:6px;padding:8px;margin:6px 0}.whyno{background:#fdeeee;border-radius:6px;padding:8px;margin:6px 0}.why p,.whyno p{margin:4px 0}
+.steps{margin:4px 0;padding-left:20px}.steps li{margin:3px 0}.cite{font-style:italic;background:#fff8e1}
 </style></head><body><div class="wrap">
 <h1>✈ PAF MPAT Practice</h1>
 <div id="login" class="card" style="display:none"><h2>Sign in</h2><form onsubmit="return doLogin(event)"><input id="lu" placeholder="Username" autocomplete="username" autocapitalize="none"><input id="lp" type="password" placeholder="Password" autocomplete="current-password"><button class="big" type="submit">Log in</button></form><p id="lmsg" class="bad"></p></div>
 <div id="app" style="display:none"><div class="ubar"><button class="small" onclick="show('home')">Practice</button><button class="small" onclick="show('tips')">Tips &amp; Tricks</button><span>Logged in as <b id="who"></b></span> <button class="small" onclick="logout()">Logout</button></div>
-<div id="home"><div class="card"><p>Rapid-fire timed sets like the real Military Pilot Aptitude Test. Every set is randomly generated. <span class="small">v5.1 · 2026-10-14</span></p>
+<div id="home"><div class="card"><p>Rapid-fire timed sets like the real Military Pilot Aptitude Test. Every set is randomly generated. <span class="small">v5.2 · 2026-10-15</span></p>
 <p><b>Time limit (applies to mixed set and every category):</b></p><div class="row"><button class="mbtn" data-m="5" onclick="setMins('5')">5 min</button><button class="mbtn" data-m="7" onclick="setMins('7')">7 min</button><button class="mbtn" data-m="10" onclick="setMins('10')">10 min</button></div><button class="big" onclick="start()">Start mixed set</button><p class="small" id="best"></p></div>
 <div class="card"><h3>Per-topic practice (uses the time limit above)</h3><div id="topics"></div></div></div>
 <div id="quiz" style="display:none"><div class="bar"><span id="qnum"></span><span id="timer"></span></div><div class="card"><div id="qtext"></div><div id="qfig"></div><div id="choices"></div>
@@ -69,7 +75,7 @@ h1{color:#fff;font-size:1.3em;margin:8px 0}h2{margin-top:0}button{font-size:1em;
 <li>Keep a steady rhythm; don't re-check finished rows unless you have spare time.</li></ul>
 <h3>7. Mental rotation: dice &amp; clocks</h3>
 <ul><li><b>Dice</b>: faces that ever appear together in a view are neighbours, never opposite. Collect each face's neighbours; the one face left over is opposite. On a cube each face has exactly four neighbours.</li>
-<li>For "which cube could it be", reject any picture that puts two opposite faces side by side, then check the order (clockwise) of the three faces around the shared corner — a mirror order is impossible.</li>
+<li>If a letter has fewer than four known neighbours, pair up the OTHER letters first: once a letter's opposite is fixed, it can be crossed off everyone else's list. The after-test debrief shows this elimination step by step.</li>
 <li><b>Clocks</b>: read the arrow sweep in eighths of a circle (45° each). Follow one landmark only — usually the 12 — and ask where it will be after the turn: 90° clockwise puts 12 at the right, 180° at the bottom, 90° counter-clockwise at the left. Combine two arrows by adding clockwise and subtracting counter-clockwise turns.</li>
 <li><b>3D clock (1–3 numbered arrows)</b>: apply arrow 1, then 2, then 3, each starting from the previous result. Order matters — swapping two 90° turns about different axes gives a different picture, and the distractors include wrong-order and missing-step answers. Track one feature (bells or red 12) step by step.</li>
 <li>Rotate the picture, not yourself: keep your head still and imagine the paper turning.</li></ul>
@@ -103,7 +109,7 @@ h1{color:#fff;font-size:1.3em;margin:8px 0}h2{margin-top:0}button{font-size:1em;
 <li>Expect to not finish every section; speed tests are designed that way. One hard item is worth the same as an easy one.</li>
 <li>If you blank, drop that item, answer the next easy one to regain rhythm, then come back.</li>
 <li>Talk to yourself like an instructor: "next item, eyes on the question".</li></ul>
-<h3>About the question data (v5.1)</h3>
+<h3>About the question data (v5.2)</h3>
 <ul class="small"><li>All 124 reading passages and all other questions are original text written for this app (facts paraphrased from general public knowledge; no public-domain or copyrighted text is copied, and no real test items are reproduced). Each reading item uses its own passage; passages you have already seen are remembered on this device and not shown again until all 124 have been used.</li>
 <li>Vocabulary (600+ single-word items): head-word/answer pairs are hand-curated. At build time, each word's difficulty tag (easy/medium/hard) is computed from its frequency in the open-source <a href="https://github.com/rspeer/wordfreq" target="_blank" rel="noopener">wordfreq</a> data (Apache-2.0 code; data under CC BY-SA 4.0), and the definitions shown in the review plus the check that no distractor is a real synonym come from <a href="https://wordnet.princeton.edu/" target="_blank" rel="noopener">Princeton WordNet 3.0</a> (WordNet License, free to use with attribution: "WordNet. Princeton University. 2010.").</li>
 <li>Everything is built into the page, so the app works offline. No live web API is used: the free dictionary API we tested (dictionaryapi.dev) was not answering reliably at build time.</li></ul>
@@ -1745,6 +1751,167 @@ function genClock(){for(var att=0;att<300;att++){
   ch:['A','B','C','D'],a:L6[ai],fixed:true,s:'G',chimg:imgs,O0:O0,arrs:arrs,nArrows:n,optM:opts.map(function(o){return o.M;}),whys:opts.map(function(o){return o.why;}),
   e:arrs.map(function(a,i){return (n>1?(i+1)+') ':'')+AMT[a.deg]+' '+ARROWS[a.dir].sym+' = '+a.deg+'° '+ARROWS[a.dir].name;}).join('; ')+'. Wrong choices: '+opts.map(function(o,i){return i===ai?null:L6[i]+' = '+o.why;}).filter(Boolean).join('; ')+'. Tip: track ONE feature (e.g. the bells or the red 12) through each turn in order.'};}}
 GENS.clock=genClock;GENS.reading=genReading;
+</script><script>/* ===== v5.2 (Oct 15 2026): dice = opposite-letter only; Fast Addition / Subtraction / Multiplication as separate categories; per-question-type debrief explanations ===== */
+TOPICS = {
+ cube:"Dice & cubes (opposite letter)", clock:"Clock rotation (3D)", defect:"Inspection / defects", match:"Matching images",
+ shape:"Shape Completion / Odd Fit", vocab:"English vocabulary", synant:"Synonym / antonym", reading:"Reading comprehension",
+ add:"Fast addition", sub:"Fast subtraction", mul:"Fast multiplication", word:"Math word problems", mech:"Mechanical / car parts & engine"
+};
+var ARITH3=['add','sub','mul'];
+function esc52(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function strip52(s){return String(s==null?'':s).replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();}
+
+/* ---------- DICE: only "which letter is opposite X" ---------- */
+function viewLetters(v){return v.map(function(f){return f.L;});}
+function diceAdj(views){var adj={};'ABCDEF'.split('').forEach(function(l){adj[l]={};});views.forEach(function(v){var L=viewLetters(v);L.forEach(function(a){L.forEach(function(b){if(a!==b)adj[a][b]=1;});});});return adj;}
+// adjacency-based deduction: returns {steps:[...], solved:bool}
+function diceDeduce(views,x){var adj=diceAdj(views),ALL='ABCDEF'.split(''),cand={},pair={},steps=[];
+ ALL.forEach(function(l){cand[l]=ALL.filter(function(m){return m!==l&&!adj[l][m];});});
+ for(var guard=0;guard<6;guard++){var prog=false;
+  for(var i=0;i<ALL.length;i++){var y=ALL[i];if(pair[y])continue;var c=cand[y].filter(function(m){return !pair[m];});
+   if(c.length===1){var z=c[0];pair[y]=z;pair[z]=y;var nb=Object.keys(adj[y]).filter(function(m){return m!==z;});
+    var elim=ALL.filter(function(m){return m!==y&&m!==z&&!adj[y][m];});
+    steps.push('<b>'+y+'</b> is seen next to '+(nb.length?nb.join(', '):'—')+(elim.length?' and '+elim.join(', ')+' '+(elim.length>1?'are':'is')+' already paired with another letter':'')+', so the only letter left for the face opposite <b>'+y+'</b> is <b>'+z+'</b>.');prog=true;if(pair[x])return {steps:steps,solved:true,adj:adj,cand:cand,pair:pair};break;}}
+  if(!prog)break;}
+ return {steps:steps,solved:!!pair[x],adj:adj,cand:cand,pair:pair};}
+function genDice52(){for(;;){for(var att=0;att<300;att++){
+ var cube=randCube(),nv=R(3,5),views=[],keys={},rs=shuf(ROT24);
+ for(var i=0;i<rs.length&&views.length<nv;i++){var v=dview(cube,rs[i]),k=dkey(v);if(!keys[k]){keys[k]=1;views.push(v);}}
+ var seenL=uniq([].concat.apply([],views.map(viewLetters)));if(seenL.length<6)continue;
+ var cands=solveCubes(views);if(!cands.length)continue;
+ var vf='<div class="dviews">'+views.map(function(v,i){return '<div>'+dcubeSVG(v)+'<span>('+(i+1)+')</span></div>';}).join('')+'</div>';
+ var x=pick(['A','B','C','D','E','F']),opps=uniq(cands.map(function(c){var f=c.find(function(g){return g.L===x;});return c.find(function(g){return vk(g.n)===vk(f.n.map(function(z){return -z;}));}).L;}));if(opps.length!==1)continue;
+ var ans=opps[0],ch=['A','B','C','D','E','F'].filter(function(y){return y!==x;}).concat(['Cannot be determined']);
+ var nbx=uniq([].concat.apply([],views.filter(function(v){return v.some(function(f){return f.L===x;});}).map(viewLetters))).filter(function(y){return y!==x;});
+ return {t:'cube',q:'The '+nv+' pictures show the SAME lettered cube. Which letter is on the face <b>opposite '+x+'</b>?',fig:vf,ch:ch,a:ans,fixed:true,numlab:true,s:'G',kind:'opp',x:x,views:views,
+  e:'Letters seen next to '+x+' are neighbours, not opposite; '+x+' appears with '+nbx.join(', ')+', so '+ans+' is opposite.'};}}}
+GENS.cube=genDice52;
+
+/* ---------- FAST ARITHMETIC split into three categories (same 2-digit difficulty as v4/v5) ---------- */
+function arithItem(t,nums,op,ans){var it=mk(t,'Compute (every number is 2 digits):',ans,closeWrong(ans),nums.join(' '+op+' ')+' = '+ans+'.','G',stackHTML(nums,op));
+ it.ch.sort(function(x,y){return x-y;});it.fixed=true;it.nums=nums;it.op=op;return it;}
+function genAdd(){var n=R(3,5),nums=[];for(var i=0;i<n;i++)nums.push(R(10,99));return arithItem('add',nums,'+',nums.reduce(function(a,b){return a+b;},0));}
+function genSub(){var a=R(21,99),b=R(10,a-1);return arithItem('sub',[a,b],'−',a-b);}
+function genMul(){var nums=[R(11,99),R(11,29)];return arithItem('mul',nums,'×',nums[0]*nums[1]);}
+// v5.2 mixed set: the three Fast-arithmetic categories share ONE topic slot (same overall arithmetic share as v5.1),
+// rotating add -> sub -> mul so every operation appears; each is still scored/debriefed under its own name.
+function mixedTopic(st){st=st||S;var keys=Object.keys(TOPICS).filter(function(k){return ARITH3.indexOf(k)<0;}).concat(['_arith']),t=pick(keys);
+ if(t!=='_arith')return t;if(st.arithI==null)st.arithI=Math.floor(Math.random()*3);return ARITH3[st.arithI++%3];}
+delete GENS.arith;GENS.add=genAdd;GENS.sub=genSub;GENS.mul=genMul;
+
+/* ---------- READING: keep v5.1 pool logic, but remember passage/question for the debrief ---------- */
+function genReading52(){var used=readUsedGet(),u={};used.forEach(function(x){u[x]=1;});
+ var avail=RPOOL.filter(function(r){return !u[r.id];});if(!avail.length){used=[];avail=RPOOL.slice();}
+ var P=pick(avail);used.push(P.id);readUsedSet(used);
+ var qi=Math.floor(Math.random()*P.qs.length),q=P.qs[qi];
+ var it=mk('reading','<div class="passage"><span class="small">'+P.topic+'</span><br>'+P.p+'</div>'+q[0],q[1],q[2],q[3]||'','O');
+ it.pid=P.id;it.qid=P.id+':'+qi;it.pass=P.p;it.qq=q[0];it.qy=P.y;return it;}
+GENS.reading=genReading52;
+
+/* ===================== DEBRIEF EXPLANATIONS (one builder per question type) ===================== */
+var CLKPART={front:'clock face (red 12)',back:'back (battery cover + key)',left:'red-button side',right:'slider side',top:'bells',bottom:'legs'};
+var CLKN={front:[0,-1,0],back:[0,1,0],left:[-1,0,0],right:[1,0,0],top:[0,0,1],bottom:[0,0,-1]};
+function clockDesc(M){var P=Object.keys(CLKN).map(function(k){var n=mv(M,CLKN[k]);return {k:k,n:n};});
+ var tw=P.slice().sort(function(a,b){return a.n[1]-b.n[1];}),up=P.slice().sort(function(a,b){return b.n[2]-a.n[2];});
+ var pl=function(k){return k==='top'||k==='bottom';};var f=-tw[0].n[1]>0.9?'the '+CLKPART[tw[0].k]+(pl(tw[0].k)?' face':' faces')+' you':'you see the edge between the '+CLKPART[tw[0].k]+' and the '+CLKPART[tw[1].k];
+ var t=up[0].n[2]>0.9?'the '+CLKPART[up[0].k]+' '+(pl(up[0].k)?'are':'is')+' on top':'the '+CLKPART[up[0].k]+' and '+CLKPART[up[1].k]+' share the top';
+ return f+', '+t;}
+function explainClock(it,sel){var M=it.O0,st=['<b>Start:</b> '+clockDesc(M)+'.'];
+ it.arrs.forEach(function(a,i){M=mm(arrowMat(a),M);st.push('<b>'+(it.arrs.length>1?'Arrow '+(i+1):'Arrow')+'</b> ('+AMT[a.deg]+' '+ARROWS[a.dir].sym+') = '+a.deg+'° '+ARROWS[a.dir].name+' → '+clockDesc(M)+'.');});
+ var ai=it.ch.indexOf(it.a);st.push('Picture <b>'+it.a+'</b> shows exactly that final position.');
+ var w='';if(sel!=null&&sel!==it.a){var si=it.ch.indexOf(sel);if(si>=0&&it.optM)w='Picture '+sel+' shows a position where '+clockDesc(it.optM[si])+' — that is what you get if '+(it.whys?it.whys[si]:'a different turn is made')+'.';}
+ return {why:'<ol class="steps"><li>'+st.join('</li><li>')+'</li></ol>',wrong:w};}
+function oppAllowed(cb,x,c){var fx=cb.find(function(g){return g.L===x;}),fc=cb.find(function(g){return g.L===c;}),neg=function(n){return vk(n.map(function(z){return -z;}));};
+ if(fx&&fc)return vk(fc.n)===neg(fx.n);var f=fx||fc;if(f)return !cb.some(function(g){return vk(g.n)===neg(f.n);});return true;}
+function explainDice(it,sel){var d=diceDeduce(it.views,it.x),x=it.x,a=it.a,out=[];
+ out.push('In every picture the three visible faces meet at one corner, so <b>letters shown together are neighbours</b>, never opposite.');
+ out.push(it.views.map(function(v,i){return 'Picture ('+(i+1)+'): '+viewLetters(v).join(', ');}).join('; ')+'.');
+ var nbx=Object.keys(d.adj[x]).sort();out.push('<b>'+x+'</b> is seen next to '+nbx.join(', ')+'. Each face has exactly 4 neighbours and 1 opposite.');
+ if(nbx.length===4)out.push('That is all 4 neighbours of '+x+', so the one letter never seen with it — <b>'+a+'</b> — must be opposite.');
+ else if(d.solved){out.push('So the face opposite '+x+' is one of '+d.cand[x].join(', ')+'. Pair up the other opposites:');d.steps.forEach(function(s){out.push(s);});}
+ else{d.steps.forEach(function(s){out.push(s);});var rem=d.cand[x].filter(function(c){return !d.pair||!d.pair[c]||d.pair[c]===x;});
+  out.push('Neighbours alone leave '+rem.join(' or ')+' as the face opposite '+x+'; the <b>direction of the letters</b> decides it:');
+  rem.filter(function(c){return c!==a;}).forEach(function(c){var why=null;
+   for(var i=0;i<it.views.length&&!why;i++)for(var j=i+1;j<it.views.length&&!why;j++){var cs=solveCubes([it.views[i],it.views[j]]);if(!cs.some(function(cb){return oppAllowed(cb,x,c);}))why='pictures ('+(i+1)+') and ('+(j+1)+')';}
+   out.push('If '+c+' were opposite '+x+', '+(why||'the pictures')+' could not both show the same cube: turn one so the shared letter(s) line up, and either the clockwise order of the letters around the corner or the direction the letters point no longer matches. So '+c+' is ruled out.');});
+  out.push('That leaves <b>'+a+'</b> opposite '+x+'.');}
+ var w='';if(sel!=null&&sel!==a){if(sel==='Cannot be determined')w='It CAN be determined: the reasoning above fixes the opposite face uniquely.';else if(d.adj[x][sel])w=sel+' appears in the same picture as '+x+' ('+it.views.map(function(v,i){return viewLetters(v).indexOf(x)>=0&&viewLetters(v).indexOf(sel)>=0?'('+(i+1)+')':null;}).filter(Boolean).join(', ')+'), so it is a neighbour, not the opposite face.';else w=sel+' is never shown next to '+x+', but it is paired opposite another letter (see the steps above), so it cannot also be opposite '+x+'.';}
+ return {why:'<ol class="steps"><li>'+out.join('</li><li>')+'</li></ol>',wrong:w};}
+function colsum(nums,p){return nums.map(function(n){return Math.floor(n/p)%10;});}
+function explainAdd(it,sel){var n=it.nums,u=colsum(n,1),t=colsum(n,10),us=u.reduce(function(a,b){return a+b;},0),c=Math.floor(us/10),ts=t.reduce(function(a,b){return a+b;},0)+c,ans=+it.a;
+ var s=['<b>Units column:</b> '+u.join(' + ')+' = '+us+' → write '+(us%10)+(c?', carry '+c:'')+'.','<b>Tens column:</b> '+t.join(' + ')+(c?' + '+c+' (carried)':'')+' = '+ts+' → write '+ts+'.','<b>Answer:</b> tens result '+ts+' followed by units digit '+(us%10)+' = <b>'+ans+'</b>. Units digit check: the answer must end in '+(us%10)+'.'];
+ return {why:'<ol class="steps"><li>'+s.join('</li><li>')+'</li></ol>',wrong:arithWrong(sel,ans,c?'Forgetting the carry of '+c+' gives '+(ans-10*c)+'.':'')};}
+function explainSub(it,sel){var a=it.nums[0],b=it.nums[1],au=a%10,bu=b%10,at=Math.floor(a/10),bt=Math.floor(b/10),ans=+it.a,s=[];
+ if(au>=bu){s.push('<b>Units:</b> '+au+' − '+bu+' = '+(au-bu)+'.');s.push('<b>Tens:</b> '+at+' − '+bt+' = '+(at-bt)+'.');}
+ else{s.push('<b>Units:</b> '+au+' is smaller than '+bu+', so borrow 1 ten: '+(au+10)+' − '+bu+' = '+(au+10-bu)+'.');s.push('<b>Tens:</b> '+at+' − 1 (borrowed) = '+(at-1)+'; '+(at-1)+' − '+bt+' = '+(at-1-bt)+'.');}
+ s.push('<b>Answer:</b> <b>'+ans+'</b>. Check by adding back: '+ans+' + '+b+' = '+(ans+b)+' ✓');
+ return {why:'<ol class="steps"><li>'+s.join('</li><li>')+'</li></ol>',wrong:arithWrong(sel,ans,au<bu?'Forgetting to reduce the tens after borrowing gives '+(ans+10)+'; subtracting the smaller units digit from the larger gives '+(Math.floor(ans/10)*10+(bu-au))+'.':'')};}
+function explainMul(it,sel){var a=it.nums[0],b=it.nums[1],bt=b-b%10,bu=b%10,ans=+it.a,s=[];
+ s.push(bu?'Split the second number: '+b+' = '+bt+' + '+bu+'.':b+' is a whole number of tens ('+(bt/10)+' tens).');s.push(a+' × '+bt+' = '+(a*bt)+(bt===10?' (just add a 0)':' ('+a+' × '+(bt/10)+' = '+(a*bt/10)+', then add a 0)')+'.');
+ if(bu)s.push(a+' × '+bu+' = '+(a*bu)+'.');s.push('<b>Add:</b> '+(a*bt)+(bu?' + '+(a*bu):'')+' = <b>'+ans+'</b>. Units digit check: '+(a%10)+' × '+bu+' ends in '+((a%10)*bu%10)+', so the answer must end in '+(ans%10)+'.');
+ return {why:'<ol class="steps"><li>'+s.join('</li><li>')+'</li></ol>',wrong:arithWrong(sel,ans,'',a%10+' × '+bu+' ends in '+((a%10)*bu%10))};}
+function arithWrong(sel,ans,hint,uwhy){if(sel==null||String(sel)===String(ans))return '';var d=+sel-ans,ad=Math.abs(d);
+ var m=ad%10===0?'Your answer '+sel+' has the right units digit but is '+ad+' '+(d>0?'too high':'too low')+' — a slip in the tens column or the carry.':'Your answer '+sel+' ends in '+(+sel%10)+', but '+(uwhy||'the units column gives '+(ans%10))+' — the units digit alone rules it out.';
+ return m+(hint?' '+hint:'');}
+function explainDefect(it,l){var sel=(l&&l.idx)||[],C=it.cols,rows=[],okRows=[];
+ for(var r=0;r<it.rows;r++){var a=it.ans.filter(function(i){return Math.floor(i/C)===r;}),s=sel.filter(function(i){return Math.floor(i/C)===r;});
+  var miss=a.filter(function(i){return s.indexOf(i)<0;}),fp=s.filter(function(i){return a.indexOf(i)<0;}),nm=it.rowObj[r];
+  var dd=a.map(function(i){return '#'+(i%C+1)+' '+DEFDESC[it.specs[i].def];}).join('; ');
+  if(!miss.length&&!fp.length){okRows.push(r+1);continue;}
+  rows.push('<li><b>Row '+(r+1)+' ('+nm+')</b>: '+(a.length?a.length+' defective — '+dd:'perfect row (no defects)')+'.'+(miss.length?' <span class="bad">Missed:</span> '+miss.map(function(i){return '#'+(i%C+1);}).join(', ')+'.':'')+(fp.length?' <span class="bad">Marked but normal:</span> '+fp.map(function(i){return '#'+(i%C+1);}).join(', ')+' — '+(fp.length>1?'they are':'it is')+' identical to the normal '+nm+' in this row.':'')+'</li>');}
+ var why='<p>Defects per row: '+it.nDef.join(', ')+'.</p>'+(rows.length?'<p><b>Rows you got wrong:</b></p><ul class="steps">'+rows.join('')+'</ul>':'<p>Every row marked exactly right.</p>')+(okRows.length?'<p class="small">Rows correct: '+okRows.join(', ')+'.</p>':'')+'<p class="small">All defects: '+(it.ans.map(function(i){return 'R'+(Math.floor(i/C)+1)+'#'+(i%C+1)+' '+DEFDESC[it.specs[i].def];}).join('; ')||'none')+'.</p>';
+ return {why:why,wrong:''};}
+function parseOthers(e){var o={},m=/Others: (.*?)\. Compare/.exec(e||'');if(m)m[1].split('; ').forEach(function(p){var k=p.split(' = ');o[k[0]]=k.slice(1).join(' = ');});return o;}
+function explainMatch(it,sel){var o=parseOthers(it.e),keys=Object.keys(o);
+ var why='<p>Option <b>'+it.a+'</b> is identical to the target, part for part. Each of the others has one small change:</p><ul class="steps">'+keys.map(function(k){return '<li><b>'+k+'</b>: '+o[k]+'</li>';}).join('')+'</ul><p class="small">Method: compare one part at a time (count, size, position) against the target.</p>';
+ return {why:why,wrong:sel!=null&&sel!==it.a?'You chose '+sel+': it is not identical — '+(o[sel]||'one detail differs')+'.':''};}
+function explainShape(it,l){var sel=(l&&l.idx)||[],k=it.gap.length,wh={};(it.e||'').replace(/#(\d+) is an? ([^;.]+)/g,function(_,n,w){wh[+n-1]=w;});
+ var li=it.optCells.map(function(c,i){var bad=it.ans.indexOf(i)>=0;return '<li><b>#'+(i+1)+'</b> ('+c.length+' squares): '+(bad?'<span class="bad">will NOT fit</span> — '+(wh[i]||'a different shape')+(c.length!==k?' (wrong number of squares)':'')+'.':'<span class="good">fits</span> — it is the gap shape turned.')+'</li>';}).join('');
+ var miss=it.ans.filter(function(i){return sel.indexOf(i)<0;}),fp=sel.filter(function(i){return it.ans.indexOf(i)<0;}),w=[];
+ if(miss.length)w.push('You did not mark '+miss.map(function(i){return '#'+(i+1);}).join(', ')+', which cannot fit ('+miss.map(function(i){return wh[i]||'different shape';}).join('; ')+'). A mirror image cannot be produced by turning, because pieces may not be flipped.');
+ if(fp.length)w.push('You marked '+fp.map(function(i){return '#'+(i+1);}).join(', ')+', but '+(fp.length>1?'they fit':'it fits')+': turn '+(fp.length>1?'them':'it')+' and '+(fp.length>1?'they match':'it matches')+' the gap exactly.');
+ return {why:'<p>The gap has <b>'+k+' squares</b>. Piece by piece:</p><ul class="steps">'+li+'</ul>',wrong:w.join(' ')};}
+var VBYW=null,VBYA=null;function vIdx(){if(VBYW)return;VBYW={};VBYA={};VOCAB5.forEach(function(e){VBYW[e.w.toLowerCase()]=e;(VBYA[e.a.toLowerCase()]=VBYA[e.a.toLowerCase()]||[]).push(e);});}
+function gl(g){return String(g).split(/\s*;\s*/)[0].replace(/\s*-\s*[A-Z][\w.]+$/,'').trim();}
+function explainVocab(it,sel){vIdx();var w=it.word||(strip52(it.q).split(' ')[0]||'').toLowerCase(),e=VBYW[w];
+ var why='<p><b>'+w.toUpperCase()+'</b> means <b>'+it.a+'</b>'+(e&&e.g?' — dictionary sense: “'+gl(e.g)+'”':'')+'.</p>';
+ var x='';if(sel!=null&&sel!==it.a){var s=String(sel).toLowerCase(),o=VBYA[s]&&VBYA[s].filter(function(z){return z.w!==w;})[0],h=VBYW[s];
+  x='“'+sel+'” does not mean '+w+(o?': '+sel+' is the meaning of <i>'+o.w+'</i>'+(o.g?' (“'+gl(o.g)+'”)':''):h&&h.g?': '+sel+' itself means “'+gl(h.g)+'”':'')+(e&&e.d&&e.d.indexOf(sel)>=0?'. It is a deliberate trap — it is close to the OPPOSITE or a different idea from '+w+'.':'.');}
+ return {why:why,wrong:x};}
+function explainSynAnt(it,sel){var q=strip52(it.q),syn=/^SYNONYM/.test(q),w=(q.match(/of ([A-Z]+)/)||[])[1]||'',row=SYNANT.find(function(r){return r[0].toUpperCase()===w;});
+ var why='<p><b>'+w+'</b>: synonym (same meaning) = <b>'+(row?row[1]:'')+'</b>, antonym (opposite) = <b>'+(row?row[2]:'')+'</b>. The question asks for the '+(syn?'SYNONYM':'ANTONYM')+', so the answer is <b>'+it.a+'</b>.</p>';
+ var x='';if(sel!=null&&sel!==it.a){var o=SYNANT.find(function(r){return r[1]===sel||r[2]===sel;});x='“'+sel+'” is not related to '+w.toLowerCase()+(o?': it is the '+(o[1]===sel?'synonym':'antonym')+' of <i>'+o[0]+'</i>':'')+'.';}
+ return {why:why,wrong:x};}
+var STOP52=new Set('the a an of and or to in on at by for with from as is was were are be been it its this that these those which who whom their they he she his her them but not no so than then there also into over after before about more most can could would may might such each other one two many some all when where while during only very what does did do passage according author most nearly means which why how best'.split(' '));
+function cwords(s){return strip52(s).toLowerCase().replace(/[^a-z0-9' -]+/g,' ').split(/[\s-]+/).filter(function(w){return w.length>2&&!STOP52.has(w);}).map(function(w){return w.replace(/'s$/,'').slice(0,6);});}
+function sentences(p){return strip52(p).match(/[^.!?]+[.!?]+["”’)]*|[^.!?]+$/g).map(function(s){return s.trim();}).filter(Boolean);}
+function bestSentence(p,txt,qtxt){var S=sentences(p),A=new Set(cwords(txt)),Q=new Set(cwords(qtxt||'')),best=-1,bi=0;
+ S.forEach(function(s,i){var W=new Set(cwords(s)),sc=0;A.forEach(function(w){if(W.has(w))sc+=2;});Q.forEach(function(w){if(W.has(w))sc+=1;});if(sc>best){best=sc;bi=i;}});return {s:S[bi],score:best,i:bi,all:S};}
+function explainReading(it,sel){var p=it.pass||((it.q.match(/<div class="passage">([\s\S]*?)<\/div>/)||[])[1]||''),qq=it.qq||strip52(it.q.replace(/<div class="passage">[\s\S]*?<\/div>/,'')),out=[];
+ var term=(qq.match(/['‘“"]([^'’”"]+)['’”"]/)||[])[1],S=sentences(p),cite;
+ if(term&&/means|meaning|refers|closest/i.test(qq)){var s=S.find(function(x){return x.toLowerCase().indexOf(term.toLowerCase())>=0;});cite=s||bestSentence(p,it.a,qq).s;out.push('<p>The word is used in: <span class="cite">“'+cite+'”</span> In this context “'+term+'” means <b>'+it.a+'</b>.</p>');}
+ else if(/main idea|mainly about|best title|primary purpose|main point|purpose|tone|attitude/i.test(qq)){var b=bestSentence(p,it.a,'');out.push('<p>The passage opens: <span class="cite">“'+S[0]+'”</span>'+(b.i!==0?' and develops it with: <span class="cite">“'+b.s+'”</span>':'')+' Taken as a whole, the best answer is <b>'+it.a+'</b>.</p>');}
+ else{var b=bestSentence(p,it.a,qq);cite=b.s;out.push('<p>The passage says: <span class="cite">“'+b.s+'”</span> That supports <b>'+it.a+'</b>.</p>');}
+ if(it.e&&!/^See the passage/.test(it.e))out.push('<p>'+it.e+'</p>');
+ var x='';if(sel!=null&&sel!==it.a){var w=bestSentence(p,sel,''),Wd=cwords(sel).filter(function(z){return cwords(w.s).indexOf(z)>=0;});
+  x='“'+sel+'” is not supported by the passage'+(Wd.length>=2&&w.s!==cite?'. The nearest the passage comes is “'+w.s+'”, which does not say that.':' — nothing in the text states or implies it.')+' Pick only what the text actually supports, not what sounds plausible.';}
+ return {why:out.join(''),wrong:x};}
+function explainGeneric(it,sel,label){var e=String(it.e||'').trim(),why=it.t==='word'?'<p><b>Working:</b> '+e+(/\.$/.test(e)?'':'.')+' So the answer is <b>'+it.a+'</b>.</p>':'<p><b>'+it.a+'</b> is correct'+(e?' — '+e:'.')+'</p>';var x='';
+ if(sel!=null&&String(sel)!==String(it.a)){x='You chose “'+sel+'”, but the correct answer is “'+it.a+'”.';
+  if(it.t==='word'){var ns=parseFloat(sel),na=parseFloat(it.a);if(!isNaN(ns)&&!isNaN(na)&&/^[\d.]/.test(String(sel)))x+=' The working above gives '+it.a+'; '+(ns>na?'your value is too high':'your value is too low')+' — re-check which quantities are added (opposite directions, combined rates) versus subtracted (same direction, leaks).';}
+  if(it.t==='mech')x+=' '+mechWrong(it,sel);}
+ return {why:why,wrong:x};}
+function mechWrong(it,sel){var s=String(sel),q=strip52(it.q),r;
+ if(/which number marks/i.test(q)&&typeof TWOSTROKE!=='undefined'){r=TWOSTROKE.find(function(t){return t[1]===s;});if(r)return 'Number '+s+' is the '+r[0].replace(/^.*marks the /i,'').replace(/\?$/,'')+' ('+r[2].replace(/\.$/,'')+').';}
+ if(typeof ENGINE_PARTS!=='undefined'){r=ENGINE_PARTS.find(function(p){return p[1]===s;});if(r)return '“'+s+'” is what the '+r[0].toLowerCase()+' does, not the part asked about.';r=ENGINE_PARTS.find(function(p){return p[0].toLowerCase()===s.toLowerCase();});if(r)return 'The '+r[0].toLowerCase()+' is a different part: it '+r[1].charAt(0).toLowerCase()+r[1].slice(1)+'.';}
+ var na=parseFloat(it.a),ns=parseFloat(s);if(!isNaN(na)&&!isNaN(ns))return 'Plug the numbers into the rule above: it gives '+it.a+', not '+s+(Math.abs(ns-na)>0&&na!==0&&Math.abs(ns/na-Math.round(ns/na))<1e-9&&Math.round(ns/na)>1?' (yours is '+Math.round(ns/na)+'× too big — the ratio is probably upside down or the rule applied twice)':'')+'.';
+ return 'That choice does not do what the question describes; the explanation above names the part/principle that does.';}
+function explainItem(it,l){l=l||{};var sel=l.sel===undefined?null:l.sel,r;
+ switch(it.t){case 'cube':r=explainDice(it,sel);break;case 'clock':r=explainClock(it,sel);break;case 'add':r=explainAdd(it,sel);break;case 'sub':r=explainSub(it,sel);break;case 'mul':r=explainMul(it,sel);break;
+  case 'defect':r=explainDefect(it,l);break;case 'match':r=explainMatch(it,sel);break;case 'shape':r=explainShape(it,l);break;case 'vocab':r=explainVocab(it,sel);break;case 'synant':r=explainSynAnt(it,sel);break;
+  case 'reading':r=explainReading(it,sel);break;default:r=explainGeneric(it,sel);}
+ if(!strip52(r.why))r.why='<p>'+(it.e||('The correct answer is '+it.a+'.'))+'</p>';
+ return {correct:String(it.a),your:sel==null?(it.multi&&l.idx&&l.idx.length?null:'(skipped)'):String(sel),why:r.why,wrong:r.wrong||''};}
 </script><script>var MEM={};var LS={get:function(k){try{return localStorage.getItem(k);}catch(e){return MEM[k]||null;}},set:function(k,v){try{localStorage.setItem(k,v);}catch(e){MEM[k]=v;}}};var MINS='5',USER=null;
 var USERS={daniel:{h:'94281819bf4726bb6824a301654a5ffddd8b581923dd321d4d644e8097ca1484',n:'Daniel'},mophet:{h:'b7894b57dc0032844a6aa97371ae681cf299543e494234640fb6eec4fdae5445',n:'Mophet'},abram:{h:'15aaa238f5180b484c9b02e2b80f9b4215f2ca693569ee464d826664e09d897d',n:'Abram'},cicero:{h:'5925710dcce176d09b01d20fdb024653b0281949dec161408f3f34319ce6daea',n:'Cicero'}};
 function uk(k){return k+':'+USER;}
@@ -1758,7 +1925,7 @@ var STATIC=staticItems(),S=null,TICK=null;
 var $=function(id){return document.getElementById(id);};
 function deckFor(topic){return shuf(STATIC.filter(function(x){return !topic||x.t===topic;}));}
 function nextItem(){var t=S.topic;
- if(!t){var keys=Object.keys(TOPICS);t=pick(keys);}
+ if(!t)t=mixedTopic();
  var hasGen=!!GENS[t],st=S.decks[t]||(S.decks[t]=deckFor(t));
  var it;if(hasGen&&(!st.length||Math.random()<.7))it=GENS[t]();else{if(!st.length)st=S.decks[t]=deckFor(t);it=st.pop();}
  it=JSON.parse(JSON.stringify(it));if(!it.fixed)it.ch=shuf(it.ch);return it;}
@@ -1781,9 +1948,21 @@ function finish(){clearInterval(TICK);if(!S)return;var log=S.log,W=function(l){r
  var runs=JSON.parse(LS.get(uk('mpatRuns'))||'[]');runs.unshift({k:key,ok:ok,n:NN,d:rec.date});LS.set(uk('mpatRuns'),JSON.stringify(runs.slice(0,20)));LS.set(uk('mpatHist'),JSON.stringify(H));
  var by={};log.forEach(function(l){var b=by[l.it.t]||(by[l.it.t]={ok:0,n:0});b.n+=WN(l);b.ok+=W(l);});
  var h='<h2>Score: '+ok+' / '+NN+'</h2><p>Items '+log.length+' (answered '+ans+'). Inspection items count one point per correct row. Accuracy: '+(NN?Math.round(ok/NN*100):0)+'%'+(!prev||ok>prev.ok?' · <b>New best!</b>':' · Best: '+prev.ok)+'</p><table><tr><th>Topic</th><th>Correct</th></tr>';
- Object.keys(by).forEach(function(t){h+='<tr><td>'+TOPICS[t]+'</td><td>'+by[t].ok+' / '+by[t].n+'</td></tr>';});h+='</table><h3>Review of missed items</h3>';
- log.forEach(function(l,i){if(l.ok)return;h+='<div class="rev"><div class="small">Q'+(i+1)+' · '+TOPICS[l.it.t]+'</div><div>'+l.it.q+'</div>'+l.it.fig+revFig(l)+'<p>Your answer: <span class="bad">'+(l.sel===null?'(skipped)':l.sel)+'</span><br>Correct: <span class="good">'+l.it.a+'</span>'+(l.rs?'<br>Rows correct: '+l.rs.ok+' / '+l.rs.rows+' (wrong rows: '+l.rs.per.map(function(x,i){return x?null:i+1;}).filter(Boolean).join(', ')+')':l.part&&l.sel!==null?'<br>Partial credit: found '+l.part.hit+' of '+l.it.ans.length+' defective, '+l.part.fp+' wrong pick(s)':'')+'</p><p class="small">'+l.it.e+'</p></div>';});
- $('result').innerHTML=h;S=null;show('res');}
+ Object.keys(by).forEach(function(t){h+='<tr><td>'+TOPICS[t]+'</td><td>'+by[t].ok+' / '+by[t].n+'</td></tr>';});h+='</table>';
+ h+=debriefHTML(log);
+ $('result').innerHTML=h;wireDebrief();S=null;show('res');}
+/* ---------- v5.2 debrief: every item, your answer vs correct, expanded explanation; filter All / Missed / Correct ---------- */
+function debriefHTML(log){var nm=log.filter(function(l){return !l.ok;}).length;
+ var h='<h3>Debrief — every question</h3>'+(log.length?'<div class="dbf row"><button class="small sel" data-f="all">All ('+log.length+')</button><button class="small" data-f="miss">Missed ('+nm+')</button><button class="small" data-f="ok">Correct ('+(log.length-nm)+')</button></div><p class="small">Tap a question to see the working. <a href="#" id="dbx">Expand all</a></p>':'<p class="small">No questions were answered in this set.</p>');
+ log.forEach(function(l,i){var it=l.it,x;try{x=explainItem(it,l);}catch(e){x={correct:it.a,your:l.sel==null?'(skipped)':l.sel,why:'<p>'+(it.e||'')+'</p>',wrong:''};}
+  var part=l.rs?' · '+l.rs.ok+'/'+l.rs.rows+' rows':'';var your=l.sel===null?'(skipped)':l.sel;
+  h+='<details class="rev '+(l.ok?'isok':'ismiss')+'"><summary><span class="mk '+(l.ok?'good':'bad')+'">'+(l.ok?'✓':'✗')+'</span> <b>Q'+(i+1)+'</b> · '+TOPICS[it.t]+part+'<br><span class="small">Your answer: <span class="'+(l.ok?'good':'bad')+'">'+esc52(String(your).slice(0,80))+'</span>'+(l.ok?'':' · Correct: <span class="good">'+esc52(String(it.a).slice(0,80))+'</span>')+'</span></summary>'
+   +'<div class="dbody"><div>'+it.q+'</div>'+it.fig+revFig(l)+'<p>Your answer: <span class="'+(l.ok?'good':'bad')+'">'+your+'</span><br>Correct: <span class="good">'+it.a+'</span>'+(l.rs?'<br>Rows correct: '+l.rs.ok+' / '+l.rs.rows:l.part&&l.sel!==null&&!l.ok?'<br>Partial: found '+l.part.hit+' of '+it.ans.length+', '+l.part.fp+' wrong pick(s)':'')+'</p>'
+   +'<div class="why"><b>Why '+esc52(String(it.a).slice(0,60))+' is right</b>'+x.why+'</div>'+(!l.ok&&x.wrong?'<div class="whyno"><b>'+(l.sel===null?'Skipped':'Why your answer is wrong')+'</b><p>'+x.wrong+'</p></div>':'')+'</div></details>';});
+ return h;}
+function wireDebrief(){document.querySelectorAll('.dbf button').forEach(function(b){b.onclick=function(){var f=b.dataset.f;document.querySelectorAll('.dbf button').forEach(function(x){x.classList.toggle('sel',x===b);});
+  document.querySelectorAll('#result details.rev').forEach(function(d){d.style.display=f==='all'||(f==='miss'?d.classList.contains('ismiss'):d.classList.contains('isok'))?'':'none';});};});
+ var x=$('dbx');if(x)x.onclick=function(e){e.preventDefault();var ds=document.querySelectorAll('#result details.rev'),open=x.textContent==='Expand all';ds.forEach(function(d){if(d.style.display!=='none')d.open=open;});x.textContent=open?'Collapse all':'Expand all';};}
 function inspGrid(it,rv,selArr){var h='<div class="insp'+(rv?' rv':'')+'">';for(var r=0;r<it.cells.length/it.cols;r++){h+='<div class="irow"><b>'+(r+1)+'</b>';for(var c=0;c<it.cols;c++){var i=r*it.cols+c;h+=rv?'<div class="cell'+(it.ans.indexOf(i)>=0?' bad':'')+(selArr&&selArr.indexOf(i)>=0?' sel':'')+'">'+it.cells[i]+'</div>':'<button class="cell" data-i="'+i+'">'+it.cells[i]+'</button>';}h+='</div>';}return h+'</div>';}
 function revFig(l){var it=l.it;if(it.cols)return inspGrid(it,true,l.idx)+'<p class="small">Red border = defective; blue fill = your pick.</p>';if(it.multi)return '<div class="grid rv">'+it.cells.map(function(c,i){var bad=it.ans.indexOf(i)>=0,p=l.sel&&(', '+l.sel+',').indexOf(' #'+(i+1)+',')>=0;return '<div class="cell'+(bad?' bad':'')+(p?' sel':'')+'"><span>'+(i+1)+'</span>'+c+'</div>';}).join('')+'</div><p class="small">Red border = defective; blue fill = your pick.</p>';
  if(it.chimg)return '<div class="imgch">'+it.ch.map(function(c,i){return '<div class="ch ich'+(c===it.a?' right':'')+'"><b>'+c+'</b>'+it.chimg[i]+'</div>';}).join('')+'</div>';return '';}
