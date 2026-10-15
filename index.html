@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PAF MPAT Practice</title><meta name="mpat-version" content="v5.2-2026-10-15"><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#0b1d33;color:#111}
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PAF MPAT Practice</title><meta name="mpat-version" content="v5.3-2026-10-15"><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#0b1d33;color:#111}
 .wrap{max-width:720px;margin:0 auto;padding:12px}.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:12px}
 h1{color:#fff;font-size:1.3em;margin:8px 0}h2{margin-top:0}button{font-size:1em;padding:12px;border-radius:8px;border:1px solid #888;background:#f3f6fa;cursor:pointer}
 .big{display:block;width:100%;margin:8px 0;background:#1e5aa8;color:#fff;border:0;font-weight:bold}.tp{margin:4px;width:calc(50% - 8px)}
@@ -33,11 +33,19 @@ details.rev.ismiss{border-left:5px solid #b00}details.rev.isok{border-left:5px s
 .dbody{padding:8px 10px;overflow-x:auto}.mk{font-size:1.1em}.dbf{margin:6px 0}.dbf button{padding:8px 6px}.dbf button.sel{background:#1e5aa8;color:#fff}
 .why{background:#eef7ee;border-radius:6px;padding:8px;margin:6px 0}.whyno{background:#fdeeee;border-radius:6px;padding:8px;margin:6px 0}.why p,.whyno p{margin:4px 0}
 .steps{margin:4px 0;padding-left:20px}.steps li{margin:3px 0}.cite{font-style:italic;background:#fff8e1}
+
+/* v5.3 progress */
+#pgsel{width:100%;font-size:1em;padding:10px;border-radius:8px;border:1px solid #888;margin:6px 0;background:#fff}
+.pgchart{width:100%;height:auto;display:block;background:#fbfcfe;border:1px solid #e3e8ef;border-radius:8px;margin:4px 0}
+.pgleg{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:.75em;color:#444;margin:4px 0}.pgleg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:middle}
+.pgrank td,.pgtab td{font-size:.9em;vertical-align:middle}.pgbar{display:inline-block;width:60px;height:8px;background:#eee;border-radius:4px;margin-right:4px;vertical-align:middle;overflow:hidden}.pgbar b{display:block;height:100%}
+.pgrec li{margin:4px 0}.pgrule{background:#f3f6fa;padding:6px;border-radius:6px}.pgnote{font-weight:normal!important;font-size:.95em}.pgnote a{font-weight:bold}
+.pgrank td:nth-child(3){white-space:nowrap}.pgbar{width:44px}
 </style></head><body><div class="wrap">
 <h1>✈ PAF MPAT Practice</h1>
 <div id="login" class="card" style="display:none"><h2>Sign in</h2><form onsubmit="return doLogin(event)"><input id="lu" placeholder="Username" autocomplete="username" autocapitalize="none"><input id="lp" type="password" placeholder="Password" autocomplete="current-password"><button class="big" type="submit">Log in</button></form><p id="lmsg" class="bad"></p></div>
-<div id="app" style="display:none"><div class="ubar"><button class="small" onclick="show('home')">Practice</button><button class="small" onclick="show('tips')">Tips &amp; Tricks</button><span>Logged in as <b id="who"></b></span> <button class="small" onclick="logout()">Logout</button></div>
-<div id="home"><div class="card"><p>Rapid-fire timed sets like the real Military Pilot Aptitude Test. Every set is randomly generated. <span class="small">v5.2 · 2026-10-15</span></p>
+<div id="app" style="display:none"><div class="ubar"><button class="small" onclick="show('home')">Practice</button><button class="small" onclick="show('prog')">Progress</button><button class="small" onclick="show('tips')">Tips &amp; Tricks</button><span>Logged in as <b id="who"></b></span> <button class="small" onclick="logout()">Logout</button></div>
+<div id="home"><div class="card"><p>Rapid-fire timed sets like the real Military Pilot Aptitude Test. Every set is randomly generated. <span class="small">v5.3 · 2026-10-15</span></p>
 <p><b>Time limit (applies to mixed set and every category):</b></p><div class="row"><button class="mbtn" data-m="5" onclick="setMins('5')">5 min</button><button class="mbtn" data-m="7" onclick="setMins('7')">7 min</button><button class="mbtn" data-m="10" onclick="setMins('10')">10 min</button></div><button class="big" onclick="start()">Start mixed set</button><p class="small" id="best"></p></div>
 <div class="card"><h3>Per-topic practice (uses the time limit above)</h3><div id="topics"></div></div></div>
 <div id="quiz" style="display:none"><div class="bar"><span id="qnum"></span><span id="timer"></span></div><div class="card"><div id="qtext"></div><div id="qfig"></div><div id="choices"></div>
@@ -129,6 +137,7 @@ details.rev.ismiss{border-left:5px solid #b00}details.rev.isok{border-left:5px s
 <li><a href="https://www.dlr.de/en/me/about-us/departments/aerospace-psychology/dlr-certificate-cockpit" target="_blank" rel="noopener">DLR – Certificate Cockpit</a></li>
 </ul>
 </div><button class="big" onclick="show('home')">Back to menu</button></div>
+<div id="prog" style="display:none"><div id="progbody"></div><button class="big" onclick="show('home')">Back to menu</button></div>
 <div id="res" style="display:none"><div class="card" id="result"></div><button class="big" onclick="show('home')">Back to menu</button></div>
 </div></div><script>// Static banks. src: R = from Daniel's reviewer, O = original
 var VOCAB = [
@@ -1912,6 +1921,236 @@ function explainItem(it,l){l=l||{};var sel=l.sel===undefined?null:l.sel,r;
   case 'reading':r=explainReading(it,sel);break;default:r=explainGeneric(it,sel);}
  if(!strip52(r.why))r.why='<p>'+(it.e||('The correct answer is '+it.a+'.'))+'</p>';
  return {correct:String(it.a),your:sel==null?(it.multi&&l.idx&&l.idx.length?null:'(skipped)'):String(sel),why:r.why,wrong:r.wrong||''};}
+</script><script>/* ===== v5.3 (Oct 15 2026): per-user Progress tab — attempt log, validity rule, SVG charts, auto analysis, CSV export =====
+ Storage: localStorage key 'mpatAttempts:<user>' (via uk()), newest last, capped at PG_MAX. Each user only ever reads their own key,
+ and rows are additionally filtered by a.u===USER.
+ VALIDITY RULE (single source: pgValidity):
+  an attempt is VALID only if (1) the set ended because the prescribed timer ran out (full time used, not "End set now",
+  not logout, not abandoned by closing/reloading the app), (2) no answer was submitted after the time limit (late answers =
+  overtime), and (3) at least one question was answered. Anything else is EXCLUDED: counted, listed by reason, never charted
+  or analysed. Pre-v5.3 history (mpatRuns) has no timing/completion data, so it is imported as "legacy" and excluded. */
+var PG_VER=53,PG_MAX=600,PG_N=6,PG_FLAT=1.5;
+var PG_CATS=['cube','clock','defect','match','shape','vocab','synant','reading','add','sub','mul','word','mech'];
+// rough target pace (seconds per item) used only to label speed as fast / on pace / slow
+var PG_PACE={cube:30,clock:35,defect:60,match:20,shape:40,vocab:10,synant:10,reading:45,add:15,sub:10,mul:20,word:50,mech:20,mixed:30};
+var PG_COL={cube:'#1e5aa8',clock:'#c0392b',defect:'#16a085',match:'#8e44ad',shape:'#d35400',vocab:'#2c3e50',synant:'#7f8c8d',reading:'#27ae60',add:'#e67e22',sub:'#2980b9',mul:'#b03a2e',word:'#6c5ce7',mech:'#a67c00',mixed:'#000'};
+var PG_END={time:'Full time used',quit:'Ended early (“End set now”)',logout:'Ended early (logged out mid-set)',abandoned:'Abandoned (app closed/reloaded mid-set)',legacy:'Legacy (before v5.3: no timing/completion data)',overtime:'Overtime (answer submitted after the time limit)',empty:'No questions answered',unknown:'Unknown completion'};
+function pgCatName(c){return c==='mixed'?'Mixed / mock set':(TOPICS[c]||c);}
+function pgShort(c){return {cube:'Dice',clock:'Clock',defect:'Inspection',match:'Matching',shape:'Shapes',vocab:'Vocab',synant:'Syn/Ant',reading:'Reading',add:'Fast add',sub:'Fast sub',mul:'Fast mul',word:'Word probs',mech:'Mechanical',mixed:'Mixed'}[c]||c;}
+
+/* ---------- validity ---------- */
+function pgValidity(a){if(!a)return {valid:false,reason:'unknown'};
+ if(a.end==='legacy')return {valid:false,reason:'legacy'};
+ if(a.end==='quit'||a.end==='logout'||a.end==='abandoned')return {valid:false,reason:a.end};
+ if(a.end!=='time'||!(a.secs>0)||a.used==null)return {valid:false,reason:'unknown'};
+ if(a.used<a.secs-2)return {valid:false,reason:'quit'};
+ if(a.late>0)return {valid:false,reason:'overtime'};
+ if(!(a.items>0)||!(a.answered>0)||!(a.n>0))return {valid:false,reason:'empty'};
+ return {valid:true,reason:'time'};}
+
+/* ---------- question sub-types (for "most-missed") ---------- */
+function pgSubtype(it){var q=strip52(it.q||'');
+ switch(it.t){
+  case 'cube':return ((it.views&&it.views.length)||(q.match(/The (\d) pictures/)||[])[1]||'?')+' views';
+  case 'clock':var na=it.nArrows||(it.arrs&&it.arrs.length)||1;return na+(na>1?' arrows':' arrow');
+  case 'match':return 'near-identical detail';
+  case 'shape':return it.kind==='oddfit'?'odd fit (pieces that do NOT fit)':it.kind||'shape';
+  case 'vocab':return (it.diff||'mixed')+' words';
+  case 'synant':return /ANTONYM/i.test(q)?'antonyms':'synonyms';
+  case 'add':return ((it.nums&&it.nums.length)||3)+' numbers';
+  case 'sub':return it.nums&&it.nums[0]%10<it.nums[1]%10?'with borrowing':'no borrowing';
+  case 'mul':return it.nums&&it.nums[1]>=20?'× 20–29':'× 11–19';
+  case 'word':
+   if(/expression/i.test(q))return 'expressions';if(/diagram|which point|at which point/i.test(q))return 'letter diagrams';
+   if(/\bold\b|\bages?\b|years? ago/i.test(q))return 'age';if(/pipe|tank|paint|days to|hours to/i.test(q))return 'work / pipes';
+   if(/train|platform/i.test(q))return 'trains';if(/toward|catch|behind|km\/h|returns/i.test(q))return 'distance-rate-time';
+   if(/tall|cable|building|pole|shadow/i.test(q))return 'buildings / geometry';return 'other word problems';
+  case 'mech':if(/two-stroke|piston|stroke|reed/i.test(q))return 'engine (two-stroke)';if(/brake/i.test(q))return 'brakes';if(/gear|pulley|lever|rpm/i.test(q))return 'gears / levers';return 'car parts';
+  case 'reading':var qq=strip52(it.qq||q);if(/main (purpose|idea)|best title|mainly|primarily/i.test(qq))return 'main idea / purpose';
+   if(/suggest|infer|imply|most likely|conclude/i.test(qq))return 'inference';if(/word|phrase|means|meaning/i.test(qq))return 'word in context';return 'detail';
+ }return TOPICS[it.t]||it.t;}
+// per-log-entry contribution: returns [[subtypeLabel,ok,n],...]
+function pgSubParts(l){var it=l.it;
+ if(it.t==='defect'&&l.rs&&l.rs.per&&it.nDef){return l.rs.per.map(function(ok,r){var k=it.nDef[r];return [k===0?'perfect rows (0 defects)':k<=2?'rows with 1–2 defects':'rows with 3–4 defects',ok?1:0,1];});}
+ if(it.t==='defect')return [['rows',l.rs?l.rs.ok:0,l.rs?l.rs.rows:1]];
+ return [[pgSubtype(it),l.ok?1:0,1]];}
+
+/* ---------- build an attempt record from a finished set ---------- */
+function pgBuild(S0,log,end,now){now=now||Date.now();var W=function(l){return l.rs?l.rs.ok:(l.ok?1:0);},WN=function(l){return l.rs?l.rs.rows:1;};
+ var ok=0,n=0,ans=0,ms=0,by={},sub={};
+ log.forEach(function(l){ok+=W(l);n+=WN(l);if(l.sel!==null||(l.rs&&l.idx&&l.idx.length))ans++;ms+=l.ms||0;
+  var t=l.it.t,b=by[t]||(by[t]={ok:0,n:0});b.ok+=W(l);b.n+=WN(l);
+  pgSubParts(l).forEach(function(p){var k=t+'|'+p[0],s=sub[k]||(sub[k]={ok:0,n:0});s.ok+=p[1];s.n+=p[2];});});
+ var used=Math.max(0,(now-S0.t0)/1000);if(end==='time')used=Math.min(used,S0.secs);
+ var a={v:PG_VER,id:S0.t0+'-'+Math.floor(Math.random()*1e6),u:S0.user,cat:S0.topic||'mixed',mode:String(S0.mode),ts:S0.t0,secs:S0.secs,used:Math.round(used*10)/10,end:end,late:S0.late||0,
+  ok:ok,n:n,pct:n?Math.round(ok/n*1000)/10:0,items:log.length,answered:ans,skipped:log.length-ans,spi:log.length?Math.round(ms/log.length/100)/10:null,by:by,sub:sub};
+ var v=pgValidity(a);a.valid=v.valid;a.why=v.reason;return a;}
+
+/* ---------- per-user store ---------- */
+function pgKey(u){return 'mpatAttempts:'+u;}
+function pgLoad(u){u=u||USER;if(!u)return [];var A;try{A=JSON.parse(LS.get(pgKey(u))||'[]');}catch(e){A=[];}if(!Array.isArray(A))A=[];
+ return A.filter(function(a){return a&&a.u===u;}).map(function(a){var v=pgValidity(a);a.valid=v.valid;a.why=v.reason;return a;});}
+function pgSave(u,A){LS.set(pgKey(u),JSON.stringify(A.slice(-PG_MAX)));}
+function pgAdd(a){if(!a||!a.u)return;var A=pgLoad(a.u);A.push(a);A.sort(function(x,y){return x.ts-y.ts;});pgSave(a.u,A);}
+// in-progress marker: lets us count sets abandoned by closing/reloading the app (excluded, reason "abandoned")
+function pgLiveKey(u){return 'mpatLive:'+u;}
+function pgLiveSet(S0,log){if(!S0||!S0.user)return;var ok=0,n=0;log.forEach(function(l){ok+=l.rs?l.rs.ok:(l.ok?1:0);n+=l.rs?l.rs.rows:1;});
+ LS.set(pgLiveKey(S0.user),JSON.stringify({t0:S0.t0,cat:S0.topic||'mixed',mode:String(S0.mode),secs:S0.secs,ok:ok,n:n,items:log.length,last:Date.now()}));}
+function pgLiveClear(u){LS.set(pgLiveKey(u),'');}
+function pgRecoverAbandoned(u){var m;try{m=JSON.parse(LS.get(pgLiveKey(u))||'null');}catch(e){m=null;}if(!m||!m.t0)return null;pgLiveClear(u);
+ var a={v:PG_VER,id:m.t0+'-ab',u:u,cat:m.cat,mode:m.mode,ts:m.t0,secs:m.secs,used:Math.round(Math.max(0,(m.last-m.t0)/1000)*10)/10,end:'abandoned',late:0,ok:m.ok||0,n:m.n||0,pct:m.n?Math.round(m.ok/m.n*1000)/10:0,items:m.items||0,answered:null,skipped:null,spi:null,by:{},sub:{}};
+ a.valid=false;a.why='abandoned';pgAdd(a);return a;}
+// one-time migration of pre-v5.3 run history (mpatRuns: {k,ok,n,d}) -> excluded legacy rows (no timing/completion info)
+function pgMigrate(u){if(LS.get('mpatMigr53:'+u))return 0;var runs;try{runs=JSON.parse(LS.get('mpatRuns:'+u)||'[]');}catch(e){runs=[];}
+ var A=pgLoad(u),add=0;(Array.isArray(runs)?runs:[]).slice().reverse().forEach(function(r,i){if(!r||!r.k)return;var cat=r.k.indexOf('topic:')===0?r.k.slice(6):'mixed',mode=cat==='mixed'?r.k.replace('mixed',''):'';
+  if(cat==='arith')cat='add';var t=Date.parse(r.d);A.push({v:0,id:'legacy-'+i,u:u,cat:cat,mode:mode,ts:isNaN(t)?i:t,dstr:r.d,secs:null,used:null,end:'legacy',late:0,ok:r.ok,n:r.n,pct:r.n?Math.round(r.ok/r.n*1000)/10:0,items:null,by:{},sub:{},valid:false,why:'legacy'});add++;});
+ if(add){A.sort(function(x,y){return x.ts-y.ts;});pgSave(u,A);}LS.set('mpatMigr53:'+u,'1');return add;}
+
+/* ---------- statistics ---------- */
+function pgMean(a){return a.length?a.reduce(function(s,x){return s+x;},0)/a.length:null;}
+function pgSD(a){if(a.length<2)return null;var m=pgMean(a);return Math.sqrt(a.reduce(function(s,x){return s+(x-m)*(x-m);},0)/(a.length-1));}
+function pgSlope(y){var n=y.length;if(n<2)return null;var mx=(n-1)/2,my=pgMean(y),num=0,den=0;for(var i=0;i<n;i++){num+=(i-mx)*(y[i]-my);den+=(i-mx)*(i-mx);}return num/den;}
+function pgTrend(scores,N){N=N||PG_N;var y=scores.slice(-N);if(y.length<3)return {dir:'need',slope:null,n:y.length};var s=pgSlope(y);
+ return {dir:s>PG_FLAT?'improving':s<-PG_FLAT?'declining':'flat',slope:Math.round(s*10)/10,n:y.length};}
+function pgValid(A,cat){return A.filter(function(a){return a.valid&&(!cat||a.cat===cat);});}
+function pgExcluded(A,cat){var c={},n=0;A.forEach(function(a){if(!a.valid&&(!cat||a.cat===cat)){n++;c[a.why]=(c[a.why]||0)+1;}});return {n:n,by:c};}
+function pgSubAgg(V,t){var m={};V.forEach(function(a){Object.keys(a.sub||{}).forEach(function(k){var p=k.split('|');if(p[0]!==t)return;var x=m[p[1]]||(m[p[1]]={ok:0,n:0});x.ok+=a.sub[k].ok;x.n+=a.sub[k].n;});});
+ return Object.keys(m).map(function(k){return {sub:k,ok:m[k].ok,n:m[k].n,miss:1-m[k].ok/m[k].n};}).sort(function(x,y){return y.miss-x.miss||y.n-x.n;});}
+// stats for one category (or 'mixed')
+function pgStats(A,cat){var V=pgValid(A,cat),sc=V.map(function(a){return a.pct;}),last=V.slice(-5),sp=V.map(function(a){return a.spi;}).filter(function(x){return x!=null;});
+ var r={cat:cat,n:V.length,excl:pgExcluded(A,cat),V:V};if(!V.length)return r;
+ var best=V.reduce(function(b,a){return a.pct>b.pct?a:b;},V[0]);
+ r.latest=V[V.length-1];r.best=best;r.avg=pgMean(sc);r.recent=pgMean(last.map(function(a){return a.pct;}));
+ r.pooled=last.reduce(function(s,a){return s+a.ok;},0)/Math.max(1,last.reduce(function(s,a){return s+a.n;},0))*100;
+ r.trend=pgTrend(sc);r.sd=pgSD(sc.slice(-PG_N));r.spi=pgMean(sp.slice(-5));r.spiTrend=pgTrend(sp);
+ // mixed-set data for this topic (items from mixed sets)
+ var subs=cat==='mixed'?[]:pgSubAgg(V,cat);r.subs=subs;return r;}
+function pgMixedTopic(A,t){var ok=0,n=0;pgValid(A,'mixed').forEach(function(a){var b=a.by&&a.by[t];if(b){ok+=b.ok;n+=b.n;}});return {ok:ok,n:n,pct:n?ok/n*100:null};}
+// overall ranking weakest -> strongest + gaps
+function pgRank(A){var rows=[],gaps=[],rare=[];PG_CATS.forEach(function(c){var s=pgStats(A,c),mx=pgMixedTopic(A,c);
+  if(s.n){rows.push({cat:c,acc:s.pooled,n:s.n,trend:s.trend.dir,src:'practice'});if(s.n<3)rare.push(c);}
+  else if(mx.n>=8){rows.push({cat:c,acc:mx.pct,n:0,trend:'need',src:'mixed',mixN:mx.n});gaps.push(c);}
+  else gaps.push(c);});
+ rows.sort(function(x,y){return x.acc-y.acc;});return {rows:rows,gaps:gaps,rare:rare};}
+function pgSpeedLabel(cat,spi){var p=PG_PACE[cat]||30;if(spi==null)return null;return spi<p*0.8?'fast':spi>p*1.25?'slow':'on pace';}
+
+/* ---------- auto-generated analysis ---------- */
+var PG_TIPS={cube:'Find the letter that appears next to X in the most views first — every neighbour is eliminated; the one letter never seen beside X is opposite. Practise writing the 3 opposite pairs as you go.',
+ clock:'Track only two parts (the red 12 face and the bells) through each arrow, one arrow at a time; ignore the other details until the end.',
+ defect:'Memorise the first item of each row, then scan left→right comparing one feature at a time; do not tap anything on rows that look perfect — a false mark costs the whole row.',
+ match:'Compare the target part-by-part (outline, then inner details, then small marks) and eliminate a choice the moment one detail differs.',
+ shape:'Count corners/edges of the gap, rotate pieces mentally (no flipping); reject pieces whose edge lengths cannot match before checking angles.',
+ vocab:'Learn roots/prefixes (Tips §10), and review the hard-word list; guess from the root rather than skipping.',
+ synant:'Read “SYNONYM” vs “ANTONYM” carefully first — the classic trap is the opposite-meaning distractor.',
+ reading:'Read the question first, then skim for the key sentence; for “main purpose” questions look at the first and last sentences.',
+ add:'Add tens first then units, or pair numbers that make round tens (e.g. 47+33=80).',
+ sub:'Use compensation: 73−48 = 73−50+2. Check by adding back.',
+ mul:'Split the multiplier: 47×23 = 47×20 + 47×3; for ×11–19 use (a×10)+(a×units).',
+ word:'Identify the structure first (rate-time, work, age, trains) and write the one-line equation before calculating (Tips §5).',
+ mech:'Review the mechanical cheat sheet (Tips §11): gear ratio = teeth ratio, brake system order, two-stroke port sequence.',
+ mixed:'Use the time budget (Tips §2): skip-and-return on slow topics and bank the fast ones (arithmetic, vocab, syn/ant).'};
+var PG_SUBTIP={'sub|with borrowing':'Drill borrowing: subtract by compensation (round the second number up, then add back).','add|5 numbers':'For 5-number sums, add in pairs and keep a running total in tens.',
+ 'mul|× 20–29':'For ×20–29: double then ×10, then add the units part.','word|work / pipes':'Work/pipes: add rates (1/a + 1/b), then invert.','word|age':'Age: let the child be x, write both “now” and “in N years” equations.',
+ 'word|trains':'Trains: distance = train length (+ platform); relative speed adds when opposite, subtracts when same direction.','word|distance-rate-time':'DRT: closing speed adds when moving toward each other; catch-up uses the speed difference.',
+ 'word|expressions':'Expressions: translate words left to right; “less than” reverses order.','reading|inference':'Inference: the answer must be supported by a sentence but not stated word-for-word; reject extreme wording.',
+ 'reading|main idea / purpose':'Main idea: choose the option that covers the whole passage, not one detail.','vocab|hard words':'Hard words: study roots and review the hard list daily.',
+ 'synant|antonyms':'Antonyms: first think of a synonym, then pick its opposite.','defect|perfect rows (0 defects)':'You are marking items on perfect rows — only tap when you can name the defect.',
+ 'defect|rows with 3–4 defects':'Busy rows: after finding one defect keep scanning; rows can hold up to 4.','clock|3 arrows':'Multi-arrow clocks: apply arrows strictly in order and redraw after each.',
+ 'cube|3 views':'With only 3 views, use elimination: letters adjacent in any view cannot be opposite.','mech|brakes':'Brakes: pedal → master cylinder → lines → caliper/wheel cylinder → pads/shoes.',
+ 'mech|engine (two-stroke)':'Two-stroke: intake, compression, power and exhaust in 2 strokes; know the reed valve and transfer port roles.','mech|gears / levers':'Gears: speed ratio = inverse of teeth ratio; levers: effort × distance = load × distance.'};
+function pgF(x){return x==null?'—':(Math.round(x*10)/10)+'%';}
+function pgD(ts,dstr){if(dstr)return dstr;var d=new Date(ts);return d.toLocaleDateString(undefined,{month:'short',day:'numeric'})+' '+d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});}
+function pgTrendTxt(t){return t.dir==='need'?'Trend: need at least 3 valid attempts (have '+t.n+').':'Trend over last '+t.n+': <b>'+t.dir+'</b> ('+(t.slope>0?'+':'')+t.slope+' points per attempt).';}
+function pgAnalyze(A,cat){var s=pgStats(A,cat),out=[],rec=[],name=pgCatName(cat);
+ var ex=s.excl.n?' '+s.excl.n+' excluded attempt'+(s.excl.n>1?'s':'')+' not counted.':'';
+ if(!s.n){out.push('No valid attempts yet for '+esc52(name)+' — <b>need more attempts</b>. Complete a full timed set (let the timer run out).'+ex);
+  if(cat!=='mixed'){var mx=pgMixedTopic(A,cat);if(mx.n)out.push('From mixed sets: '+mx.ok+'/'+mx.n+' correct ('+pgF(mx.pct)+').');}
+  rec.push(PG_TIPS[cat]);return {stats:s,lines:out,rec:rec};}
+ out.push(s.n+' valid attempt'+(s.n>1?'s':'')+'.'+ex+' Latest <b>'+pgF(s.latest.pct)+'</b> ('+s.latest.ok+'/'+s.latest.n+', '+pgD(s.latest.ts)+'). Best '+pgF(s.best.pct)+'. Average '+pgF(s.avg)+(s.n>5?' (last 5: '+pgF(s.recent)+')':'')+'.');
+ if(s.n===1)out.push('Only one valid attempt — <b>need more attempts</b> for trend and consistency.');
+ else out.push(pgTrendTxt(s.trend)+(s.sd!=null&&s.n>=3?' Consistency: '+(s.sd<8?'<b>consistent</b>':s.sd<15?'moderate':'<b>inconsistent</b>')+' (spread ±'+Math.round(s.sd)+' points).':''));
+ var sl=pgSpeedLabel(cat,s.spi),acc=s.recent;
+ if(sl){var pace='Speed: '+(Math.round(s.spi*10)/10)+' s per item (target ≈ '+PG_PACE[cat]+' s) — <b>'+sl+'</b>'+(s.spiTrend.dir!=='need'?', '+(s.spiTrend.slope<-0.5?'getting faster':s.spiTrend.slope>0.5?'getting slower':'steady'):'')+'.';
+  var q=acc>=80?(sl==='slow'?'Accurate but slow — push the pace; you can afford more speed.':'Fast and accurate — keep it up and move on to mixed/mock sets.'):acc<60?(sl==='fast'?'Fast but inaccurate — you are rushing; slow down slightly and verify each answer.':'Both speed and accuracy need work — review the method before timed drills.'):(sl==='fast'?'Good speed; spend a little more time per item to lift accuracy.':sl==='slow'?'Accuracy is middling and pace is slow — learn the shortcut method for this type.':'Balanced speed/accuracy; aim to lift accuracy above 80%.');
+  out.push(pace+' '+q);if(acc<80)rec.push(q);}
+ if(cat!=='mixed'){var miss=s.subs.filter(function(x){return x.n>=3&&x.miss>0;}).slice(0,3);
+  if(miss.length){out.push('Most-missed: '+miss.map(function(x){return '<b>'+esc52(x.sub)+'</b> '+Math.round(x.miss*100)+'% missed ('+(x.n-x.ok)+'/'+x.n+')';}).join('; ')+'.');
+   miss.forEach(function(x){if(x.miss>=0.25&&PG_SUBTIP[cat+'|'+x.sub])rec.push(PG_SUBTIP[cat+'|'+x.sub]);});}
+  var mx2=pgMixedTopic(A,cat);if(mx2.n)out.push('In mixed sets: '+pgF(mx2.pct)+' over '+mx2.n+' item'+(mx2.n>1?'s':'')+'.');}
+ else{var tops=PG_CATS.map(function(t){var m=pgMixedTopic(A,t);return {t:t,pct:m.pct,n:m.n};}).filter(function(x){return x.n>=3;}).sort(function(x,y){return x.pct-y.pct;});
+  if(tops.length)out.push('Weakest topics inside mixed sets: '+tops.slice(0,3).map(function(x){return '<b>'+esc52(pgShort(x.t))+'</b> '+pgF(x.pct)+' ('+x.n+')';}).join(', ')+'.');
+  tops.slice(0,2).forEach(function(x){if(x.pct<70)rec.push(pgShort(x.t)+': '+PG_TIPS[x.t]);});}
+ if(s.trend.dir==='declining')rec.push('Scores are slipping — take a short break from timed sets and do one slower review set with the debrief open.');
+ if(s.sd!=null&&s.sd>=15&&s.n>=3)rec.push('Results swing a lot — use the same routine every set (time budget, skip-and-return) to stabilise.');
+ if(s.recent<80||!rec.length)rec.unshift(PG_TIPS[cat]);
+ return {stats:s,lines:out,rec:rec.filter(function(x,i,a){return x&&a.indexOf(x)===i;}).slice(0,4)};}
+function pgOverall(A){var V=pgValid(A),ex=pgExcluded(A),R=pgRank(A),out=[],rec=[];
+ if(!V.length){out.push('No valid attempts yet — <b>need more attempts</b>. Only sets where the timer runs out are counted.'+(ex.n?' '+ex.n+' excluded attempt'+(ex.n>1?'s':'')+' not counted.':''));
+  rec.push('Start with one full set in each category to get a baseline.');return {lines:out,rec:rec,rank:R,V:V,excl:ex};}
+ var sc=V.map(function(a){return a.pct;}),tr=pgTrend(sc,10),cats={};V.forEach(function(a){cats[a.cat]=1;});
+ out.push(V.length+' valid attempt'+(V.length>1?'s':'')+' across '+Object.keys(cats).length+' categor'+(Object.keys(cats).length>1?'ies':'y')+(ex.n?' ('+ex.n+' excluded)':'')+'. Overall average '+pgF(pgMean(sc))+', last 5: '+pgF(pgMean(sc.slice(-5)))+'.');
+ out.push(tr.dir==='need'?'Overall trend: need at least 3 valid attempts.':'Overall trend (last '+tr.n+' attempts, all categories): <b>'+tr.dir+'</b> ('+(tr.slope>0?'+':'')+tr.slope+' points per attempt).');
+ var pr=R.rows.filter(function(r){return r.src==='practice';});
+ if(pr.length>=2)out.push('Weakest: <b>'+esc52(pgShort(pr[0].cat))+'</b> ('+pgF(pr[0].acc)+'). Strongest: <b>'+esc52(pgShort(pr[pr.length-1].cat))+'</b> ('+pgF(pr[pr.length-1].acc)+'). Gap '+Math.round(pr[pr.length-1].acc-pr[0].acc)+' points.');
+ if(R.gaps.length)out.push('Never practised as a category: '+R.gaps.map(pgShort).join(', ')+'.');
+ if(R.rare.length)out.push('Rarely practised (1–2 valid attempts): '+R.rare.map(pgShort).join(', ')+'.');
+ pr.slice(0,2).forEach(function(r){if(r.acc<85)rec.push('Strengthen <b>'+esc52(pgShort(r.cat))+'</b> ('+pgF(r.acc)+'): '+PG_TIPS[r.cat]);});
+ if(R.gaps.length)rec.push('Fill the gaps: do one full timed set of '+R.gaps.slice(0,3).map(pgShort).join(', ')+(R.gaps.length>3?' and the rest':'')+' to get a baseline.');
+ if(!V.some(function(a){return a.cat==='mixed';}))rec.push('Do a full mixed/mock set to practise switching between question types under time pressure.');
+ if(tr.dir==='declining')rec.push('Overall scores are declining — fewer, fully focused sets beat many tired ones.');
+ return {lines:out,rec:rec.slice(0,5),rank:R,V:V,excl:ex};}
+
+/* ---------- inline SVG line chart (no libraries) ---------- */
+function pgChart(series,o){o=o||{};var W=340,H=o.h||170,L=34,Rr=8,T=10,B=26,pw=W-L-Rr,ph=H-T-B,ymin=o.ymin!=null?o.ymin:0,ymax=o.ymax!=null?o.ymax:100,nx=Math.max(2,o.nx||2);
+ var X=function(i){return L+(nx===1?pw/2:i*pw/(nx-1));},Y=function(v){return T+ph-(Math.max(ymin,Math.min(ymax,v))-ymin)/(ymax-ymin||1)*ph;};
+ var s='<svg class="pgchart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc52(o.title||'chart')+'" preserveAspectRatio="xMidYMid meet">';
+ (o.yt||[0,25,50,75,100]).forEach(function(v){s+='<line x1="'+L+'" x2="'+(W-Rr)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="#e3e8ef"/><text x="'+(L-4)+'" y="'+(Y(v)+3)+'" font-size="9" text-anchor="end" fill="#666">'+v+(o.unit||'')+'</text>';});
+ (o.xl||[]).forEach(function(x){s+='<text x="'+X(x[0])+'" y="'+(H-12)+'" font-size="8.5" text-anchor="middle" fill="#666">'+esc52(x[1])+'</text>';});
+ s+='<text x="'+(L+pw/2)+'" y="'+(H-2)+'" font-size="8.5" text-anchor="middle" fill="#999">'+esc52(o.xt||'valid attempts (oldest → newest)')+'</text>';
+ series.forEach(function(se){var p=se.pts.filter(function(q){return q.y!=null;});if(!p.length)return;
+  if(se.line!==false&&p.length>1)s+='<polyline fill="none" stroke="'+se.col+'" stroke-width="'+(se.w||2)+'"'+(se.dash?' stroke-dasharray="'+se.dash+'"':'')+' points="'+p.map(function(q){return X(q.x).toFixed(1)+','+Y(q.y).toFixed(1);}).join(' ')+'"/>';
+  if(se.dots!==false)p.forEach(function(q){s+='<circle cx="'+X(q.x).toFixed(1)+'" cy="'+Y(q.y).toFixed(1)+'" r="'+(se.r||3)+'" fill="'+(q.col||se.col)+'"><title>'+esc52(q.tip||'')+'</title></circle>';});});
+ return s+'</svg>';}
+function pgXL(V){var n=V.length,idx=n<=1?[0]:n<=4?V.map(function(_,i){return i;}):[0,Math.round((n-1)/3),Math.round(2*(n-1)/3),n-1];
+ return idx.filter(function(x,i,a){return a.indexOf(x)===i;}).map(function(i){var d=new Date(V[i].ts);return [i,(d.getMonth()+1)+'/'+d.getDate()];});}
+function pgCatChart(V,cat){var pts=V.map(function(a,i){return {x:i,y:a.pct,tip:pgD(a.ts)+': '+a.pct+'% ('+a.ok+'/'+a.n+')'};});
+ return pgChart([{pts:pts,col:PG_COL[cat]||'#1e5aa8'}],{nx:V.length,xl:pgXL(V),unit:'%',title:pgCatName(cat)+' score over time'});}
+function pgSpiChart(V,cat){var sp=V.map(function(a){return a.spi;}).filter(function(x){return x!=null;});if(sp.length<1)return '';var mx=Math.max(PG_PACE[cat]||30,Math.max.apply(null,sp));mx=Math.ceil(mx*1.15/5)*5;
+ var pts=V.map(function(a,i){return {x:i,y:a.spi,tip:pgD(a.ts)+': '+a.spi+' s/item'};}),tg=PG_PACE[cat]||30;
+ return pgChart([{pts:[{x:0,y:tg},{x:Math.max(1,V.length-1),y:tg}],col:'#bbb',dash:'4 3',dots:false,w:1},{pts:pts,col:'#555'}],{nx:Math.max(2,V.length),ymin:0,ymax:mx,yt:[0,Math.round(mx/2),mx],unit:'s',xl:pgXL(V),h:130,title:'seconds per item'});}
+function pgOverallChart(V){var pts=V.map(function(a,i){return {x:i,y:a.pct,col:PG_COL[a.cat],tip:pgShort(a.cat)+' '+pgD(a.ts)+': '+a.pct+'%'};}),roll=V.map(function(a,i){var w=V.slice(Math.max(0,i-4),i+1);return {x:i,y:pgMean(w.map(function(b){return b.pct;}))};});
+ var used={};V.forEach(function(a){used[a.cat]=1;});
+ return pgChart([{pts:pts,col:'#999',line:false,r:3.2},{pts:roll,col:'#0b1d33',w:2.5,dots:false}],{nx:V.length,xl:pgXL(V),unit:'%',title:'overall score trend'})
+  +'<div class="pgleg"><span><i style="background:#0b1d33;height:3px"></i>Rolling avg (last 5)</span>'+Object.keys(used).map(function(c){return '<span><i style="background:'+PG_COL[c]+'"></i>'+esc52(pgShort(c))+'</span>';}).join('')+'</div>';}
+
+/* ---------- Progress tab UI ---------- */
+var PG_SEL='overview';
+function pgExclHTML(ex){if(!ex.n)return '<p class="small">Excluded attempts: 0.</p>';return '<p class="small">Excluded (not charted): <b>'+ex.n+'</b> — '+Object.keys(ex.by).map(function(k){return esc52(PG_END[k]||k)+' ×'+ex.by[k];}).join('; ')+'.</p>';}
+function pgList(items){return items.length?'<ul class="pgrec">'+items.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>':'';}
+function renderProgress(){var A=pgLoad(USER),el=$('progbody');if(!el)return;
+ var opts='<option value="overview">Overview (all categories)</option>'+PG_CATS.concat(['mixed']).map(function(c){var n=pgValid(A,c).length;return '<option value="'+c+'"'+(PG_SEL===c?' selected':'')+'>'+esc52(pgCatName(c))+' ('+n+')</option>';}).join('');
+ var h='<div class="card"><h2>Progress — '+esc52(USERS[USER].n)+'</h2><select id="pgsel" aria-label="Category">'+opts+'</select>'
+  +'<p class="small pgrule"><b>Counted only if valid:</b> the timer ran out (full time used), no answer after the time limit, at least one question answered. Sets ended early, abandoned, overtime or pre-v5.3 history are excluded.</p></div>';
+ if(PG_SEL==='overview'){var O=pgOverall(A);
+  h+='<div class="card"><h3>Overall trend</h3>'+(O.V.length?pgOverallChart(O.V):'<p class="small">No valid attempts to chart yet.</p>')+pgExclHTML(O.excl)
+   +'<h3>Analysis</h3>'+O.lines.map(function(x){return '<p>'+x+'</p>';}).join('')+(O.rec.length?'<h3>Where to strengthen</h3>'+pgList(O.rec):'')+'</div>';
+  h+='<div class="card"><h3>Ranking: weakest → strongest</h3>'+(O.rank.rows.length?'<table class="pgrank"><tr><th>#</th><th>Category</th><th>Recent</th><th>Valid</th><th>Trend</th></tr>'+O.rank.rows.map(function(r,i){
+    return '<tr><td>'+(i+1)+'</td><td><a href="#" data-c="'+r.cat+'">'+esc52(pgShort(r.cat))+'</a></td><td><div class="pgbar"><b style="width:'+Math.max(2,Math.round(r.acc))+'%;background:'+(r.acc<60?'#c0392b':r.acc<80?'#e6a100':'#087a2f')+'"></b></div>'+Math.round(r.acc)+'%</td><td>'+(r.src==='mixed'?'<span class="small">mixed only ('+r.mixN+' items)</span>':r.n)+'</td><td>'+({improving:'↗',declining:'↘',flat:'→',need:'·'}[r.trend])+'</td></tr>';}).join('')+'</table><p class="small">Recent = pooled accuracy of the last 5 valid category sets (or items from mixed sets if the category was never practised alone). ↗ improving · → flat · ↘ declining · needs 3+ attempts.</p>':'<p class="small">Need more attempts.</p>')
+   +(O.rank.gaps.length?'<p><b>Gaps</b> (no category set yet): '+O.rank.gaps.map(function(c){return '<a href="#" data-c="'+c+'">'+esc52(pgShort(c))+'</a>';}).join(', ')+'</p>':'')+'</div>';}
+ else{var c=PG_SEL,An=pgAnalyze(A,c),s=An.stats;
+  h+='<div class="card"><h3>'+esc52(pgCatName(c))+'</h3>'+(s.n?'<p class="small">Score % per valid attempt</p>'+pgCatChart(s.V,c)+'<p class="small">Seconds per item (dashed = target ≈'+PG_PACE[c]+' s)</p>'+pgSpiChart(s.V,c):'<p class="small">Nothing to chart yet — need more attempts.</p>')+pgExclHTML(s.excl)
+   +'<h3>Analysis</h3>'+An.lines.map(function(x){return '<p>'+x+'</p>';}).join('')+(An.rec.length?'<h3>Where to strengthen</h3>'+pgList(An.rec):'')+'</div>';
+  if(s.n)h+='<div class="card"><h3>Valid attempts</h3><table class="pgtab"><tr><th>Date</th><th>Score</th><th>Time</th><th>s/item</th></tr>'+s.V.slice().reverse().slice(0,15).map(function(a){return '<tr><td>'+pgD(a.ts)+'</td><td>'+a.pct+'% <span class="small">'+a.ok+'/'+a.n+'</span></td><td>'+Math.round(a.used/60*10)/10+'/'+a.secs/60+' min</td><td>'+(a.spi==null?'—':a.spi)+'</td></tr>';}).join('')+'</table></div>';}
+ h+='<div class="card"><button class="small" id="pgcsv">Export progress as CSV</button> <span class="small">'+A.length+' attempt'+(A.length===1?'':'s')+' stored on this device for '+esc52(USERS[USER].n)+'.</span></div>';
+ el.innerHTML=h;$('pgsel').value=PG_SEL;$('pgsel').onchange=function(){PG_SEL=this.value;renderProgress();window.scrollTo(0,0);};
+ el.querySelectorAll('a[data-c]').forEach(function(a){a.onclick=function(e){e.preventDefault();PG_SEL=a.dataset.c;renderProgress();window.scrollTo(0,0);};});
+ $('pgcsv').onclick=function(){pgDownload(A);};}
+function pgCSV(A){var q=function(v){v=v==null?'':String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
+ var rows=[['user','category','mode_min','datetime','valid','status','score_pct','correct','total','items_reached','answered','skipped','time_used_s','time_limit_s','sec_per_item','breakdown']];
+ A.forEach(function(a){rows.push([a.u,pgCatName(a.cat),a.mode,a.dstr||new Date(a.ts).toISOString(),a.valid?'yes':'no',PG_END[a.why]||a.why,a.pct,a.ok,a.n,a.items,a.answered,a.skipped,a.used,a.secs,a.spi,
+  Object.keys(a.sub||{}).map(function(k){return k.replace('|',': ')+' '+a.sub[k].ok+'/'+a.sub[k].n;}).join('; ')]);});
+ return rows.map(function(r){return r.map(q).join(',');}).join('\n');}
+function pgDownload(A){var b=new Blob([pgCSV(A)],{type:'text/csv'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='mpat-progress-'+USER+'-'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(u);a.remove();},500);}
 </script><script>var MEM={};var LS={get:function(k){try{return localStorage.getItem(k);}catch(e){return MEM[k]||null;}},set:function(k,v){try{localStorage.setItem(k,v);}catch(e){MEM[k]=v;}}};var MINS='5',USER=null;
 var USERS={daniel:{h:'94281819bf4726bb6824a301654a5ffddd8b581923dd321d4d644e8097ca1484',n:'Daniel'},mophet:{h:'b7894b57dc0032844a6aa97371ae681cf299543e494234640fb6eec4fdae5445',n:'Mophet'},abram:{h:'15aaa238f5180b484c9b02e2b80f9b4215f2ca693569ee464d826664e09d897d',n:'Abram'},cicero:{h:'5925710dcce176d09b01d20fdb024653b0281949dec161408f3f34319ce6daea',n:'Cicero'}};
 function uk(k){return k+':'+USER;}
@@ -1919,8 +2158,8 @@ async function sha256hex(s){var b=await crypto.subtle.digest('SHA-256',new TextE
 async function doLogin(ev){if(ev)ev.preventDefault();var u=document.getElementById('lu').value.trim().toLowerCase(),p=document.getElementById('lp').value,m=document.getElementById('lmsg');
  if(!window.crypto||!crypto.subtle){m.textContent='Secure login needs HTTPS (WebCrypto unavailable).';return false;}
  var h=await sha256hex(u+':'+p);if(USERS[u]&&USERS[u].h===h){USER=u;LS.set('mpatUser',u);m.textContent='';document.getElementById('lp').value='';enterApp();}else{m.textContent='Wrong username or password.';}return false;}
-function logout(){if(S){clearInterval(TICK);S=null;}USER=null;try{localStorage.removeItem('mpatUser');}catch(e){MEM.mpatUser=null;}document.getElementById('app').style.display='none';document.getElementById('login').style.display='block';}
-function enterApp(){document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';document.getElementById('who').textContent=USERS[USER].n;show('home');}
+function logout(){if(S){clearInterval(TICK);pgAdd(pgBuild(S,S.log,'logout'));pgLiveClear(S.user);S=null;}USER=null;try{localStorage.removeItem('mpatUser');}catch(e){MEM.mpatUser=null;}document.getElementById('app').style.display='none';document.getElementById('login').style.display='block';}
+function enterApp(){document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';document.getElementById('who').textContent=USERS[USER].n;PG_SEL='overview';try{pgMigrate(USER);pgRecoverAbandoned(USER);}catch(e){}show('home');}
 var STATIC=staticItems(),S=null,TICK=null;
 var $=function(id){return document.getElementById(id);};
 function deckFor(topic){return shuf(STATIC.filter(function(x){return !topic||x.t===topic;}));}
@@ -1929,10 +2168,10 @@ function nextItem(){var t=S.topic;
  var hasGen=!!GENS[t],st=S.decks[t]||(S.decks[t]=deckFor(t));
  var it;if(hasGen&&(!st.length||Math.random()<.7))it=GENS[t]();else{if(!st.length)st=S.decks[t]=deckFor(t);it=st.pop();}
  it=JSON.parse(JSON.stringify(it));if(!it.fixed)it.ch=shuf(it.ch);return it;}
-function start(mode,topic){mode=mode||MINS;var secs=(+mode)*60;S={mode:mode,topic:topic||null,decks:{},log:[],end:Date.now()+secs*1000,secs:secs};
+function start(mode,topic){mode=mode||MINS;var secs=(+mode)*60;var t0=Date.now();S={mode:mode,topic:topic||null,decks:{},log:[],end:t0+secs*1000,secs:secs,t0:t0,user:USER,late:0,qt:t0};pgLiveSet(S,S.log);
  show('quiz');ask();clearInterval(TICK);TICK=setInterval(tick,250);tick();}
 function tick(){var r=Math.max(0,Math.round((S.end-Date.now())/1000));$('timer').textContent=Math.floor(r/60)+':'+('0'+r%60).slice(-2);$('timer').className=r<=30?'low':'';if(r<=0)finish();}
-function ask(){var it=S.cur=nextItem();S.sel=null;S.msel=[];$('qnum').textContent='Q'+(S.log.length+1)+' · '+TOPICS[it.t];
+function ask(){var it=S.cur=nextItem();S.qt=Date.now();S.sel=null;S.msel=[];$('qnum').textContent='Q'+(S.log.length+1)+' · '+TOPICS[it.t];
  $('qtext').innerHTML=it.q;$('qfig').innerHTML=it.fig;$('next').textContent='Next';$('qtext').parentNode.classList.toggle('ismatch',it.t==='match');$('qtext').parentNode.classList.toggle('isshape',it.t==='shape'&&it.kind==='set');
  if(it.multi){$('choices').innerHTML=it.cols?inspGrid(it,false):'<div class="grid">'+it.cells.map(function(c,i){return '<button class="cell" data-i="'+i+'"><span>'+(i+1)+'</span>'+c+'</button>';}).join('')+'</div>';
   $('next').textContent='Submit';
@@ -1941,14 +2180,16 @@ function ask(){var it=S.cur=nextItem();S.sel=null;S.msel=[];$('qnum').textConten
  document.querySelectorAll('.ch').forEach(function(b){b.onclick=function(){S.sel=it.ch[+b.dataset.i];document.querySelectorAll('.ch').forEach(function(x){x.classList.remove('sel');});b.classList.add('sel');$('next').disabled=false;};});}
  $('next').disabled=!it.rowscore;window.scrollTo(0,0);}
 function multiScore(it,sel){var hit=sel.filter(function(i){return it.ans.indexOf(i)>=0;}).length;return {hit:hit,fp:sel.length-hit,ok:hit===it.ans.length&&sel.length===hit};}
-function record(skip){var it=S.cur;if(it.multi){var sel=skip?[]:S.msel.slice().sort(function(a,b){return a-b;}),sc=multiScore(it,sel);var rs=it.rowscore?(skip?{rows:it.rows,ok:0,per:Array(it.rows).fill(false)}:inspScore(it,sel)):null;S.log.push({it:it,idx:sel,rs:rs,sel:skip||!sel.length?null:sel.map(function(i){return it.cols?'R'+(Math.floor(i/it.cols)+1)+'#'+(i%it.cols+1):'#'+(i+1);}).join(', '),ok:!skip&&sc.ok,part:sc});return;}S.log.push({it:it,sel:skip?null:S.sel,ok:!skip&&S.sel===it.a});}
-function finish(){clearInterval(TICK);if(!S)return;var log=S.log,W=function(l){return l.rs?l.rs.ok:(l.ok?1:0);},WN=function(l){return l.rs?l.rs.rows:1;},ok=log.reduce(function(s,l){return s+W(l);},0),NN=log.reduce(function(s,l){return s+WN(l);},0),ans=log.filter(function(l){return l.sel!==null||l.rs;}).length;
+function record(skip){recordCore(skip);var L=S.log[S.log.length-1],now=Date.now();if(L){L.ms=now-S.qt;if(now>S.end+1000){S.late++;L.late=true;}}pgLiveSet(S,S.log);}
+function recordCore(skip){var it=S.cur;if(it.multi){var sel=skip?[]:S.msel.slice().sort(function(a,b){return a-b;}),sc=multiScore(it,sel);var rs=it.rowscore?(skip?{rows:it.rows,ok:0,per:Array(it.rows).fill(false)}:inspScore(it,sel)):null;S.log.push({it:it,idx:sel,rs:rs,sel:skip||!sel.length?null:sel.map(function(i){return it.cols?'R'+(Math.floor(i/it.cols)+1)+'#'+(i%it.cols+1):'#'+(i+1);}).join(', '),ok:!skip&&sc.ok,part:sc});return;}S.log.push({it:it,sel:skip?null:S.sel,ok:!skip&&S.sel===it.a});}
+function finish(reason){clearInterval(TICK);if(!S)return;var end=reason||(Date.now()>=S.end-500?'time':'quit'),PA=pgBuild(S,S.log,end);pgAdd(PA);pgLiveClear(S.user);var log=S.log,W=function(l){return l.rs?l.rs.ok:(l.ok?1:0);},WN=function(l){return l.rs?l.rs.rows:1;},ok=log.reduce(function(s,l){return s+W(l);},0),NN=log.reduce(function(s,l){return s+WN(l);},0),ans=log.filter(function(l){return l.sel!==null||l.rs;}).length;
  var key=S.topic?'topic:'+S.topic:'mixed'+S.mode,H=JSON.parse(LS.get(uk('mpatHist'))||'{}');var prev=H[key];
  var rec={ok:ok,n:NN,date:new Date().toLocaleString()};if(!prev||ok>prev.ok)H[key]=rec;
  var runs=JSON.parse(LS.get(uk('mpatRuns'))||'[]');runs.unshift({k:key,ok:ok,n:NN,d:rec.date});LS.set(uk('mpatRuns'),JSON.stringify(runs.slice(0,20)));LS.set(uk('mpatHist'),JSON.stringify(H));
  var by={};log.forEach(function(l){var b=by[l.it.t]||(by[l.it.t]={ok:0,n:0});b.n+=WN(l);b.ok+=W(l);});
  var h='<h2>Score: '+ok+' / '+NN+'</h2><p>Items '+log.length+' (answered '+ans+'). Inspection items count one point per correct row. Accuracy: '+(NN?Math.round(ok/NN*100):0)+'%'+(!prev||ok>prev.ok?' · <b>New best!</b>':' · Best: '+prev.ok)+'</p><table><tr><th>Topic</th><th>Correct</th></tr>';
  Object.keys(by).forEach(function(t){h+='<tr><td>'+TOPICS[t]+'</td><td>'+by[t].ok+' / '+by[t].n+'</td></tr>';});h+='</table>';
+ h+='<p class="pgnote '+(PA.valid?'good':'bad')+'">'+(PA.valid?'✓ Counted in your Progress (full '+S.secs/60+' min used).':'✗ Not counted in Progress: '+esc52(PG_END[PA.why]||PA.why)+'. Only sets where the timer runs out are counted.')+' <a href="#" onclick="show(\'prog\');return false">View progress</a></p>';
  h+=debriefHTML(log);
  $('result').innerHTML=h;wireDebrief();S=null;show('res');}
 /* ---------- v5.2 debrief: every item, your answer vs correct, expanded explanation; filter All / Missed / Correct ---------- */
@@ -1967,9 +2208,9 @@ function inspGrid(it,rv,selArr){var h='<div class="insp'+(rv?' rv':'')+'">';for(
 function revFig(l){var it=l.it;if(it.cols)return inspGrid(it,true,l.idx)+'<p class="small">Red border = defective; blue fill = your pick.</p>';if(it.multi)return '<div class="grid rv">'+it.cells.map(function(c,i){var bad=it.ans.indexOf(i)>=0,p=l.sel&&(', '+l.sel+',').indexOf(' #'+(i+1)+',')>=0;return '<div class="cell'+(bad?' bad':'')+(p?' sel':'')+'"><span>'+(i+1)+'</span>'+c+'</div>';}).join('')+'</div><p class="small">Red border = defective; blue fill = your pick.</p>';
  if(it.chimg)return '<div class="imgch">'+it.ch.map(function(c,i){return '<div class="ch ich'+(c===it.a?' right':'')+'"><b>'+c+'</b>'+it.chimg[i]+'</div>';}).join('')+'</div>';return '';}
 function setMins(m){MINS=m;document.querySelectorAll('.mbtn').forEach(function(b){b.classList.toggle('sel',b.dataset.m===m);});}
-function show(id){['home','quiz','res','tips'].forEach(function(x){$(x).style.display=x===id?'block':'none';});if(id==='home')renderHome();}
+function show(id){['home','quiz','res','tips','prog'].forEach(function(x){$(x).style.display=x===id?'block':'none';});if(id==='home')renderHome();if(id==='prog')renderProgress();}
 function renderHome(){var H=JSON.parse(LS.get(uk('mpatHist'))||'{}');
  $('topics').innerHTML=Object.keys(TOPICS).map(function(t){var b=H['topic:'+t];return '<button class="tp" onclick="start(null,\''+t+'\')">'+TOPICS[t]+(b?'<span class="small"> best '+b.ok+'/'+b.n+'</span>':'')+'</button>';}).join('');
  $('best').innerHTML=['5','7','10'].map(function(m){var b=H['mixed'+m];return m+'-min best: '+(b?b.ok+'/'+b.n+' ('+b.date+')':'—');}).join('<br>');}
-(function(){$('next').onclick=function(){record(false);ask();};$('skip').onclick=function(){record(true);ask();};$('stop').onclick=function(){finish();};setMins('5');var u=LS.get('mpatUser');if(u&&USERS[u]){USER=u;enterApp();}else logout();})();
+(function(){$('next').onclick=function(){record(false);ask();};$('skip').onclick=function(){record(true);ask();};$('stop').onclick=function(){finish('quit');};setMins('5');var u=LS.get('mpatUser');if(u&&USERS[u]){USER=u;enterApp();}else logout();})();
 </script></body></html>
