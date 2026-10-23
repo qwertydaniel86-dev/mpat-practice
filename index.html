@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PAF MPAT Practice</title><meta name="mpat-version" content="v5.4-2026-10-15"><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#0b1d33;color:#111}
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PAF MPAT Practice</title><meta name="mpat-version" content="v5.5-2026-10-23"><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#0b1d33;color:#111}
 .wrap{max-width:720px;margin:0 auto;padding:12px}.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:12px}
 h1{color:#fff;font-size:1.3em;margin:8px 0}h2{margin-top:0}button{font-size:1em;padding:12px;border-radius:8px;border:1px solid #888;background:#f3f6fa;cursor:pointer}
 .big{display:block;width:100%;margin:8px 0;background:#1e5aa8;color:#fff;border:0;font-weight:bold}.tp{margin:4px;width:calc(50% - 8px)}
@@ -53,7 +53,7 @@ details.rev.ismiss{border-left:5px solid #b00}details.rev.isok{border-left:5px s
 <div id="login" class="card" style="display:none"><h2>Sign in</h2><form onsubmit="return doLogin(event)"><input id="lu" placeholder="Username" autocomplete="username" autocapitalize="none"><input id="lp" type="password" placeholder="Password" autocomplete="current-password"><button class="big" type="submit">Log in</button></form><p id="lmsg" class="bad"></p><button id="gretry" class="big" style="display:none" onclick="gRetry()">Retry</button></div>
 <div id="app" style="display:none"><div class="ubar"><button class="small" onclick="show('home')">Practice</button><button class="small" onclick="show('prog')">Progress</button><button class="small" onclick="show('tips')">Tips &amp; Tricks</button><button class="small" id="gdevbtn" style="display:none" onclick="show('devs')">Devices</button><span>Logged in as <b id="who"></b></span> <button class="small" onclick="logout()">Logout</button></div>
 <div id="gban" style="display:none"></div>
-<div id="home"><div class="card"><p>Rapid-fire timed sets like the real Military Pilot Aptitude Test. Every set is randomly generated. <span class="small">v5.4 · 2026-10-15</span></p>
+<div id="home"><div class="card"><p>Rapid-fire timed sets like the real Military Pilot Aptitude Test. Every set is randomly generated. <span class="small">v5.5 · 2026-10-23</span></p>
 <p><b>Time limit (applies to mixed set and every category):</b></p><div class="row"><button class="mbtn" data-m="5" onclick="setMins('5')">5 min</button><button class="mbtn" data-m="7" onclick="setMins('7')">7 min</button><button class="mbtn" data-m="10" onclick="setMins('10')">10 min</button></div><button class="big" onclick="start()">Start mixed set</button><p class="small" id="best"></p></div>
 <div class="card"><h3>Per-topic practice (uses the time limit above)</h3><div id="topics"></div></div></div>
 <div id="quiz" style="display:none"><div class="bar"><span id="qnum"></span><span id="timer"></span></div><div class="card"><div id="qtext"></div><div id="qfig"></div><div id="choices"></div>
@@ -2000,7 +2000,7 @@ function pgKey(u){return 'mpatAttempts:'+u;}
 function pgLoad(u){u=u||USER;if(!u)return [];var A;try{A=JSON.parse(LS.get(pgKey(u))||'[]');}catch(e){A=[];}if(!Array.isArray(A))A=[];
  return A.filter(function(a){return a&&a.u===u;}).map(function(a){var v=pgValidity(a);a.valid=v.valid;a.why=v.reason;return a;});}
 function pgSave(u,A){LS.set(pgKey(u),JSON.stringify(A.slice(-PG_MAX)));}
-function pgAdd(a){if(!a||!a.u)return;var A=pgLoad(a.u);A.push(a);A.sort(function(x,y){return x.ts-y.ts;});pgSave(a.u,A);}
+function pgAdd(a){if(!a||!a.u)return;var A=pgLoad(a.u);A.push(a);A.sort(function(x,y){return x.ts-y.ts;});pgSave(a.u,A);if(typeof attQueue==='function')attQueue(a);}
 // in-progress marker: lets us count sets abandoned by closing/reloading the app (excluded, reason "abandoned")
 function pgLiveKey(u){return 'mpatLive:'+u;}
 function pgLiveSet(S0,log){if(!S0||!S0.user)return;var ok=0,n=0;log.forEach(function(l){ok+=l.rs?l.rs.ok:(l.ok?1:0);n+=l.rs?l.rs.rows:1;});
@@ -2232,6 +2232,32 @@ async function renderDevices(){var el=document.getElementById('devbody');el.inne
   var o={tu:t,nh:await sha256hex(t+':'+n)};if(t===USER)o.oh=await sha256hex(USER+':'+po.value);m.textContent='Saving…';var x;
   try{x=await gCall('passwd',gAuth(o));}catch(e){m.textContent='Can’t reach the login server.';return;}
   m.textContent=x.ok?(t===USER?'Password changed. '+x.signedOut+' other device(s) were signed out.':'Password for '+t+' changed; '+x.signedOut+' device(s) signed out. Tell them the new password.'):(x.msg||'Failed');if(x.ok){po.value='';document.getElementById('gpn').value='';document.getElementById('gpn2').value='';}};}
+</script><script>/* ===== v5.5 (Oct 23 2026): score sync — every finished set is also sent to MPAT Guard ("Attempts" tab).
+   Background only: no UI. Items wait in a localStorage queue (works offline) and are retried with backoff;
+   an item leaves the queue only when the server confirms it (new or duplicate). Never blocks or signs anyone out. */
+var A_QKEY='mpatSyncQ',A_MAX=800,A_BUSY=false,A_FAIL=0,A_NEXT=0,A_T=null;
+function aFmtDt(ts){var d=new Date(ts+8*3600e3),p=function(n){return ('0'+n).slice(-2);};// Manila time, plain text so Sheets keeps it as text
+ return d.getUTCFullYear()+'-'+p(d.getUTCMonth()+1)+'-'+p(d.getUTCDate())+' '+p(d.getUTCHours())+':'+p(d.getUTCMinutes())+' PHT';}
+function aItem(a){return {u:a.u,id:String(a.id),dt:aFmtDt(a.ts),cat:pgCatName(a.cat),mode:a.mode,valid:!!a.valid,status:PG_END[a.why]||a.why||'',pct:a.pct,ok:a.ok,n:a.n,used:a.used,secs:a.secs};}
+function aLoadQ(){try{var q=JSON.parse(LS.get(A_QKEY)||'[]');return Array.isArray(q)?q:[];}catch(e){return [];}}
+function aSaveQ(q){LS.set(A_QKEY,JSON.stringify(q.slice(-A_MAX)));}
+function attQueue(a){try{if(!a||!a.u||!a.id)return;var q=aLoadQ(),id=String(a.id);if(!q.some(function(x){return x.u===a.u&&x.id===id;}))q.push(aItem(a));aSaveQ(q);aSoon(1500);}catch(e){}}
+// one-time: queue this user's attempts saved before v5.5 (server dedupes, so repeats are harmless)
+function attBackfill(u){try{var k='mpatSyncBF:'+u;if(!u||LS.get(k))return;pgLoad(u).forEach(function(a){if(a&&a.id&&a.why!=='legacy')attQueue(a);});LS.set(k,'1');}catch(e){}}
+function aBackoff(f){return Math.min(30*60e3,30e3*Math.pow(2,Math.max(0,f-1)));}
+function aSoon(ms){clearTimeout(A_T);A_T=setTimeout(attFlush,ms||0);}
+async function attFlush(){if(A_BUSY||typeof gOn!=='function'||!gOn())return;var s=gSess();if(!s)return;if(Date.now()<A_NEXT){aSoon(A_NEXT-Date.now());return;}
+ if(typeof navigator!=='undefined'&&navigator.onLine===false)return;
+ var mine=aLoadQ().filter(function(x){return x.u===s.u;}).slice(0,50);if(!mine.length)return;A_BUSY=true;var r=null;
+ try{r=await gCall('att',gAuth({list:mine.map(function(x){var y=Object.assign({},x);delete y.u;return y;})}));}catch(e){r=null;}A_BUSY=false;
+ if(r&&r.ok&&Array.isArray(r.saved)){var done={};r.saved.forEach(function(id){done[id]=1;});aSaveQ(aLoadQ().filter(function(x){return !(x.u===s.u&&done[x.id]);}));A_FAIL=0;A_NEXT=0;
+  if(r.saved.length&&aLoadQ().some(function(x){return x.u===s.u;}))aSoon(2000);return;}
+ // offline, old server without 'att' (badreq), busy or expired session: keep everything, try later
+ A_FAIL++;A_NEXT=Date.now()+aBackoff(A_FAIL);aSoon(A_NEXT-Date.now());}
+function attStart(){if(typeof window==='undefined')return;window.addEventListener('online',function(){A_NEXT=0;aSoon(1000);});
+ document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')aSoon(3000);});
+ setInterval(function(){aSoon(0);},5*60e3);aSoon(5000);}
+if(typeof window!=='undefined'&&typeof document!=='undefined')attStart();
 </script><script>var MEM={};var LS={get:function(k){try{return localStorage.getItem(k);}catch(e){return MEM[k]||null;}},set:function(k,v){try{localStorage.setItem(k,v);}catch(e){MEM[k]=v;}}};var MINS='5',USER=null;
 var USERS={daniel:{n:'Daniel'},mophet:{n:'Mophet'},abram:{n:'Abram'},cicero:{n:'Cicero'}};
 function uk(k){return k+':'+USER;}
@@ -2243,7 +2269,7 @@ async function doLogin(ev){if(ev)ev.preventDefault();var u=document.getElementBy
   if(r.ok){USER=r.u;LS.set('mpatUser',r.u);gMsg('');document.getElementById('lp').value='';enterApp();gStartHb();}else gMsg(gLoginMsg(r));return false;}
  if(USERS[u]&&USERS[u].h===h){USER=u;LS.set('mpatUser',u);m.textContent='';document.getElementById('lp').value='';enterApp();}else{m.textContent='Wrong username or password.';}return false;}
 function logout(silent){if(gOn()){var gs=gSess();if(gs&&silent!==true)gCall('logout',gAuth()).catch(function(){});gClear();gStopHb();gBanner('');gMsg('');}if(S){clearInterval(TICK);pgAdd(pgBuild(S,S.log,'logout'));pgLiveClear(S.user);S=null;}USER=null;try{localStorage.removeItem('mpatUser');}catch(e){MEM.mpatUser=null;}document.getElementById('app').style.display='none';document.getElementById('login').style.display='block';}
-function enterApp(){document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';document.getElementById('who').textContent=(USERS[USER]||(gSess()||{})).n||(gSess()||{}).name||USER;document.getElementById('gdevbtn').style.display=gOn()?'':'none';PG_SEL='overview';try{pgMigrate(USER);pgRecoverAbandoned(USER);}catch(e){}show('home');}
+function enterApp(){if(typeof attBackfill==='function'&&USER)attBackfill(USER);document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';document.getElementById('who').textContent=(USERS[USER]||(gSess()||{})).n||(gSess()||{}).name||USER;document.getElementById('gdevbtn').style.display=gOn()?'':'none';PG_SEL='overview';try{pgMigrate(USER);pgRecoverAbandoned(USER);}catch(e){}show('home');}
 var STATIC=staticItems(),S=null,TICK=null;
 var $=function(id){return document.getElementById(id);};
 function deckFor(topic){return shuf(STATIC.filter(function(x){return !topic||x.t===topic;}));}
