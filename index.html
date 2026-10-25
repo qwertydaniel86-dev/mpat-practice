@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PAF MPAT Practice</title><meta name="mpat-version" content="v5.5-2026-10-23"><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#0b1d33;color:#111}
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PAF MPAT Practice</title><meta name="mpat-version" content="v5.5.1-2026-10-25"><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#0b1d33;color:#111}
 .wrap{max-width:720px;margin:0 auto;padding:12px}.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:12px}
 h1{color:#fff;font-size:1.3em;margin:8px 0}h2{margin-top:0}button{font-size:1em;padding:12px;border-radius:8px;border:1px solid #888;background:#f3f6fa;cursor:pointer}
 .big{display:block;width:100%;margin:8px 0;background:#1e5aa8;color:#fff;border:0;font-weight:bold}.tp{margin:4px;width:calc(50% - 8px)}
@@ -48,12 +48,14 @@ details.rev.ismiss{border-left:5px solid #b00}details.rev.isok{border-left:5px s
 .gdev .gua{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom;color:#777}.gdev button{flex:none;padding:8px 10px}
 .gcur{background:#f3f8ff;border-radius:6px;padding:8px 6px}.gtag{background:#1e5aa8;color:#fff;border-radius:10px;padding:1px 7px;font-size:.7em;vertical-align:middle}
 #devs input,#devs select{display:block;width:100%;font-size:1em;padding:10px;margin:6px 0;border:1px solid #999;border-radius:8px;background:#fff}#lmsg{line-height:1.4}
+
+.trlink{display:inline-block;padding:12px;border-radius:8px;border:1px solid #888;background:#f3f6fa;color:#1e5aa8;text-decoration:none;font-weight:bold}
 </style></head><body><div class="wrap">
 <h1>✈ PAF MPAT Practice</h1>
 <div id="login" class="card" style="display:none"><h2>Sign in</h2><form onsubmit="return doLogin(event)"><input id="lu" placeholder="Username" autocomplete="username" autocapitalize="none"><input id="lp" type="password" placeholder="Password" autocomplete="current-password"><button class="big" type="submit">Log in</button></form><p id="lmsg" class="bad"></p><button id="gretry" class="big" style="display:none" onclick="gRetry()">Retry</button></div>
-<div id="app" style="display:none"><div class="ubar"><button class="small" onclick="show('home')">Practice</button><button class="small" onclick="show('prog')">Progress</button><button class="small" onclick="show('tips')">Tips &amp; Tricks</button><button class="small" id="gdevbtn" style="display:none" onclick="show('devs')">Devices</button><span>Logged in as <b id="who"></b></span> <button class="small" onclick="logout()">Logout</button></div>
+<div id="app" style="display:none"><div class="ubar"><button class="small" onclick="show('home')">Practice</button><button class="small" onclick="show('prog')">Progress</button><button class="small" onclick="show('tips')">Tips &amp; Tricks</button><a class="small trlink" href="../mpat-trainer/">Trainer ↗</a><button class="small" id="gdevbtn" style="display:none" onclick="show('devs')">Devices</button><span>Logged in as <b id="who"></b></span> <button class="small" onclick="logout()">Logout</button></div>
 <div id="gban" style="display:none"></div>
-<div id="home"><div class="card"><p>Rapid-fire timed sets like the real Military Pilot Aptitude Test. Every set is randomly generated. <span class="small">v5.5 · 2026-10-23</span></p>
+<div id="home"><div class="card"><p>Rapid-fire timed sets like the real Military Pilot Aptitude Test. Every set is randomly generated. <span class="small">v5.5.1 · 2026-10-25</span></p>
 <p><b>Time limit (applies to mixed set and every category):</b></p><div class="row"><button class="mbtn" data-m="5" onclick="setMins('5')">5 min</button><button class="mbtn" data-m="7" onclick="setMins('7')">7 min</button><button class="mbtn" data-m="10" onclick="setMins('10')">10 min</button></div><button class="big" onclick="start()">Start mixed set</button><p class="small" id="best"></p></div>
 <div class="card"><h3>Per-topic practice (uses the time limit above)</h3><div id="topics"></div></div></div>
 <div id="quiz" style="display:none"><div class="bar"><span id="qnum"></span><span id="timer"></span></div><div class="card"><div id="qtext"></div><div id="qfig"></div><div id="choices"></div>
