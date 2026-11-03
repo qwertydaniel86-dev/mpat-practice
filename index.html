@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PAF MPAT Practice</title><meta name="mpat-version" content="v5.6-2026-11-03"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" href="favicon.png"><meta name="apple-mobile-web-app-title" content="PAF MPAT"><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#0b1d33;color:#111}
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PAF MPAT Practice</title><meta name="mpat-version" content="v5.7-2026-11-03"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" href="favicon.png"><meta name="apple-mobile-web-app-title" content="PAF MPAT"><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#0b1d33;color:#111}
 .wrap{max-width:720px;margin:0 auto;padding:12px}.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:12px}
 h1{color:#fff;font-size:1.3em;margin:8px 0}h2{margin-top:0}button{font-size:1em;padding:12px;border-radius:8px;border:1px solid #888;background:#f3f6fa;cursor:pointer}
 .big{display:block;width:100%;margin:8px 0;background:#1e5aa8;color:#fff;border:0;font-weight:bold}.tp{margin:4px;width:calc(50% - 8px)}
@@ -60,12 +60,27 @@ details.rev.ismiss{border-left:5px solid #b00}details.rev.isok{border-left:5px s
 .pbar i.good{background:#087a2f}.pbar i.mid{background:#d99100}.pbar i.bad{background:#c0392b}.mid{color:#9a6700;font-weight:bold}
 .pcons{margin:6px 0;overflow-wrap:anywhere}.phist{display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin:6px 0;flex-wrap:wrap}
 #persbody .card{overflow-wrap:anywhere}#persbody button.ch:disabled,#persbody .row button:disabled{opacity:.5}
+/* ---- v5.7: factor test (16PF-style) + IQ practice (390px-safe) ---- */
+.ubar button{flex:0 1 auto;min-height:40px}
+.pst.fst{display:block;width:100%;min-height:48px;text-align:left;margin:8px 0;overflow-wrap:anywhere}
+.pst.fmid{background:#eef0f3;color:#444;border-style:dashed;text-align:center;min-height:44px;font-size:.92em}.pst.fmid.sel{background:#6b7280;color:#fff}
+.frow{padding:8px 0;border-top:1px solid #eee}.frow:first-of-type{border-top:0}
+.fbar{position:relative;height:16px;background:#e9edf2;border-radius:8px;overflow:hidden;margin:4px 0}
+.fbar i{position:absolute;left:0;top:4px;height:8px;border-radius:4px;background:#1e5aa8;z-index:2;display:block}.fbar i.good{background:#087a2f}.fbar i.mid{background:#c98200}.fbar i.bad{background:#b00}
+.fbar .fband{position:absolute;top:0;bottom:0;background:rgba(8,122,47,.28);border-left:2px solid #087a2f;border-right:2px solid #087a2f;z-index:1;display:block}
+.frow .phead{display:flex;justify-content:space-between;gap:8px;overflow-wrap:anywhere}
+.iqch{min-height:48px;overflow-wrap:anywhere}.iqq{font-size:1.08em;overflow-wrap:anywhere}.iqscore{display:flex;align-items:baseline;gap:12px}.iqscore b{font-size:2.2em}.iqscore span{font-size:1.2em;color:#555}
+.row .submit{background:#087a2f;color:#fff;border:0;font-weight:bold}.big.alt{background:#eef2f8;color:#1e3a66;border:1px solid #9bb0cc}
+#iqbody .card,#persbody .card{overflow-wrap:anywhere}#iqbody details.rev summary{cursor:pointer}
+/* ---- v5.7: Full MPAT Personality Test ---- */
+.phist{flex-wrap:wrap;gap:6px}.fullopen{min-height:40px;padding:6px 14px}
+#iqlock .pbar,#fullcard .pbar{margin:8px 0}
 </style></head><body><div class="wrap">
 <h1>✈ PAF MPAT Practice</h1>
 <div id="login" class="card" style="display:none"><h2>Sign in</h2><form onsubmit="return doLogin(event)"><input id="lu" placeholder="Username" autocomplete="username" autocapitalize="none"><input id="lp" type="password" placeholder="Password" autocomplete="current-password"><button class="big" type="submit">Log in</button></form><p id="lmsg" class="bad"></p><button id="gretry" class="big" style="display:none" onclick="gRetry()">Retry</button></div>
-<div id="app" style="display:none"><div class="ubar"><button class="small" onclick="show('home')">Practice</button><button class="small" onclick="show('prog')">Progress</button><button class="small" onclick="show('tips')">Tips &amp; Tricks</button><button class="small" onclick="show('pers')">Personality</button><a class="small trlink" href="../mpat-trainer/">Trainer ↗</a><button class="small" id="gdevbtn" style="display:none" onclick="show('devs')">Devices</button><span>Logged in as <b id="who"></b></span> <button class="small" onclick="logout()">Logout</button></div>
+<div id="app" style="display:none"><div class="ubar"><button class="small" onclick="show('home')">Practice</button><button class="small" onclick="show('prog')">Progress</button><button class="small" onclick="show('tips')">Tips &amp; Tricks</button><button class="small" onclick="show('pers')">Personality</button><button class="small" onclick="show('iq')">IQ practice</button><a class="small trlink" href="../mpat-trainer/">Trainer ↗</a><button class="small" id="gdevbtn" style="display:none" onclick="show('devs')">Devices</button><span>Logged in as <b id="who"></b></span> <button class="small" onclick="logout()">Logout</button></div>
 <div id="gban" style="display:none"></div>
-<div id="home"><div class="card"><p>Rapid-fire timed sets like the real Military Pilot Aptitude Test. Every set is randomly generated. <span class="small">v5.6 · 2026-11-03</span></p>
+<div id="home"><div class="card"><p>Rapid-fire timed sets like the real Military Pilot Aptitude Test. Every set is randomly generated. <span class="small">v5.7 · 2026-11-03</span></p>
 <p><b>Time limit (applies to mixed set and every category):</b></p><div class="row"><button class="mbtn" data-m="5" onclick="setMins('5')">5 min</button><button class="mbtn" data-m="7" onclick="setMins('7')">7 min</button><button class="mbtn" data-m="10" onclick="setMins('10')">10 min</button></div><button class="big" onclick="start()">Start mixed set</button><p class="small" id="best"></p></div>
 <div class="card"><h3>Per-topic practice (uses the time limit above)</h3><div id="topics"></div></div></div>
 <div id="quiz" style="display:none"><div class="bar"><span id="qnum"></span><span id="timer"></span></div><div class="card"><div id="qtext"></div><div id="qfig"></div><div id="choices"></div>
@@ -158,6 +173,7 @@ details.rev.ismiss{border-left:5px solid #b00}details.rev.isok{border-left:5px s
 </ul>
 </div><button class="big" onclick="show('home')">Back to menu</button></div>
 <div id="pers" style="display:none"><div id="persbody"></div><button class="big" onclick="show('home')">Back to menu</button></div>
+<div id="iq" style="display:none"><div id="iqbody"></div><button class="big" onclick="show('home')">Back to menu</button></div>
 <div id="prog" style="display:none"><div id="progbody"></div><button class="big" onclick="show('home')">Back to menu</button></div>
 <div id="devs" style="display:none"><div id="devbody"></div><button class="big" onclick="show('home')">Back to menu</button></div>
 <div id="res" style="display:none"><div class="card" id="result"></div><button class="big" onclick="show('home')">Back to menu</button></div>
@@ -2328,15 +2344,17 @@ function persBandCls(p){return p>=85?'good':p>=60?'mid':'bad';}
 /* Scoring (pure). ans[i] = 0 or 1 = index into PERS_ITEMS[i].s of the statement chosen (null = not answered).
    Unique items score 100 if the pilot-aligned statement is chosen, otherwise item.alt (0, 40 or 60). Repeats are NOT scored (they would double count); they only feed the consistency check.
    trait % = mean item points of that trait; overall % = mean item points over all unique answered items; consistency % = repeated pairs answered with the same statement / repeated pairs. */
-function persScore(ans){var tr={},sum=0,n=0,items=[],i,it;
+function persIdx(P,id){for(var i=0;i<P.length;i++)if(P[i].id===id)return i;return -1;}
+/* persScore(ans[,pool]): pool defaults to PERS_ITEMS (the 30-pair quick quiz); the Full test passes its 70-pair pool. */
+function persScore(ans,pool){var P=pool||PERS_ITEMS,tr={},sum=0,n=0,items=[],i,it;
  PERS_TRAITS.forEach(function(t){tr[t.id]={id:t.id,n:t.n,pts:0,cnt:0,pct:null};});
- for(i=0;i<PERS_ITEMS.length;i++){it=PERS_ITEMS[i];var a=ans[i];if(a!==0&&a!==1)continue;
+ for(i=0;i<P.length;i++){it=P[i];var a=ans[i];if(a!==0&&a!==1)continue;
   var pts=it.rep?null:(a===it.lean?100:it.alt);items.push({i:i,it:it,a:a,chosen:it.s[a],pts:pts,aligned:a===it.lean});
   if(pts!==null){tr[it.t].pts+=pts;tr[it.t].cnt++;sum+=pts;n++;}}
  var list=PERS_TRAITS.map(function(t){var x=tr[t.id];x.pct=x.cnt?Math.round(x.pts/x.cnt):null;return x;});
  var ok=0,pairs=[],tot=0;
- for(i=0;i<PERS_ITEMS.length;i++){it=PERS_ITEMS[i];if(!it.rep)continue;var oi=PERS_ITEMS.indexOf(persById(it.rep));if((ans[i]!==0&&ans[i]!==1)||(ans[oi]!==0&&ans[oi]!==1))continue;
-  var same=PERS_ITEMS[oi].s[ans[oi]]===it.s[ans[i]];tot++;if(same)ok++;pairs.push({first:oi,again:i,same:same,flip:!!it.flip,chosen1:PERS_ITEMS[oi].s[ans[oi]],chosen2:it.s[ans[i]]});}
+ for(i=0;i<P.length;i++){it=P[i];if(!it.rep)continue;var oi=persIdx(P,it.rep);if((ans[i]!==0&&ans[i]!==1)||(ans[oi]!==0&&ans[oi]!==1))continue;
+  var same=P[oi].s[ans[oi]]===it.s[ans[i]];tot++;if(same)ok++;pairs.push({first:oi,again:i,same:same,flip:!!it.flip,chosen1:P[oi].s[ans[oi]],chosen2:it.s[ans[i]]});}
  return {traits:list,overall:n?Math.round(sum/n):null,scored:n,consistency:{pct:tot?Math.round(ok/tot*100):null,ok:ok,n:tot,pairs:pairs},items:items,answered:items.length};}
 /* ---------- HTML builders (pure strings) ---------- */
 function persEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -2375,10 +2393,11 @@ function persSaveAttempt(u,r,ans){var list=persLoad(u),tr={};r.traits.forEach(fu
 /* ---------- UI (browser only) ---------- */
 var PERS={mode:'guide',i:0,ans:[],user:null};
 function persBody(){return document.getElementById('persbody');}
-function renderPers(){if(PERS.user!==USER||PERS.mode==='result'){PERS={mode:'guide',i:0,ans:[],user:USER};}persDraw();}
+function renderPers(){if(PERS.user!==USER||PERS.mode==='result'||PERS.mode==='full'){PERS={mode:'guide',i:0,ans:[],user:USER};}persDraw();}
 function persDraw(){var b=persBody(),h;if(PERS.mode==='quiz')h=persQuizHTML(PERS.i,PERS.ans);
  else if(PERS.mode==='result'){h=PERS.html;}
- else{h=persGuideHTML()+'<div class="card"><button class="big" id="persstart" onclick="persStart()">Start practice quiz ('+PERS_ITEMS.length+' pairs)</button><p class="small">'+PERS_ITEMS.length+' self-written pairs, including '+PERS_ITEMS.filter(function(x){return x.rep;}).length+' repeated or reversed pairs for a consistency check. Takes about 5 minutes.</p></div>'+persHistHTML(persLoad(USER));}
+ else if(PERS.mode==='full'&&typeof fullHTML==='function'){h=fullHTML();}
+ else{h=(typeof fullEntryHTML==='function'?fullEntryHTML():'')+persGuideHTML()+(typeof facGuideHTML==='function'?facGuideHTML():'')+'<div class="card"><h3>Quick quiz (30 pairs)</h3><button class="big" id="persstart" onclick="persStart()">Start practice quiz ('+PERS_ITEMS.length+' pairs)</button><p class="small">'+PERS_ITEMS.length+' self-written pairs, including '+PERS_ITEMS.filter(function(x){return x.rep;}).length+' repeated or reversed pairs for a consistency check. Takes about 5 minutes.</p></div>'+(typeof fullHistHTML==='function'?fullHistHTML(fullLoadDone(USER)):'')+persHistHTML(persLoad(USER));}
  b.innerHTML=h;window.scrollTo(0,0);}
 function persStart(){PERS={mode:'quiz',i:0,ans:PERS_ITEMS.map(function(){return null;}),user:USER};persDraw();}
 function persPick(k){if(PERS.mode!=='quiz')return;PERS.ans[PERS.i]=k;if(PERS.i<PERS_ITEMS.length-1){PERS.i++;persDraw();}else persFinish();}
@@ -2386,6 +2405,390 @@ function persBack(){if(PERS.mode==='quiz'&&PERS.i>0){PERS.i--;persDraw();}}
 function persCancel(){PERS={mode:'guide',i:0,ans:[],user:USER};persDraw();}
 function persFinish(){var prevL=persLoad(USER),prev=prevL.length?prevL[prevL.length-1]:null,r=persScore(PERS.ans);persSaveAttempt(USER,r,PERS.ans);
  PERS.mode='result';PERS.html=persResultHTML(r,prev)+'<button class="big" id="persretake" onclick="persStart()">Retake quiz</button><button class="big" onclick="persCancel()">Back to guide</button>';persDraw();}
+</script><script>/* ===== v5.7 (Nov 3 2026): 16PF-STYLE item bank for the Full MPAT Personality Test — 80 ORIGINAL three-choice practice items (a / ? / b), 5 per Cattell factor.
+   NOT real 16PF items (those are copyrighted); only the public format and the 16 factor names/poles are used. The sten-like score is coarse (5 items per factor, no norms).
+   Pilot target bands: direction from published 16PF studies of flight cadets / pilots where one exists (see FAC_SRC); the exact band widths are my assumption.
+   Pure data + scoring + a few HTML builders; no DOM access, no storage (storage and UI live in full.js). Tested in node by factortest.js.
+   Needs personality.js (persEsc, persBar, persBandCls) loaded first. */
+/* tgt = pilot target band in sten-like points; ev: 'multi' = same direction in >=2 studies, 'single' = 1 study, 'mixed' = studies disagree (neutral band), 'none' = no source (neutral band). src = FAC_SRC numbers. */
+var FAC_FACTORS=[
+ {id:'A',n:'Warmth',lo:'Reserved, impersonal',hi:'Warm, outgoing',tgt:[3,6],ev:'multi',src:[1,2],pilot:'Lower than the norm in two Chinese military-flier samples (flight cadets vs male norm; air-force staff vs serviceman norm). But airline/RAF studies describe pilots as extraverted, which pulls the other way, so the band is wide.'},
+ {id:'B',n:'Reasoning',lo:'Concrete thinking',hi:'Abstract, analytical',tgt:[6,9],ev:'multi',src:[2,3],pilot:'Higher ("more intelligent") than norms in airline-pilot incumbents/applicants and in a Chinese air-force sample.'},
+ {id:'C',n:'Emotional Stability',lo:'Reactive, changeable',hi:'Stable, adaptive, mature',tgt:[7,10],ev:'multi',src:[1,3,4],pilot:'The most consistent finding: pilots and applicants score well above general norms (cadets, airline pilots, RAF/Army aircrew applicants).'},
+ {id:'E',n:'Dominance',lo:'Deferential, cooperative',hi:'Dominant, assertive',tgt:[4,7],ev:'mixed',src:[1,2],pilot:'Conflicting: higher than the male norm in 198 flight cadets, but lower than the serviceman norm in 170 air-force staff. Neutral band used.'},
+ {id:'F',n:'Liveliness',lo:'Serious, restrained',hi:'Lively, spontaneous',tgt:[5,8],ev:'single',src:[1],pilot:'Higher than the male norm in 198 flight cadets (one study); the authors tie it to age and sex.'},
+ {id:'G',n:'Rule-Consciousness',lo:'Expedient, nonconforming',hi:'Rule-conscious, dutiful',tgt:[4,7],ev:'mixed',src:[1,2],pilot:'Conflicting: higher in flight cadets, but "conformity" lower in the air-force staff sample (the abstract\'s naming is not fully clear). Neutral band used. Following rules is still core to flying.'},
+ {id:'H',n:'Social Boldness',lo:'Shy, threat-sensitive',hi:'Bold, thick-skinned',tgt:[6,9],ev:'single',src:[1],pilot:'Higher than the male norm in 198 flight cadets (one study).'},
+ {id:'I',n:'Sensitivity',lo:'Utilitarian, tough-minded',hi:'Sensitive, sentimental',tgt:[4,7],ev:'mixed',src:[1,2],pilot:'Conflicting: lower in flight cadets, higher in air-force staff. Neutral band used.'},
+ {id:'L',n:'Vigilance',lo:'Trusting, accepting',hi:'Vigilant, suspicious',tgt:[4,7],ev:'mixed',src:[1,2],pilot:'Conflicting: lower in flight cadets, higher ("suspiciousness") in air-force staff. Neutral band used.'},
+ {id:'M',n:'Abstractedness',lo:'Grounded, practical',hi:'Abstracted, imaginative',tgt:[5,8],ev:'multi',src:[1,2],pilot:'Higher ("abstractedness" / "imagination") than the norm in both Chinese military-flier samples. Only these two Chinese military samples support it; treat it cautiously.'},
+ {id:'N',n:'Privateness',lo:'Forthright, open',hi:'Private, discreet',tgt:[3,6],ev:'single',src:[1],pilot:'Lower than the male norm in 198 flight cadets (one study).'},
+ {id:'O',n:'Apprehension',lo:'Self-assured, unworried',hi:'Apprehensive, self-doubting',tgt:[1,4],ev:'single',src:[1],pilot:'Lower than the male norm in 198 flight cadets (one study); consistent with the "stable, mature" pilot findings for factor C.'},
+ {id:'Q1',n:'Openness to Change',lo:'Traditional',hi:'Open to change, experimenting',tgt:[5,8],ev:'multi',src:[1,2],pilot:'Higher than the norm in flight cadets and ("radicalism") in air-force staff.'},
+ {id:'Q2',n:'Self-Reliance',lo:'Group-oriented',hi:'Self-reliant, solitary',tgt:[3,6],ev:'single',src:[1],pilot:'Lower than the male norm in 198 flight cadets (one study).'},
+ {id:'Q3',n:'Perfectionism',lo:'Tolerates disorder',hi:'Organized, self-disciplined',tgt:[6,9],ev:'multi',src:[1,2],pilot:'Higher than norms in cadets and in a Chinese air-force pilot sample ("self-discipline").'},
+ {id:'Q4',n:'Tension',lo:'Relaxed, patient',hi:'Tense, driven, impatient',tgt:[1,4],ev:'multi',src:[1,2],pilot:'Lower than norms in cadets and in a Chinese air-force pilot sample.'}];
+var FAC_EVTXT={multi:'sourced (2+ studies)',single:'sourced (1 study)',mixed:'sources conflict, neutral band',none:'no clear source'};
+/* Real sources only (abstracts read; full texts not opened). */
+var FAC_SRC=[null,
+ ['Occupational Personality Model of Flight Cadets — Military Medical Journal of South China, 2010 (16PF, 198 Chinese flight cadets vs male norm)','https://en.cnki.com.cn/Article_en/CJFDTOTAL-HNGY201002025.htm'],
+ ['Personality Characteristics Analysis of Airforce Service Staff by 16PF — Military Medical Journal of South China, 2010 (170 Chinese air-force service staff vs serviceman norm; the English abstract\'s letter/name pairs are inconsistent, so factor NAMES were used, not letters)','https://en.cnki.com.cn/Article_en/CJFDTOTAL-HNGY201005022.htm'],
+ ['Personality comparison of airline pilot incumbents, applicants and general-population norms on the 16PF — Psychological Reports 92(3), 2003','https://journals.sagepub.com/doi/10.2466/pr0.2003.92.3.773'],
+ ['Bartram 1995 — predictive validity of the EPI and 16PF for military flying training (RAF/Army aircrew applicants) — J. Occupational & Organizational Psychology','https://bpspsychub.onlinelibrary.wiley.com/doi/10.1111/j.2044-8325.1995.tb00583.x']];
+var FAC_STRUCT=[['16PF Questionnaire (Wikipedia): 16 factors, a / ? / c item format, middle answers, untimed, sten scale','https://en.wikipedia.org/wiki/16PF_Questionnaire'],['16pf Technical Manual, Sixth Edition (factor labels and poles, Table 3.1)','https://euscripts.panpowered.com/content/Inventory/Artifacts/4806ce5e-a1ab-4083-b548-4dba3bf732d5.pdf'],['OpenStax Psychology 2e, 11.7 Trait theorists (Cattell\'s 16 factors)','https://openstax.org/books/psychology-2e/pages/11-7-trait-theorists']];
+/* Items (original wording). h = answer that points to the HIGH pole of the factor, l = answer for the LOW pole. The high answer is shown as "a" or "b" by FAC_HIPOS (mixed so "a" is not always the same pole).
+   B items have a right answer (high = correct). */
+var FAC_RAW=[
+ ['C','When a plan I made falls apart at the last minute, I','adjust calmly and carry on','feel rattled for quite a while'],
+ ['Q3','My desk, bag and locker are usually','neat, with each thing in its place','a bit messy, but I get by'],
+ ['H','Asked to speak to a large group with no warning, I','feel fine and ready to try','feel very uneasy and want to refuse'],
+ ['L','When a stranger offers me a surprise favour, I','wonder what they want in return','take it as plain kindness'],
+ ['A','Waiting in a queue next to a stranger, I tend to','start a friendly chat','keep to myself'],
+ ['O','The night before an important exam, I','worry that I may not be good enough','feel confident I will do fine'],
+ ['E','In a group that has no leader, I','usually take the lead','wait for someone else to start'],
+ ['Q1','When a new method replaces the one I know, I','am curious to try it','prefer to stay with the old way'],
+ ['G','If I am sure nobody will notice, I','still follow the rule','may bend the rule to save time'],
+ ['N','When I have a personal worry, I','keep it to myself','talk about it openly with friends'],
+ ['B','Hand is to glove as foot is to','sock','toe',"A glove covers a hand, and a sock covers a foot. A toe is a part of the foot, not a covering."],
+ ['Q4','When people I am waiting for are late, I','become impatient and restless','stay relaxed and wait'],
+ ['F','At a party I am usually','lively and in the middle of the fun','quiet and watching from the side'],
+ ['M','I find it more interesting to','think about ideas and what might be possible','work out practical, concrete details'],
+ ['I','I would rather spend an afternoon','in a museum or listening to music','fixing or building something with tools'],
+ ['Q2','When I have a problem to solve, I','prefer to work it out on my own','prefer to ask others and work it out together'],
+ ['C','After a bad day, I','still sleep well','often replay it in my head at night'],
+ ['Q3','I usually','make a plan and stick to it','let the day take shape as it goes'],
+ ['A','When a coursemate tells me about a personal problem, I would rather','sit and listen for a while','quickly suggest a practical fix and move on'],
+ ['L','When coworkers praise my work, I','wonder if they have a motive','believe they mean it'],
+ ['H','Meeting a senior officer for the first time, I','introduce myself with confidence','wait to be introduced and say little'],
+ ['G','I think rules are','there for good reasons and should be followed','guidelines that can be skipped when sensible'],
+ ['O','When I think about my past choices, I','often feel guilty about some of them','rarely feel any regret'],
+ ['E','If someone disagrees with my idea, I','stand my ground and argue my point','drop it to keep the peace'],
+ ['B','Which number comes next: 2, 4, 8, 16, ?','32','24','Each number is double the one before (2, 4, 8, 16), so the next is 32.'],
+ ['Q1','I like my routine to','change often','stay the same'],
+ ['N','With new acquaintances, I','share little about myself at first','tell them about my life quite freely'],
+ ['F','When something funny happens, I','laugh out loud and say so right away','smile and keep it to myself'],
+ ['Q4','At the end of a day, I','often feel wound up and cannot switch off','unwind easily'],
+ ['M','People who know me would say I sometimes','get lost in thought and forget small things','keep my mind on what is in front of me'],
+ ['I','In choosing a place to live, I care more about','how beautiful it is','how practical and cheap it is'],
+ ['Q2','Studying for a hard test, I','work best alone','work best with a study group'],
+ ['A','In a new unit, I','enjoy getting to know many people','stay with a small circle I already know'],
+ ['Q3','When a task is finished but could be better, I','keep refining it until it is right','call it good enough'],
+ ['C','When I make a mistake in front of others, I','accept it and move on','feel upset and find it hard to let go'],
+ ['H','In a new group activity, I','jump in right away','hold back until I feel comfortable'],
+ ['E','When I am given an instruction I think is wrong, I','say so directly','go along with it'],
+ ['B','Everyone in the crew wears a badge. Lito wears no badge. So Lito is','not in the crew','the crew leader','The rule is "crew member, then badge". No badge means he cannot be a crew member. Nothing says anything about a leader.'],
+ ['G','When I borrow something, I','return it on time, as promised','return it when I remember'],
+ ['L','I think most people','look out mainly for themselves','mean well and can be trusted'],
+ ['O','When a senior officer criticises my work, I','doubt myself for a long time','take the lesson and feel fine'],
+ ['Q1','When people suggest unconventional ideas, I','enjoy testing them','doubt them until they are proven'],
+ ['F','I prefer to','decide on the spot and enjoy the moment','think things over carefully before I act'],
+ ['N','If I am asked how I feel about a sensitive matter at work, I','choose my words carefully','say exactly what I think'],
+ ['Q4','When several things need doing at once, I','feel pressured and on edge','stay patient and do one at a time'],
+ ['M','I prefer a job that','invites imagination and new theories','has clear, concrete tasks and results'],
+ ['I','A sad film','often moves me','rarely affects me'],
+ ['Q2','I would rather','go my own way even if the group disagrees','go along with what the group decides'],
+ ['B','Which number comes next: 3, 6, 12, 24, ?','48','36','Each number is double the one before (3, 6, 12, 24), so the next is 48.'],
+ ['B','Cold is to winter as hot is to','summer','spring','Cold describes winter and hot describes summer. Spring is mild, so it is the weaker match.'],
+ ['A','At a family gathering, I usually','go around and talk with many people','stay near the few people I know best'],
+ ['A','When a new classmate sits alone, I','go over and start talking','leave them be unless they come to me'],
+ ['C','When I get unexpected bad news, I','stay steady and think about what to do','feel shaken and need time to recover'],
+ ['C','My mood over a normal week is','fairly even','up and down depending on the day'],
+ ['E','In a debate, I','keep pushing my view until others accept it','prefer to listen and let others lead'],
+ ['E','When a group must decide quickly, I','am the one who speaks first','wait to see what others suggest'],
+ ['F','On a free evening, I would rather','join a lively group outing','stay home where it is quiet'],
+ ['F','People who know me would call me','cheerful and quick to joke','serious and thoughtful'],
+ ['G','If a queue is long and nobody is checking, I','still wait my turn','might slip ahead'],
+ ['G','When a promise becomes inconvenient, I','keep it anyway','look for a way out of it'],
+ ['H','At a gathering where I know nobody, I','introduce myself to people','wait for someone to talk to me'],
+ ['H','When I have to phone a stranger, I','do it without much thought','put it off and feel nervous'],
+ ['I','When choosing a gift, I','pick something that touches the heart','pick something useful'],
+ ['I','When a friend is hurt by a decision I made for good reasons, I','feel it deeply and worry about them','accept that it was the right call'],
+ ['L','When a deal looks too good, I','suspect there is a catch','assume it is probably fine'],
+ ['L','If a colleague is promoted, I','wonder what is behind it','assume it was deserved'],
+ ['M','While waiting, I often','drift into daydreams and ideas','watch what is happening around me'],
+ ['M','I would rather read a book about','abstract ideas and theories','practical how-to methods'],
+ ['N','At work, I','keep my personal life private','chat about my private life with workmates'],
+ ['N','When someone asks me a direct personal question, I','answer carefully and say only what I need to','answer plainly and openly'],
+ ['O','When I think I may have let a team down, I','blame myself for a long time','work out what happened and move on'],
+ ['O','Before a big test, I','feel nervous about how I will do','feel calm and prepared'],
+ ['Q1','When someone suggests changing how a job is done, I','welcome the idea','prefer the proven way'],
+ ['Q1','Faced with a familiar way and an unusual way, I','pick the unusual way','pick the familiar way'],
+ ['Q2','When making a big decision, I','decide by myself','consult the group first'],
+ ['Q2','In my free time, I','enjoy my own company','like having people around'],
+ ['Q3','Before leaving the house, I','check that everything is in order','head out and hope it is fine'],
+ ['Q3','When I set a goal, I','follow a clear schedule to reach it','work on it when I feel like it'],
+ ['Q4','While waiting in a slow line, I','feel tense and restless','stay patient'],
+ ['Q4','At the end of a stressful week, I','feel keyed up and find it hard to relax','relax easily']];
+/* high-pole position per item: factor k even -> a,b,a ; factor k odd -> b,a,b (by that factor's j-th item) => 24 a / 24 b overall */
+var FAC_ITEMS=(function(){var cnt={},ids='A B C E F G H I L M N O Q1 Q2 Q3 Q4'.split(' ');return FAC_RAW.map(function(r,n){var f=r[0],k=ids.indexOf(f),j=cnt[f]=(cnt[f]===undefined?0:cnt[f]+1);
+ var hi=(k%2===0)?(j%2===0?0:1):(j%2===0?1:0),s=hi===0?[r[2],r[3]]:[r[3],r[2]],fx=null;
+ for(var i=0;i<FAC_FACTORS.length;i++)if(FAC_FACTORS[i].id===f)fx=FAC_FACTORS[i];
+ var why=r[4]||('This item measures '+fx.n+' ('+f+'). Choosing "'+r[2]+'" points to the high pole ('+fx.hi.toLowerCase()+'); choosing "'+r[3]+'" points to the low pole ('+fx.lo.toLowerCase()+').');
+ return {id:'f'+(n<9?'0':'')+(n+1),f:f,q:r[1],s:s,hi:hi,why:why};});})();
+/* ---------- scoring (pure). ans[i]: 0 = a, 1 = b, 2 = "?" (middle), null = unanswered ---------- */
+var FAC_PER=FAC_ITEMS.length/FAC_FACTORS.length;
+function facItemPts(it,a){if(a!==0&&a!==1&&a!==2)return null;return a===2?1:(a===it.hi?2:0);}
+/* raw 0..2n (n items per factor) -> sten-like 1..10: round(1 + raw*4.5/n). n=3 gives 1,3,4,6,7,9,10; n=5 gives 1,2,3,4,5,6,6,7,8,9,10. */
+function facSten(raw,n){n=n||FAC_PER;return Math.round(1+raw*4.5/n);}
+function facScore(ans){var i,it,per={},q=0,n=0;FAC_FACTORS.forEach(function(f){per[f.id]={id:f.id,raw:0,cnt:0};});
+ for(i=0;i<FAC_ITEMS.length;i++){it=FAC_ITEMS[i];var p=facItemPts(it,ans[i]);if(p===null)continue;per[it.f].raw+=p;per[it.f].cnt++;n++;if(ans[i]===2)q++;}
+ var sum=0,m=0,list=FAC_FACTORS.map(function(f){var x=per[f.id],o={id:f.id,n:f.n,raw:x.raw,cnt:x.cnt,tgt:f.tgt,sten:null,dist:null,fit:null,state:null};
+  if(x.cnt===FAC_PER){o.sten=facSten(x.raw,FAC_PER);o.dist=o.sten<f.tgt[0]?f.tgt[0]-o.sten:o.sten>f.tgt[1]?o.sten-f.tgt[1]:0;o.fit=Math.max(0,1-o.dist/3);o.state=o.dist===0?'in':(o.sten<f.tgt[0]?'below':'above');sum+=o.fit;m++;}return o;});
+ return {factors:list,fit:m?Math.round(sum/m*100):null,scoredFactors:m,q:q,answered:n,qpct:n?Math.round(q/n*1000)/10:0,qwarn:n>0&&q/n>0.10};}
+/* ---------- HTML builders (pure strings) ---------- */
+function facFactor(id){for(var i=0;i<FAC_FACTORS.length;i++)if(FAC_FACTORS[i].id===id)return FAC_FACTORS[i];return null;}
+function facGuideHTML(){
+ return '<div class="card"><h3>16PF-style items: how the format works</h3><p class="small">The '+FAC_ITEMS.length+' three-choice items are <b>original practice items I wrote</b>, not real 16PF items (those are copyrighted and are not used). Only the public format and the factor names are borrowed.</p>'
+ +'<details class="pdet"><summary>The 16 factors and the three-choice format</summary><p>Cattell\'s 16PF measures 16 bipolar primary factors. Both ends of every factor have a meaning; a high score is not automatically "good". Items ask about everyday behaviour and have three choices: <b>a</b>, <b>?</b> (in between / cannot decide) and <b>b</b>. The real test is untimed and takes roughly 35 to 50 minutes; the current edition has 185 items (your recollection of about 150 items is not verified; a shorter form or another test is possible).</p><ul class="plist">'+FAC_FACTORS.map(function(f){return '<li><b>'+f.id+' '+persEsc(f.n)+':</b> '+persEsc(f.lo)+' ↔ '+persEsc(f.hi)+'</li>';}).join('')+'</ul></details>'
+ +'<details class="pdet"><summary>The middle "?" answer</summary><ul class="plist"><li>The instructions discourage it. In the 16PF many "?" answers are tracked as an infrequency / indecision check, and a lot of them leaves a thin, hard-to-read profile.</li><li>Pick "?" only if a and b are truly equal for you. Otherwise ask: <b>"Which would I do slightly more often on an ordinary day?"</b> and pick that one.</li><li>This practice flags more than 10% middle answers (5 or more of 48) and counts them for you.</li></ul></details>'
+ +'<details class="pdet"><summary>Pilot target bands: sourced vs assumed</summary><p class="small">Targets are where practice scores are compared. The <b>direction</b> comes from published 16PF studies of flight cadets and pilots (all compared with general-population norms, not with an absolute cut-off). The <b>band width</b> is my assumption. These describe groups, not entry rules; personality is a weak predictor of pilot success.</p><ul class="plist">'
+  +FAC_FACTORS.map(function(f){return '<li><b>'+f.id+' '+persEsc(f.n)+':</b> target '+f.tgt[0]+'–'+f.tgt[1]+' · '+FAC_EVTXT[f.ev]+'. '+persEsc(f.pilot)+'</li>';}).join('')+'</ul></details>'
+ +'<details class="pdet"><summary>Sources</summary><ul class="plist">'+FAC_SRC.slice(1).concat(FAC_STRUCT).map(function(s){return '<li><a href="'+s[1]+'" target="_blank" rel="noopener">'+persEsc(s[0])+'</a></li>';}).join('')+'</ul><p class="small">Only abstracts/public summaries were read (the CNKI pages could not be opened directly, so those two abstracts were read through a search-engine summary); full texts were not opened. Study samples are Chinese flight cadets and air-force staff, airline pilots and British aircrew applicants, not Filipino cadets. An assumption: I treated "higher/lower than the norm" as a target above/below the mid-scale 5.5.</p></details></div>';}
+function facBar(f,x){var lo=f.tgt[0],hi=f.tgt[1],c=x.state==='in'?'good':(x.dist===1?'mid':'bad'),arrow=x.state==='in'?'✓ inside target':(x.state==='above'?'▲ above target':'▼ below target');
+ return '<div class="frow"><div class="phead"><span>'+f.id+' · '+persEsc(f.n)+'</span><b class="'+c+'">'+x.sten+'</b></div><div class="fbar" role="img" aria-label="'+persEsc(f.n)+' score '+x.sten+' of 10, pilot target '+lo+' to '+hi+'"><span class="fband" style="left:'+(lo-1)*10+'%;width:'+(hi-lo+1)*10+'%"></span><i class="'+c+'" style="width:'+x.sten*10+'%"></i></div><div class="small">Target '+lo+'–'+hi+' · '+arrow+' · '+FAC_EVTXT[f.ev]+'</div></div>';}
+</script><script>/* ===== v5.7 (Nov 3 2026): "IQ practice" tab — 30 ORIGINAL untimed items: number series, verbal analogies, odd one out, logic & word problems, described patterns.
+   A practice set, NOT an IQ test: no norms, no IQ number. Score = correct / 30. Optional elapsed-time display (no limit). Storage: localStorage only ('mpatIQ:<user>'), never synced.
+   Pure data + scoring have no DOM access (tested in node by iqtest.js). Standalone: needs only the app's $ / USER / LS in the browser part. */
+var IQ_KEY='mpatIQ:',IQ_MAX=20,IQ_N=30;
+var IQ_CATS=[{id:'num',n:'Number series'},{id:'ana',n:'Verbal analogies'},{id:'odd',n:'Odd one out'},{id:'log',n:'Logic & word problems'},{id:'pat',n:'Patterns (described)'}];
+/* [id, category, question, correct answer, [3 wrong answers], explanation] */
+var IQ_RAW=[
+ ['n1','num','3, 7, 11, 15, ?','19',['17','18','21'],'Each number is 4 more than the one before: 15 + 4 = 19.'],
+ ['n2','num','2, 6, 18, 54, ?','162',['108','110','216'],'Each number is 3 times the one before: 54 × 3 = 162.'],
+ ['n3','num','1, 4, 9, 16, 25, ?','36',['30','34','49'],'These are the square numbers 1², 2², 3², 4², 5², so the next is 6² = 36.'],
+ ['n4','num','5, 6, 8, 11, 15, ?','20',['18','19','21'],'The gaps grow by one each time: +1, +2, +3, +4, so the next gap is +5: 15 + 5 = 20.'],
+ ['n5','num','2, 3, 5, 8, 13, ?','21',['18','20','26'],'Each number is the sum of the two before it: 8 + 13 = 21.'],
+ ['n6','num','100, 91, 83, 76, ?','70',['69','71','72'],'The gaps shrink by one each time: −9, −8, −7, so the next gap is −6: 76 − 6 = 70.'],
+ ['n7','num','2, 4, 3, 6, 5, 10, ?','9',['8','11','20'],'Two rules alternate: ×2 then −1 (2→4, 4→3, 3→6, 6→5, 5→10), so the next step is −1: 10 − 1 = 9.'],
+ ['v1','ana','Pilot is to aircraft as driver is to…','vehicle',['road','fuel','garage'],'A pilot operates an aircraft; a driver operates a vehicle. The relation is "person → what they operate".'],
+ ['v2','ana','Hungry is to eat as thirsty is to…','drink',['water','cup','sleep'],'Hungry makes you want to eat; thirsty makes you want to drink. Both words in the pair are actions, so "water" or "cup" do not fit.'],
+ ['v3','ana','Book is to library as painting is to…','gallery',['artist','frame','brush'],'A library is where books are kept and shown; a gallery is where paintings are kept and shown.'],
+ ['v4','ana','Thermometer is to temperature as compass is to…','direction',['map','speed','needle'],'A thermometer measures temperature; a compass shows direction.'],
+ ['v5','ana','Brave is to cowardly as generous is to…','stingy',['kind','rich','careful'],'Brave and cowardly are opposites; the opposite of generous is stingy.'],
+ ['v6','ana','Seed is to tree as egg is to…','bird',['nest','shell','feather'],'A seed grows into a tree; an egg grows into a bird (the young animal that comes out of it).'],
+ ['o1','odd','Which does not belong: eagle, hawk, falcon, bat?','bat',['eagle','hawk','falcon'],'Eagle, hawk and falcon are birds of prey. A bat is a flying mammal, not a bird.'],
+ ['o2','odd','Which does not belong: 9, 16, 25, 30, 36?','30',['9','25','36'],'9, 16, 25 and 36 are square numbers (3², 4², 5², 6²). 30 is not a square.'],
+ ['o3','odd','Which does not belong: 2, 3, 5, 9, 11?','9',['3','5','11'],'2, 3, 5 and 11 are prime numbers. 9 = 3 × 3 is not prime.'],
+ ['o4','odd','Which does not belong: triangle, square, pentagon, circle?','circle',['triangle','square','pentagon'],'Triangle, square and pentagon are made of straight sides and corners. A circle has neither.'],
+ ['o5','odd','Which does not belong: metre, kilometre, kilogram, centimetre?','kilogram',['metre','kilometre','centimetre'],'Metre, kilometre and centimetre measure length. A kilogram measures mass (weight).'],
+ ['o6','odd','Which does not belong: Cairo, Lima, Manila, Nile?','Nile',['Cairo','Lima','Manila'],'Cairo, Lima and Manila are capital cities. The Nile is a river.'],
+ ['l1','log','A jet flies at a steady 600 km/h. How far does it fly in 40 minutes?','400 km',['300 km','360 km','450 km'],'40 minutes is 2/3 of an hour: 600 × 2/3 = 400 km.'],
+ ['l2','log','Every cadet in Flight Alpha passed the swim test. Ben did not pass the swim test. Which statement must be true?','Ben is not in Flight Alpha',['Ben is the leader of Flight Alpha','Everyone who passed the swim test is in Flight Alpha','Ben failed every test'],'If every Alpha cadet passed, then someone who did not pass cannot be in Alpha. The other statements go beyond what the facts say.'],
+ ['l3','log','Ana is taller than Ben. Ben is taller than Carl. Dan is shorter than Carl. Who is the second tallest?','Ben',['Ana','Carl','Dan'],'The order from tallest is Ana, Ben, Carl, Dan. The second tallest is Ben.'],
+ ['l4','log','Two pencils and a ruler cost ₱30 together. The ruler costs ₱6 more than one pencil. How much is one pencil?','₱8',['₱6','₱9','₱12'],'Let a pencil be p. Then 2p + (p + 6) = 30, so 3p = 24 and p = 8. Check: 2 × 8 + 14 = 30.'],
+ ['l5','log','One tap fills a tank in 6 hours and another tap fills it in 3 hours. With both taps open, how long does it take?','2 hours',['1.5 hours','3 hours','4.5 hours'],'In one hour the taps fill 1/6 + 1/3 = 1/2 of the tank, so the whole tank takes 2 hours.'],
+ ['l6','log','Today is Tuesday. What day of the week will it be 100 days from today?','Thursday',['Wednesday','Friday','Saturday'],'Days repeat every 7. 100 = 14 × 7 + 2, so it is 2 days after Tuesday: Thursday.'],
+ ['p1','pat','A square has a dot in its top-left corner. In the next figures the dot moves clockwise one corner at a time: top-right, then bottom-right, then bottom-left. Where is the dot in the 5th figure?','top-left corner',['top-right corner','bottom-right corner','bottom-left corner'],'The dot visits the four corners in a cycle of 4 (TL, TR, BR, BL). Figure 5 starts a new cycle, so it is back at the top-left.'],
+ ['p2','pat','A row shows: triangle, square, circle, triangle, square, circle, triangle, square, … What comes next?','circle',['triangle','square','diamond'],'The shapes repeat in groups of three: triangle, square, circle. After triangle, square comes circle.'],
+ ['p3','pat','An arrow points up. At each step it turns 90° clockwise. Which way does it point after 7 steps?','left',['up','right','down'],'7 × 90° = 630°, which is 360° + 270°. A 270° clockwise turn from "up" ends pointing left (right at 90°, down at 180°, left at 270°).'],
+ ['p4','pat','In a 3 × 3 grid, figure 1 has 1 shaded cell, figure 2 has 3, figure 3 has 5. How many cells are shaded in figure 5?','9',['7','8','10'],'Two more cells are shaded each time (1, 3, 5, 7, 9), so figure 5 has 9 shaded cells.'],
+ ['p5','pat','Look at the letter b in a mirror held at its right side (a left-to-right mirror image). Which letter do you see?','d',['p','q','b'],'A left-to-right mirror turns b into d. (Turning it upside-down would give p, and turning it a half-turn would give q.)']];
+/* order: round-robin across categories so the five types are mixed, each category going easy -> hard.
+   Correct answer position is cycled (k*3 mod 4) so the right answer is not always the same letter. */
+var IQ_ITEMS=(function(){var by={},out=[],k=0,r,c;IQ_CATS.forEach(function(x){by[x.id]=IQ_RAW.filter(function(q){return q[1]===x.id;});});
+ for(r=0;r<7;r++)for(c=0;c<IQ_CATS.length;c++){var q=by[IQ_CATS[c].id][r];if(!q)continue;var pos=(k*3)%4,ch=q[4].slice();ch.splice(pos,0,q[3]);out.push({id:q[0],c:q[1],q:q[2],ch:ch,a:pos,why:q[5]});k++;}return out;})();
+/* ---------- scoring (pure). ans[i] = chosen index 0..3, or null ---------- */
+function iqScore(ans){var cats={},score=0,answered=0;IQ_CATS.forEach(function(c){cats[c.id]={id:c.id,n:c.n,ok:0,total:0,answered:0};});
+ IQ_ITEMS.forEach(function(it,i){var c=cats[it.c];c.total++;if(ans[i]===0||ans[i]===1||ans[i]===2||ans[i]===3){answered++;c.answered++;if(ans[i]===it.a){score++;c.ok++;}}});
+ return {score:score,n:IQ_ITEMS.length,pct:Math.round(score/IQ_ITEMS.length*100),answered:answered,cats:IQ_CATS.map(function(c){return cats[c.id];})};}
+function iqFmtTime(s){s=Math.max(0,Math.floor(s||0));var m=Math.floor(s/60),x=s%60;return m+':'+(x<10?'0':'')+x;}
+function iqEsc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+/* ---------- HTML builders (pure strings) ---------- */
+function iqIntroHTML(hist,timer){return '<div class="card pwarn"><h2>IQ practice</h2><ul class="plist"><li><b>30 original practice items</b>: number series, verbal analogies, odd one out, logic &amp; word problems, and patterns described in words.</li><li><b>Untimed.</b> There is no limit. You can show a running clock if you want to see how long you take.</li><li>Your score is <b>correct answers out of 30</b>. This is <b>not an IQ test</b> and gives no IQ number: it has no norm group. Use it to find your weak types.</li><li>Explanations appear only after you submit. You can go back and change answers before that.</li></ul></div>'
+ +'<div class="card"><button class="big alt" id="iqtimerbtn" onclick="iqToggleTimer()">Elapsed time display: '+(timer?'ON':'OFF')+' (tap to change)</button><button class="big" id="iqstart" onclick="iqStart()">Start IQ practice (30 items)</button><button class="big alt" onclick="show(\'home\')">Back to menu</button></div>'+iqHistHTML(hist);}
+function iqQuizHTML(i,ans,timer,secs){var it=IQ_ITEMS[i],N=IQ_ITEMS.length,done=ans.filter(function(a){return a!==null;}).length,cat=IQ_CATS.filter(function(c){return c.id===it.c;})[0].n,last=i===N-1;
+ var h='<div class="card"><div class="bar pq"><span>Item '+(i+1)+' / '+N+'</span>'+(timer?'<span class="small" id="iqtime">⏱ '+iqFmtTime(secs)+'</span>':'<span class="small"></span>')+'</div><div class="pbar thin"><i style="width:'+Math.round(done/N*100)+'%"></i></div><p class="small">'+iqEsc(cat)+' · answered '+done+' of '+N+'</p><p class="pqask iqq">'+iqEsc(it.q)+'</p>';
+ it.ch.forEach(function(c,k){h+='<button class="ch iqch'+(ans[i]===k?' sel':'')+'" onclick="iqPick('+k+')"><b>'+'ABCD'[k]+'.</b> '+iqEsc(c)+'</button>';});
+ h+='<div class="row"><button onclick="iqBack()"'+(i?'':' disabled')+'>← Back</button>'+(last?'<button class="submit" id="iqsubmit" onclick="iqSubmit()">Submit</button>':'<button onclick="iqNext()">Next →</button>')+'</div>';
+ return h+'<div class="row"><button onclick="iqJump()">Go to first unanswered</button><button onclick="iqQuit()">Quit</button></div>'+(last?'<p class="small">Unanswered items count as wrong.</p>':'')+'</div>';}
+function iqResultHTML(r,secs,ans){var h='<div class="card"><h2>IQ practice result</h2><div class="iqscore"><b>'+r.score+' / '+r.n+'</b><span>'+r.pct+'%</span></div><p class="small">Time taken: '+iqFmtTime(secs)+' (no time limit). Answered '+r.answered+' of '+r.n+'. A practice score, not an IQ score.</p></div>';
+ h+='<div class="card"><h3>By type</h3>'+r.cats.map(function(c){var p=c.total?Math.round(c.ok/c.total*100):0,cl=p>=75?'good':p>=50?'mid':'bad';return '<div class="prow"><div class="phead"><span>'+iqEsc(c.n)+'</span><b class="'+cl+'">'+c.ok+' / '+c.total+'</b></div><div class="pbar" role="img" aria-label="'+iqEsc(c.n)+' '+c.ok+' of '+c.total+'"><i class="'+cl+'" style="width:'+p+'%"></i></div></div>';}).join('')+'</div>';
+ h+='<div class="card"><h3>Explanations (all '+r.n+' items)</h3>'+IQ_ITEMS.map(function(it,i){var a=ans?ans[i]:null,ok=a===it.a,mk=a===null?'–':ok?'✓':'✗';
+  return '<details class="rev '+(ok?'isok':'ismiss')+'"><summary><span class="mk '+(ok?'good':'bad')+'">'+mk+'</span> <b>Item '+(i+1)+'</b><br><span class="small">'+iqEsc(it.q)+'</span></summary><div class="dbody"><p>You chose: <b>'+(a===null?'no answer':iqEsc('ABCD'[a]+'. '+it.ch[a]))+'</b><br>Correct: <b>'+iqEsc('ABCD'[it.a]+'. '+it.ch[it.a])+'</b></p><div class="why"><p>'+iqEsc(it.why)+'</p></div></div></details>';}).join('')+'</div>';
+ return h;}
+function iqHistHTML(list){if(!list||!list.length)return '';return '<div class="card"><h3>Your IQ practice attempts</h3><p class="small">Saved only on this device/browser, for this login.</p>'+list.slice(-5).reverse().map(function(a){return '<p class="phist"><span>'+iqEsc(new Date(a.ts).toLocaleString())+'</span><b>'+a.score+' / '+a.n+'</b><span class="small">'+iqFmtTime(a.secs)+'</span></p>';}).join('')+'</div>';}
+/* ---------- storage (localStorage only, per logged-in user) ---------- */
+function iqLoad(u){try{var a=JSON.parse(LS.get(IQ_KEY+u)||'[]');return Array.isArray(a)?a:[];}catch(e){return [];}}
+function iqSaveAttempt(u,r,ans,secs){var list=iqLoad(u),cat={};r.cats.forEach(function(c){cat[c.id]=c.ok;});
+ var a={id:String(Date.now()),ts:Date.now(),v:'5.7',score:r.score,n:r.n,secs:Math.max(0,Math.floor(secs||0)),cat:cat,ans:ans.slice()};list.push(a);LS.set(IQ_KEY+u,JSON.stringify(list.slice(-IQ_MAX)));return a;}
+/* ---------- UI (browser only) ---------- */
+var IQ={mode:'intro',i:0,ans:[],t0:0,timer:false,user:null,html:'',secs:0},IQ_TIMER=null;
+function iqBody(){return document.getElementById('iqbody');}
+function iqElapsed(){return IQ.t0?Math.floor((Date.now()-IQ.t0)/1000):0;}
+function iqStopTick(){if(IQ_TIMER){clearInterval(IQ_TIMER);IQ_TIMER=null;}}
+function iqTick(){var el=document.getElementById('iqtime'),p=document.getElementById('iq');if(!el||!p||p.style.display==='none'||IQ.mode!=='quiz'){iqStopTick();return;}el.textContent='⏱ '+iqFmtTime(iqElapsed());}
+function renderIq(){if(IQ.user!==USER){iqStopTick();IQ={mode:'intro',i:0,ans:[],t0:0,timer:IQ.timer,user:USER,html:'',secs:0};}
+ if(IQ.mode==='result')IQ.mode='intro';iqDraw();}
+function iqDraw(){var b=iqBody(),h;if(IQ.mode==='quiz'){h=iqQuizHTML(IQ.i,IQ.ans,IQ.timer,iqElapsed());if(IQ.timer&&!IQ_TIMER)IQ_TIMER=setInterval(iqTick,1000);}else if(IQ.mode==='result'){h=IQ.html;iqStopTick();}else{h=(typeof fullIqLocked==='function'&&fullIqLocked())?fullIqLockHTML():(typeof fullIqPrefixHTML==='function'?fullIqPrefixHTML():'')+iqIntroHTML(iqLoad(USER),IQ.timer);iqStopTick();}
+ b.innerHTML=h;window.scrollTo(0,0);}
+function iqToggleTimer(){IQ.timer=!IQ.timer;iqDraw();}
+function iqStart(){iqStopTick();if(typeof fullIqLocked==='function'&&fullIqLocked()){IQ.mode='intro';iqDraw();return;}
+ var sv=typeof fullIqResume==='function'?fullIqResume():null,okSv=sv&&sv.ans&&sv.ans.length===IQ_ITEMS.length;
+ IQ={mode:'quiz',i:okSv?Math.min(sv.i||0,IQ_ITEMS.length-1):0,ans:okSv?sv.ans.slice():IQ_ITEMS.map(function(){return null;}),t0:Date.now()-(okSv?(sv.el||0)*1000:0),timer:IQ.timer,user:USER,html:'',secs:0};if(typeof fullSaveIq==='function')fullSaveIq();iqDraw();}
+function iqSv(){if(typeof fullSaveIq==='function')fullSaveIq();}
+function iqPick(k){if(IQ.mode!=='quiz')return;IQ.ans[IQ.i]=k;iqSv();iqDraw();}
+function iqNext(){if(IQ.mode==='quiz'&&IQ.i<IQ_ITEMS.length-1){IQ.i++;iqSv();iqDraw();}}
+function iqBack(){if(IQ.mode==='quiz'&&IQ.i>0){IQ.i--;iqSv();iqDraw();}}
+function iqJump(){if(IQ.mode!=='quiz')return;for(var i=0;i<IQ.ans.length;i++)if(IQ.ans[i]===null){IQ.i=i;iqSv();iqDraw();return;}}
+function iqQuit(){iqSv();iqStopTick();IQ={mode:'intro',i:0,ans:[],t0:0,timer:IQ.timer,user:USER,html:'',secs:0};iqDraw();}
+function iqSubmit(){if(IQ.mode!=='quiz')return;var secs=iqElapsed(),r=iqScore(IQ.ans);iqSaveAttempt(USER,r,IQ.ans,secs);IQ.secs=secs;
+ if(typeof fullFinish==='function'&&typeof fullIqLocked==='function'&&!fullIqLocked()){iqStopTick();var fa=IQ.ans.slice();IQ={mode:'intro',i:0,ans:[],t0:0,timer:IQ.timer,user:USER,html:'',secs:0};fullFinish(r,secs,fa);return;}
+ IQ.mode='result';
+ IQ.html=iqResultHTML(r,secs,IQ.ans)+'<button class="big" id="iqretake" onclick="iqStart()">Try again</button><button class="big alt" onclick="iqQuit()">Back to IQ practice</button><button class="big alt" onclick="show(\'home\')">Back to menu</button>';iqDraw();}
+</script><script>/* ===== v5.7 (Nov 3 2026): "Full MPAT Personality Test" — ONE attempt of exactly 150 personality items, then (unlocked) 30 IQ practice items.
+   Split of the 150 (documented, tested): 70 forced-choice pairs (EPPS-style, A or B) + 80 16PF-style items (a / ? / b, 5 per Cattell factor).
+   The 70 pairs = the 30 pairs of the v5.6 quick quiz (PERS_ITEMS) + 40 new original pairs (PERS_X: 32 unique + 8 repeats). 14 of the 70 are repeats (6 + 8) that only feed the consistency check.
+   Every attempt shuffles all 150 items (seeded Fisher-Yates, repeats at least FULL_GAP positions from their original) and randomly swaps the on-screen side of each item's options.
+   Answers are stored by ITEM (pool index), never by screen position, so the shuffle cannot change any score.
+   The IQ part (iq.js) is LOCKED until all 150 items of the current attempt are answered. In-progress attempt: localStorage 'mpatFullRun:<user>' (order, flips, answers, position, IQ answers). Finished attempts: 'mpatFull:<user>'.
+   Nothing here is sent to MPAT Guard / Attempts. All items are original practice items, not real test items; no official scoring key exists; this is not an official score.
+   Needs personality.js, factor.js, iq.js (data + scoring + persBar/facBar/iqResultHTML). Pure functions have no DOM access (tested in node by fulltest.js). */
+var FULL_KEY='mpatFull:',FULL_RUN_KEY='mpatFullRun:',FULL_MAX=10,FULL_GAP=5;
+/* 32 new unique pairs: [trait, pilot-aligned statement, other statement, points if the other is chosen (0 = off-profile, 40 = only if honestly true, 60 = both fine), reasoning].
+   Sides alternate (aligned first / aligned second) so the aligned answer is A in half and B in half. */
+var FULL_X_RAW=[
+ ['ach','I like to ask my instructor for harder exercises once I finish the basic ones.','I like to stay with the basic exercises until the instructor says to move on.',60,'Reaching for the next level is the achievement drive seen in pilot studies, but waiting for instruction is also reasonable, so it keeps partial credit.'],
+ ['ach','I like to compare my progress with my own last result.','I like to compare my progress only with what other people are doing.',60,'Measuring yourself against your own earlier results is mastery motivation. Looking at others is human, so it keeps partial credit.'],
+ ['ach','I like to keep working toward a goal when it turns out harder than I expected.','I like to give up on a goal when it turns out harder than I expected.',0,'Persistence in the face of difficulty is central to achievement drive and to getting through flight training.'],
+ ['stab','I like to keep my attention on the task when someone is shouting nearby.','I find it hard to keep my attention on a task when someone is shouting nearby.',40,'Staying focused despite distraction fits stress tolerance. Only choose it if it is honestly true; being distracted is common, so it is not scored as zero.'],
+ ['stab','I get over a bad result quickly and look at the next task.','I keep thinking about a bad result for days.',40,'Recovering quickly after a setback fits emotional stability (NASA pilot profile: low vulnerability). Only choose it if honestly true.'],
+ ['stab','I like to ask myself what I can control when I feel pressured.','I like to think about everything that could go wrong when I feel pressured.',40,'Focusing on what you can control is a coping style linked to calm performance under pressure. Worrying is normal, so it keeps partial credit.'],
+ ['ord','I like to check my equipment twice before I start.','I like to start right away and fix problems as they show up.',0,'Pre-checks are routine in aviation. Careful preparation is the conscientiousness and deliberation found in pilot samples.'],
+ ['ord','I like to write down my tasks so I do not forget them.','I like to keep my tasks in my head.',60,'Writing tasks down is a habit that lowers errors. Keeping them in your head works for some people, so it keeps partial credit.'],
+ ['ord','I like to finish what I started before I begin something new.','I like to leave a task half-done when something more fun comes up.',0,'Finishing tasks reflects conscientiousness. Abandoning work for something more fun is the opposite pattern.'],
+ ['team','I like to work with others to solve a problem, even if it takes longer.','I like to solve a problem alone because it is faster.',60,'Crew coordination (CRM) values working together. Working alone can be efficient, so it keeps partial credit.'],
+ ['team','I like to listen to everyone\'s ideas before the group decides.','I like to tell the group my idea and move ahead.',60,'Listening first supports teamwork. Moving ahead can be right under time pressure, so it keeps partial credit.'],
+ ['team','I like to stay and help the team when my own work is done.','I like to leave as soon as my own work is done.',40,'Helping the team after your own part is done is the team-first attitude. Only choose it if honestly true.'],
+ ['lead','I like to make a decision when time is short, even if I am not fully sure.','I like to wait for more information, even when time is short.',40,'Pilots often decide with incomplete information. Waiting is sometimes wise, so it keeps partial credit.'],
+ ['lead','I like to say clearly what I think is the best option.','I like to let others pick the option and go along with it.',40,'Balanced assertiveness helped in pilot samples. Going along is fine sometimes, so it keeps partial credit.'],
+ ['lead','I feel confident enough to politely correct a senior person who is about to make an error.','I feel it is not my place to correct a senior person, even when they are about to make an error.',0,'Speaking up about errors regardless of rank is a CRM expectation. Staying silent is the pattern linked to accidents.'],
+ ['end','I like to keep going when my body is tired but the job is not done.','I like to rest as soon as I feel tired, even if the job is not done.',0,'Endurance. Flight training and missions need stamina. This is about finishing safe tasks, not ignoring real danger signs.'],
+ ['end','I like to train regularly even when I do not feel like it.','I like to train only when I feel like it.',0,'Self-discipline in training is endurance and conscientiousness. Training only when motivated does not build reliability.'],
+ ['end','I like to stay focused for a long time on one thing.','I like to move between several things every few minutes.',40,'Sustained attention fits long flights and long training days. Switching is sometimes needed, so it keeps partial credit.'],
+ ['risk','I like to try a risky thing only after I know what I will do if it goes wrong.','I like to try a risky thing and decide what to do if it goes wrong when it happens.',0,'Calculated risk: prepare the fallback first. Low impulsivity was part of the NASA pilot profile.'],
+ ['risk','I like to accept a small risk when the possible gain is worth it.','I like to avoid every risk, even small ones.',40,'Pilots weigh risks, they do not avoid all of them. Avoiding all risk is not scored as zero, but it is less aligned.'],
+ ['risk','I like to follow the safe method even if a quicker way looks tempting.','I like to take the quicker way when it looks tempting.',0,'Choosing the safe, proven method over a shortcut is the calculated-risk, procedure-respecting pattern.'],
+ ['adapt','I like to cope with a schedule that keeps changing.','I like to be told exactly what will happen each day.',60,'Flexibility with changes matters. Wanting structure is understandable, so it keeps partial credit.'],
+ ['adapt','I like to learn a new skill when the old one is no longer useful.','I like to keep using the old skill even when it is no longer useful.',0,'Adaptability: switching when the old method stops working.'],
+ ['adapt','I like to ask what I can do when a plan fails.','I like to wait for someone to give me a new plan when a plan fails.',40,'Taking initiative when a plan fails is adaptive. Waiting for direction is sometimes right, so it keeps partial credit.'],
+ ['def','I like to follow a safety rule even if I think it is a bit strict.','I like to ignore a safety rule if I think it is a bit strict.',0,'Respect for procedure. Aviation safety rules exist because of past accidents.'],
+ ['def','I like to raise a concern with the right person.','I like to complain about it to friends instead of the right person.',0,'Using the proper channel is respect for the chain of command without being passive.'],
+ ['def','I like to follow an order first and ask for the reason later when there is time.','I like to ask for the reason first and follow the order only after I get it.',40,'In urgent situations the order comes first and the debrief later. Asking is not wrong, so it keeps partial credit.'],
+ ['hum','I like to accept correction without arguing.','I like to explain why I was right when someone corrects me.',40,'Taking correction well supports training. Explaining yourself is sometimes useful, so it keeps partial credit.'],
+ ['hum','I like to admit when someone else did better than me.','I like to point out where I did better when someone else is praised.',0,'Humility and team first. Competing for credit alone was the "Wrong Stuff" pattern.'],
+ ['hum','I like to do the dull jobs when the team needs them.','I like to leave the dull jobs to others.',0,'Team before show-off: doing unglamorous work when needed.'],
+ ['comm','I like to tell my instructor early when I am struggling.','I like to wait until the instructor notices I am struggling.',0,'Early, honest communication prevents problems from growing. Hiding difficulty is a safety risk.'],
+ ['comm','I like to repeat an instruction back to be sure I understood it.','I like to assume I understood an instruction and ask no questions.',0,'Read-back is standard in aviation communication.']];
+/* 8 repeats of v5.6 pairs: [id of the original pair, 1 = same two statements with the sides swapped, 0 = unchanged]. Repeats are never scored, they only feed the consistency check. */
+var FULL_REPS=[['o1',0],['o7',1],['o10',0],['o13',1],['o6',0],['o11',1],['n3',0],['n4',1]];
+var PERS_X=(function(){var out=[];
+ FULL_X_RAW.forEach(function(r,n){var sw=n%2===1;out.push({id:'x'+(n+1),t:r[0],s:sw?[r[2],r[1]]:[r[1],r[2]],lean:sw?1:0,alt:r[3],why:r[4]});});
+ FULL_REPS.forEach(function(p,n){var o=persById(p[0]),fl=!!p[1];out.push({id:'q'+(n+1),t:o.t,rep:o.id,flip:fl,s:fl?[o.s[1],o.s[0]]:o.s.slice(),lean:fl?1-o.lean:o.lean,alt:o.alt,why:fl?'Reversed repeat: the same two statements with the sides swapped. A consistent person picks the same statement.':'Repeat of an earlier pair, shown unchanged. A consistent person gives the same answer again.'});});
+ return out;})();
+var FULL_FC=PERS_ITEMS.concat(PERS_X),FULL_FC_N=FULL_FC.length,FULL_N=FULL_FC_N+FAC_ITEMS.length;
+/* pool index p: 0..FULL_FC_N-1 = forced-choice pair FULL_FC[p]; FULL_FC_N..FULL_N-1 = 16PF-style item FAC_ITEMS[p-FULL_FC_N]. */
+function fullKind(p){return p<FULL_FC_N?'fc':'f16';}
+function fullItem(p){return p<FULL_FC_N?FULL_FC[p]:FAC_ITEMS[p-FULL_FC_N];}
+var FULL_PAIRS=(function(){var o=[];FULL_FC.forEach(function(it,i){if(it.rep)o.push([persIdx(FULL_FC,it.rep),i]);});return o;})();
+/* ---------- shuffle (pure, seeded so it is testable) ---------- */
+function fullRng(seed){var a=seed>>>0;return function(){a=(a+0x6D2B79F5)>>>0;var t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296;};}
+function fullGapOk(order){var pos=[],i;for(i=0;i<order.length;i++)pos[order[i]]=i;for(i=0;i<FULL_PAIRS.length;i++)if(Math.abs(pos[FULL_PAIRS[i][0]]-pos[FULL_PAIRS[i][1]])<FULL_GAP)return false;return true;}
+function fullShuffle(seed){var rnd=fullRng(seed),tries=0,order,i,j,t,flips=[];
+ do{order=[];for(i=0;i<FULL_N;i++)order.push(i);for(i=FULL_N-1;i>0;i--){j=Math.floor(rnd()*(i+1));t=order[i];order[i]=order[j];order[j]=t;}tries++;}while(!fullGapOk(order)&&tries<1000);
+ for(i=0;i<FULL_N;i++)flips.push(rnd()<0.5?1:0);
+ return {order:order,flips:flips,tries:tries};}
+/* flip[p] = 1 means the two answer options of item p are shown in swapped screen positions. Buttons: forced choice j = 0|1 (left|right); 16PF-style j = 0 (left) | 1 (middle "?") | 2 (right). */
+function fullDispToAns(kind,flip,j){if(kind==='fc')return flip?1-j:j;return j===1?2:(j===0?flip:1-flip);}
+function fullAnsToDisp(kind,flip,a){if(a!==0&&a!==1&&a!==2)return null;if(kind==='fc')return a===2?null:(flip?1-a:a);return a===2?1:(a===flip?0:2);}
+function fullValid(p,a){return a===0||a===1||(a===2&&p>=FULL_FC_N);}
+/* ---------- run state (pure) ---------- */
+function fullNewRun(user,seed){var sh=fullShuffle(seed),ans=[],i;for(i=0;i<FULL_N;i++)ans.push(null);
+ return {v:'5.7',id:String(Date.now()),user:user,seed:seed>>>0,ts:Date.now(),order:sh.order,flips:sh.flips,ans:ans,pos:0,stage:'p1',iq:null};}
+function fullCount(run){var n=0;for(var i=0;i<FULL_N;i++)if(fullValid(i,run.ans[i]))n++;return n;}
+function fullAllAnswered(run){return !!run&&run.ans&&run.ans.length===FULL_N&&fullCount(run)===FULL_N;}
+function fullFirstOpenPos(run){for(var k=0;k<FULL_N;k++)if(!fullValid(run.order[k],run.ans[run.order[k]]))return k;return FULL_N-1;}
+function fullQCount(run){var q=0,n=0;for(var p=FULL_FC_N;p<FULL_N;p++){if(fullValid(p,run.ans[p])){n++;if(run.ans[p]===2)q++;}}return {q:q,n:n};}
+function fullRunOk(r){return !!(r&&r.v&&r.order&&r.order.length===FULL_N&&r.flips&&r.flips.length===FULL_N&&r.ans&&r.ans.length===FULL_N&&new Set(r.order).size===FULL_N&&(r.stage==='p1'||r.stage==='iq'));}
+/* Sets the answer for the item shown at run.pos from the pressed on-screen button j and moves on. Returns 'next' | 'part1-done' | 'jump' (last item shown but an earlier one is still open). */
+function fullPickPure(run,j){var p=run.order[run.pos];run.ans[p]=fullDispToAns(fullKind(p),run.flips[p],j);
+ if(run.pos<FULL_N-1){run.pos++;return 'next';}
+ if(fullAllAnswered(run)){run.stage='iq';return 'part1-done';}run.pos=fullFirstOpenPos(run);return 'jump';}
+/* Scoring: independent of order, because ans is indexed by pool item. */
+function fullScore(ans){var fc=persScore(ans.slice(0,FULL_FC_N),FULL_FC),f=facScore(ans.slice(FULL_FC_N));return {fc:fc,f:f,answered:fc.answered+f.answered};}
+/* ---------- storage (localStorage only) ---------- */
+function fullParse(raw){try{return raw?JSON.parse(raw):null;}catch(e){return null;}}
+function fullLoadRun(u){var r=fullParse(LS.get(FULL_RUN_KEY+u));return fullRunOk(r)?r:null;}
+function fullSaveRun(u,run){var k=FULL_RUN_KEY+u;if(run){LS.set(k,JSON.stringify(run));return;}try{localStorage.removeItem(k);}catch(e){LS.set(k,'');}if(typeof MEM!=='undefined')delete MEM[k];}
+function fullLoadDone(u){var a=fullParse(LS.get(FULL_KEY+u));return Array.isArray(a)?a:[];}
+function fullSaveDone(u,run,sc,iqr,secs,iqAns){var list=fullLoadDone(u),st={},tr={};sc.f.factors.forEach(function(x){if(x.sten!==null)st[x.id]=x.sten;});sc.fc.traits.forEach(function(t){if(t.cnt)tr[t.id]=t.pct;});
+ var a={id:run.id,ts:Date.now(),v:'5.7',seed:run.seed,order:run.order,flips:run.flips,ans:run.ans,iqAns:iqAns,fit:sc.f.fit,fc:sc.fc.overall,cons:sc.fc.consistency.pct,q:sc.f.q,qpct:sc.f.qpct,st:st,tr:tr,iq:iqr.score,iqn:iqr.n,secs:Math.max(0,Math.floor(secs||0))};
+ list.push(a);LS.set(FULL_KEY+u,JSON.stringify(list.slice(-FULL_MAX)));return a;}
+/* ---------- HTML (pure strings) ---------- */
+function fullFcQuizBody(it,flip,sel){var h='<p class="pqask">Which statement is more like you?</p>';
+ [0,1].forEach(function(j){var o=flip?1-j:j;h+='<button class="ch pst'+(sel===j?' sel':'')+'" onclick="fullPick('+j+')"><b>'+'AB'[j]+'.</b> '+persEsc(it.s[o])+'</button>';});
+ return h+'<p class="small">Both may be true. Pick the one slightly more like you on an ordinary day. Answer fast, first instinct.</p>';}
+function fullF16QuizBody(it,flip,sel){var h='<p class="pqask">'+persEsc(it.q)+'…</p>';
+ [[0,'a',it.s[flip?1:0]],[1,'?',null],[2,'b',it.s[flip?0:1]]].forEach(function(x){var j=x[0];h+='<button class="ch pst fst'+(sel===j?' sel':'')+(j===1?' fmid':'')+'" onclick="fullPick('+j+')"><b>'+x[1]+'.</b> '+(j===1?'Cannot decide':persEsc(x[2]))+'</button>';});
+ return h+'<p class="small">Tip: avoid "?". Choose it only if a and b are truly equal for you; otherwise pick the one you would do slightly more often on an ordinary day.</p>';}
+function fullQuizHTML(run){var pos=run.pos,p=run.order[pos],kind=fullKind(p),it=fullItem(p),flip=run.flips[p],done=fullCount(run),qc=fullQCount(run),sel=fullAnsToDisp(kind,flip,run.ans[p]);
+ var h='<div class="card"><div class="bar pq"><span>Item '+(pos+1)+' / '+FULL_N+'</span><span class="small pqhint">Part 1 of 2 · Personality</span></div><div class="pbar thin"><i style="width:'+Math.round(done/FULL_N*100)+'%"></i></div><p class="small">'+done+' of '+FULL_N+' answered · IQ part unlocks at '+FULL_N+(qc.n?' · middle (?) so far: '+qc.q+' of '+qc.n:'')+'</p>';
+ h+=kind==='fc'?fullFcQuizBody(it,flip,sel):fullF16QuizBody(it,flip,sel);
+ return h+'<div class="row"><button onclick="fullBack()"'+(pos?'':' disabled')+'>← Back</button><button id="fullexit" onclick="fullExit()">Save &amp; exit</button></div><p class="small">Your place is saved on this device after every answer. Explanations appear after Part 2.</p></div>';}
+function fullPosOf(order){var pos=[];for(var i=0;i<order.length;i++)pos[order[i]]=i+1;return pos;}
+function fullEntryHTML(){var r=fullRunGet(),h='<div class="card pwarn" id="fullcard"><h2>Full MPAT Personality Test</h2><ul class="plist"><li><b>Part 1: exactly '+FULL_N+' personality items</b>, in a new random order every attempt: <b>'+FULL_FC_N+' forced-choice pairs</b> (A or B; '+FULL_PAIRS.length+' of them are repeats that check consistency) and <b>'+FAC_ITEMS.length+' 16PF-style items</b> (a / ? / b, '+FAC_PER+' per factor).</li><li><b>Part 2: IQ practice</b> (30 untimed items). It stays <b>locked until all '+FULL_N+' personality items are answered</b>, then it opens straight away.</li><li>Untimed, about 45 to 60 minutes for Part 1. Your place is saved on this device after every answer: if you reload, you resume where you stopped.</li><li>The instructions discourage the middle "?" answer. Above 10% "?" you get a warning at the end.</li><li>All items are <b>original practice items</b>. Which tests the PAF really uses, and whether it has about 150 items, is <b>unconfirmed</b>. The results are practice numbers, <b>not an official score</b>.</li></ul>';
+ if(!r)h+='<button class="big" id="fullstart" onclick="fullStartNew()">Start the full test ('+FULL_N+' items + IQ)</button>';
+ else if(r.stage==='iq')h+='<p><b>Part 1 is complete.</b> Continue with Part 2.</p><button class="big" id="fullresume" onclick="fullResume()">Continue to Part 2 (IQ practice)</button><button class="big alt" id="fulldiscard" onclick="fullDiscard()">Discard this attempt and start over</button>';
+ else h+='<p><b>Attempt in progress:</b> '+fullCount(r)+' of '+FULL_N+' answered.</p><button class="big" id="fullresume" onclick="fullResume()">Resume ('+fullCount(r)+' / '+FULL_N+')</button><button class="big alt" id="fulldiscard" onclick="fullDiscard()">Discard this attempt and start over</button>';
+ return h+'</div>';}
+function fullIqLockHTML(){var r=fullRunGet(),n=r?fullCount(r):0;
+ return '<div class="card pwarn" id="iqlock"><h2>IQ practice is locked</h2><p>The IQ practice is Part 2 of the <b>Full MPAT Personality Test</b>. It unlocks after you answer all <b>'+FULL_N+'</b> personality items of an attempt.</p><div class="pbar thin"><i style="width:'+Math.round(n/FULL_N*100)+'%"></i></div><p class="small">'+(r?'Your current attempt: '+n+' of '+FULL_N+' answered.':'No attempt in progress.')+'</p>'
+ +(r?'<button class="big" id="iqlockgo" onclick="fullResume()">Resume the full test ('+n+' / '+FULL_N+')</button>':'<button class="big" id="iqlockgo" onclick="fullStartNew()">Start the full test</button>')+'<button class="big alt" onclick="show(\'home\')">Back to menu</button></div>'+iqHistHTML(iqLoad(USER));}
+function fullIqPrefixHTML(){return '<div class="card" id="iqpart2"><h3>✓ Part 1 complete</h3><p class="small">All '+FULL_N+' personality items answered. This is <b>Part 2</b>. When you submit, your full results (personality, factor profile and IQ practice together) appear.</p></div>';}
+function fullBandCls(p){return persBandCls(p);}
+function fullResultHTML(rec,prev){var sc=fullScore(rec.ans),iqr=iqScore(rec.iqAns),pos=fullPosOf(rec.order),f=sc.f,fc=sc.fc,c=fc.consistency,h;
+ h='<div class="card" id="fullresult"><h2>Full MPAT Personality Test: results</h2><p class="small">Practice numbers from original items. <b>Not an official score</b>; not a pass/fail. Personality is only a weak predictor of pilot success.</p>'
+ +persBar(f.fit,'Overall pilot-profile fit (16PF-style)',persBand(f.fit)+' · '+f.scoredFactors+' factors vs the pilot target band'+(prev&&prev.fit!=null?' · last time '+prev.fit+'%':''))
+ +persBar(fc.overall,'Forced-choice alignment',persBand(fc.overall)+' · '+fc.scored+' scored pairs')
+ +(c.n?persBar(c.pct,'Consistency',c.ok+' of '+c.n+' repeated pairs answered the same'):'')
+ +'<div class="prow"><div class="phead"><span>Middle (?) answers</span><b class="'+(f.qwarn?'bad':'good')+'">'+f.q+' of '+f.answered+' · '+f.qpct+'%</b></div></div>'
+ +'<div class="prow"><div class="phead"><span>IQ practice</span><b class="'+(iqr.pct>=75?'good':iqr.pct>=50?'mid':'bad')+'">'+iqr.score+' / '+iqr.n+'</b></div><div class="small">'+iqr.pct+'% · time '+iqFmtTime(rec.secs)+' · not an IQ score</div></div></div>';
+ var notes='';if(f.qwarn)notes+='<li><b>Too many middle answers.</b> More than 10% "?" thins the profile and the real instructions discourage it. Next time ask "which would I do slightly more often on an ordinary day?" and pick that side.</li>';
+ if(f.fit>=95||fc.overall>=95)notes+='<li>A near-perfect result is itself a warning sign: answering to match a "pilot profile" instead of honestly is easy to spot and looks like faking. Answer from your real preference.</li>';
+ if(c.n&&c.pct<67)notes+='<li>Consistency is low. If your answers change between repeated pairs, the profile on a real test could be flagged. Answering from your real preference makes this happen naturally.</li>';
+ notes+='<li><b>Tip to avoid "?":</b> do not wait for a perfect answer. Imagine an ordinary day, not your best day, and pick the side you would choose more often, even if only slightly.</li>';
+ h+='<div class="card'+(f.qwarn||c.n&&c.pct<67?' pwarn':'')+'"><ul class="plist">'+notes+'</ul></div>';
+ h+='<div class="card"><h3>By characteristic (forced-choice pairs)</h3>'+fc.traits.filter(function(t){return t.cnt;}).map(function(t){return persBar(t.pct,t.n,persBand(t.pct)+' · '+t.cnt+' pair'+(t.cnt>1?'s':''));}).join('')+'<p class="small">Each characteristic has only 4 to 6 pairs, so these numbers are rough. Within a pair both statements are usually acceptable.</p></div>';
+ h+='<div class="card"><h3>By factor (16PF-style items)</h3>'+f.factors.map(function(x){return x.sten===null?'':facBar(facFactor(x.id),x);}).join('')+'<p class="small">Sten-like scores (1 to 10, mean 5.5) from only '+FAC_PER+' original items per factor, no norm group. Bars show your score; the green band is the pilot target. The target <b>direction</b> is sourced where marked in the guide; the <b>band width</b> is assumed. Do not read a number as good or bad by itself: both ends of every factor have meaning.</p></div>';
+ h+=iqResultHTML(iqr,rec.secs,rec.iqAns);
+ h+='<div class="card"><h3>Consistency check</h3>'+(c.pairs.length?c.pairs.map(function(p){return '<p class="pcons"><span class="mk '+(p.same?'good':'bad')+'">'+(p.same?'✓':'✗')+'</span> Item '+pos[p.first]+' came back as item '+pos[p.again]+(p.same?': same answer.':': you chose "'+persEsc(p.chosen1)+'" first, then "'+persEsc(p.chosen2)+'".')+'</p>';}).join(''):'<p class="small">None.</p>')+'</div>';
+ h+='<div class="card"><h3>Reasoning: forced-choice pairs (all '+FULL_FC_N+')</h3><p class="small">Numbers are the item\'s place in this attempt. The "aligned" statement is my interpretation of the pilot research; on a real test pick what is honestly true of you.</p>'
+ +fc.items.slice().sort(function(a,b){return pos[a.i]-pos[b.i];}).map(function(x){var it=x.it,tag=it.rep?'repeat':(x.aligned?'aligned':(it.alt>0?'partly aligned ('+it.alt+'%)':'not aligned')),mk=it.rep?'•':(x.aligned?'✓':(it.alt>0?'~':'✗')),mc=it.rep?'':(x.aligned?'good':(it.alt>0?'mid':'bad'));
+  return '<details class="rev fcrev '+(x.aligned?'isok':'ismiss')+'"><summary><span class="mk '+mc+'">'+mk+'</span> <b>Item '+pos[x.i]+'</b> · '+persEsc((PERS_TRAITS.filter(function(t){return t.id===it.t;})[0]||{}).n)+'<br><span class="small">You chose: '+persEsc(x.chosen)+' · '+tag+'</span></summary><div class="dbody"><p>A. '+persEsc(it.s[0])+'<br>B. '+persEsc(it.s[1])+'</p><p>You chose: <b>'+'AB'[x.a]+'</b>'+(it.rep?'':' · Pilot-aligned: <b>'+'AB'[it.lean]+'</b>')+'</p><div class="why"><p>'+persEsc(it.why)+'</p></div></div></details>';}).join('')+'</div>';
+ h+='<div class="card"><h3>Reasoning: 16PF-style items (all '+FAC_ITEMS.length+')</h3>'
+ +FAC_ITEMS.map(function(it,k){return {it:it,p:FULL_FC_N+k,a:rec.ans[FULL_FC_N+k]};}).sort(function(a,b){return pos[a.p]-pos[b.p];}).map(function(o){var it=o.it,a=o.a,f1=facFactor(it.f),tag=a===2?'? (middle)':(a===it.hi?'high pole':'low pole'),pts=facItemPts(it,a);
+  return '<details class="rev f16rev"><summary><b>'+pos[o.p]+'.</b> '+it.f+' · '+persEsc(f1.n)+'<br><span class="small">You chose: '+(a===2?'?':(a===0||a===1?'ab'[a]:'—'))+' · '+tag+(pts===null?'':' · '+pts+' pt')+'</span></summary><div class="dbody"><p>'+persEsc(it.q)+'…<br>a. '+persEsc(it.s[0])+'<br>?. Cannot decide<br>b. '+persEsc(it.s[1])+'</p><div class="why"><p>'+persEsc(it.why)+' High pole = '+persEsc(f1.hi.toLowerCase())+'; low pole = '+persEsc(f1.lo.toLowerCase())+'.</p></div></div></details>';}).join('')+'</div>';
+ return h;}
+function fullHistHTML(list){if(!list||!list.length)return '';return '<div class="card"><h3>Your full-test attempts</h3><p class="small">Saved only on this device/browser, for this login.</p>'+list.slice(-5).reverse().map(function(a){return '<p class="phist"><span>'+persEsc(new Date(a.ts).toLocaleString())+'</span><b>'+a.fit+'%</b><span class="small">pairs '+a.fc+'% · IQ '+a.iq+'/'+a.iqn+'</span><button class="fullopen" onclick="fullOpenDone(\''+persEsc(a.id)+'\')">Open</button></p>';}).join('')+'</div>';}
+/* ---------- UI (browser only) ---------- */
+var FULL={user:null,run:null};
+function fullRunGet(){if(FULL.user!==USER){FULL={user:USER,run:fullLoadRun(USER)};}return FULL.run;}
+function fullSave(){if(FULL.run)fullSaveRun(USER,FULL.run);}
+function fullIqLocked(){var r=fullRunGet();return !fullAllAnswered(r);}
+function fullIqResume(){var r=fullRunGet();return r&&r.iq?r.iq:null;}
+function fullSaveIq(){var r=fullRunGet();if(!r||!fullAllAnswered(r)||typeof IQ==='undefined'||IQ.mode!=='quiz')return;r.iq={ans:IQ.ans.slice(),i:IQ.i,el:iqElapsed()};fullSave();}
+function fullHTML(){var r=fullRunGet();if(!r||r.stage!=='p1')return fullEntryHTML();return fullQuizHTML(r);}
+function fullStartNew(){var seed=((Date.now()^Math.floor(Math.random()*4294967296))>>>0);FULL={user:USER,run:fullNewRun(USER,seed)};fullSave();show('pers');PERS={mode:'full',i:0,ans:[],user:USER};persDraw();}
+function fullResume(){var r=fullRunGet();if(!r)return fullStartNew();if(r.stage==='iq'||fullAllAnswered(r)){if(r.stage!=='iq'){r.stage='iq';fullSave();}show('iq');return;}r.pos=fullFirstOpenPos(r);fullSave();show('pers');PERS={mode:'full',i:0,ans:[],user:USER};persDraw();}
+function fullDiscard(){FULL={user:USER,run:null};fullSaveRun(USER,null);if(typeof IQ!=='undefined'&&IQ.mode==='quiz'){IQ={mode:'intro',i:0,ans:[],t0:0,timer:IQ.timer,user:USER,html:'',secs:0};}PERS={mode:'guide',i:0,ans:[],user:USER};persDraw();}
+function fullPick(j){var r=fullRunGet();if(!r||PERS.mode!=='full'||r.stage!=='p1')return;var res=fullPickPure(r,j);fullSave();
+ if(res==='part1-done'){show('iq');return;}persDraw();}
+function fullBack(){var r=fullRunGet();if(r&&PERS.mode==='full'&&r.stage==='p1'&&r.pos>0){r.pos--;fullSave();persDraw();}}
+function fullExit(){PERS={mode:'guide',i:0,ans:[],user:USER};persDraw();}
+function fullFinish(iqr,secs,iqAns){var r=fullRunGet(),list=fullLoadDone(USER),prev=list.length?list[list.length-1]:null,sc=fullScore(r.ans),rec=fullSaveDone(USER,r,sc,iqr,secs,iqAns);
+ FULL={user:USER,run:null};fullSaveRun(USER,null);show('pers');
+ PERS={mode:'result',i:0,ans:[],user:USER,html:fullResultHTML(rec,prev)+'<button class="big" id="fullnew" onclick="fullStartNew()">Start a new full test (new shuffle)</button><button class="big alt" onclick="persCancel()">Back to Personality</button>'};persDraw();}
+function fullOpenDone(id){var list=fullLoadDone(USER),k=-1,i;for(i=0;i<list.length;i++)if(list[i].id===id)k=i;if(k<0)return;
+ PERS={mode:'result',i:0,ans:[],user:USER,html:fullResultHTML(list[k],k?list[k-1]:null)+'<button class="big alt" onclick="persCancel()">Back to Personality</button>'};persDraw();}
 </script><script>var MEM={};var LS={get:function(k){try{return localStorage.getItem(k);}catch(e){return MEM[k]||null;}},set:function(k,v){try{localStorage.setItem(k,v);}catch(e){MEM[k]=v;}}};var MINS='5',USER=null;
 var USERS={daniel:{n:'Daniel'},mophet:{n:'Mophet'},abram:{n:'Abram'},cicero:{n:'Cicero'}};
 function uk(k){return k+':'+USER;}
@@ -2446,7 +2849,7 @@ function inspGrid(it,rv,selArr){var h='<div class="insp'+(rv?' rv':'')+'">';for(
 function revFig(l){var it=l.it;if(it.cols)return inspGrid(it,true,l.idx)+'<p class="small">Red border = defective; blue fill = your pick.</p>';if(it.multi)return '<div class="grid rv">'+it.cells.map(function(c,i){var bad=it.ans.indexOf(i)>=0,p=l.sel&&(', '+l.sel+',').indexOf(' #'+(i+1)+',')>=0;return '<div class="cell'+(bad?' bad':'')+(p?' sel':'')+'"><span>'+(i+1)+'</span>'+c+'</div>';}).join('')+'</div><p class="small">Red border = defective; blue fill = your pick.</p>';
  if(it.chimg)return '<div class="imgch">'+it.ch.map(function(c,i){return '<div class="ch ich'+(c===it.a?' right':'')+'"><b>'+c+'</b>'+it.chimg[i]+'</div>';}).join('')+'</div>';return '';}
 function setMins(m){MINS=m;document.querySelectorAll('.mbtn').forEach(function(b){b.classList.toggle('sel',b.dataset.m===m);});}
-function show(id){['home','quiz','res','tips','prog','devs','pers'].forEach(function(x){$(x).style.display=x===id?'block':'none';});if(id==='home')renderHome();if(id==='devs')renderDevices();if(id==='pers')renderPers();if(id==='prog')renderProgress();}
+function show(id){['home','quiz','res','tips','prog','devs','pers','iq'].forEach(function(x){$(x).style.display=x===id?'block':'none';});if(id==='home')renderHome();if(id==='devs')renderDevices();if(id==='pers')renderPers();if(id==='iq')renderIq();if(id==='prog')renderProgress();}
 function renderHome(){var H=JSON.parse(LS.get(uk('mpatHist'))||'{}');
  $('topics').innerHTML=Object.keys(TOPICS).map(function(t){var b=H['topic:'+t];return '<button class="tp" onclick="start(null,\''+t+'\')">'+TOPICS[t]+(b?'<span class="small"> best '+b.ok+'/'+b.n+'</span>':'')+'</button>';}).join('');
  $('best').innerHTML=['5','7','10'].map(function(m){var b=H['mixed'+m];return m+'-min best: '+(b?b.ok+'/'+b.n+' ('+b.date+')':'—');}).join('<br>');}
